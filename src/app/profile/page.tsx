@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { getProfile, updateProfile, type Profile } from '@/lib/data';
@@ -127,10 +127,44 @@ const ProfileView = ({ profile, onEdit }: { profile: Profile; onEdit: () => void
 
 const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: (p: Profile) => void; onCancel: () => void }) => {
     const [editedProfile, setEditedProfile] = useState(profile);
+    const profileImageInputRef = useRef<HTMLInputElement>(null);
+    const galleryImageInputRef = useRef<HTMLInputElement>(null);
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setEditedProfile(prev => ({...prev, [name]: value}));
+    };
+
+    const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setEditedProfile(prev => ({...prev, imageUrl: reader.result as string}));
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleGalleryImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setEditedProfile(prev => ({
+                    ...prev,
+                    gallery: [...(prev.gallery || []), reader.result as string]
+                }));
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleRemoveGalleryImage = (indexToRemove: number) => {
+        setEditedProfile(prev => ({
+            ...prev,
+            gallery: prev.gallery?.filter((_, index) => index !== indexToRemove)
+        }));
     };
 
     const handleAttributeChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
@@ -146,121 +180,125 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
     };
 
     return (
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
-            <div className="w-full lg:w-1/3 space-y-6">
-                <Card className="overflow-hidden shadow-lg">
-                    <div className="relative group">
-                        <Image
-                            src={editedProfile.imageUrl}
-                            alt={`Profile of ${editedProfile.name}`}
-                            width={600}
-                            height={400}
-                            className="w-full object-cover aspect-[3/2]"
-                        />
-                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Button variant="secondary"><Camera className="mr-2" />Change Photo</Button>
-                        </div>
-                    </div>
-                    <CardContent className="p-6 space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="name">Name</Label>
-                            <Input id="name" name="name" value={editedProfile.name} onChange={handleChange} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="age">Age</Label>
-                            <Input id="age" name="age" type="number" value={editedProfile.age} onChange={handleChange} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="location">Location</Label>
-                            <Input id="location" name="location" value={editedProfile.location} onChange={handleChange} />
-                        </div>
-                        <div className="flex space-x-2 pt-4">
-                            <Button size="lg" className="flex-1" onClick={handleSave}>Save Profile</Button>
-                            <Button size="lg" variant="outline" className="flex-1" onClick={onCancel}>Cancel</Button>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-
-            <div className="w-full lg:w-2/3 space-y-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>About {profile.name}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Textarea 
-                            name="bio"
-                            value={editedProfile.bio} 
-                            onChange={handleChange}
-                            className="min-h-[120px]" 
-                            placeholder="Tell us about yourself..."
-                        />
-                    </CardContent>
-                </Card>
-                
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Wants & Interests</CardTitle>
-                        <CardDescription>Separate tags with a comma.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div>
-                            <Label htmlFor="wants">Wants</Label>
-                            <Input 
-                                id="wants"
-                                name="wants"
-                                value={editedProfile.wants?.join(', ')} 
-                                onChange={(e) => setEditedProfile(prev => ({...prev, wants: e.target.value.split(',').map(s => s.trim())}))}
+        <>
+            <input type="file" ref={profileImageInputRef} onChange={handleProfileImageChange} accept="image/*" className="hidden" />
+            <input type="file" ref={galleryImageInputRef} onChange={handleGalleryImageChange} accept="image/*" className="hidden" />
+            <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+                <div className="w-full lg:w-1/3 space-y-6">
+                    <Card className="overflow-hidden shadow-lg">
+                        <div className="relative group">
+                            <Image
+                                src={editedProfile.imageUrl}
+                                alt={`Profile of ${editedProfile.name}`}
+                                width={600}
+                                height={400}
+                                className="w-full object-cover aspect-[3/2]"
                             />
-                        </div>
-                        <div>
-                            <Label htmlFor="interests">Interests</Label>
-                            <Input 
-                                id="interests"
-                                name="interests"
-                                value={editedProfile.interests?.join(', ')} 
-                                onChange={(e) => setEditedProfile(prev => ({...prev, interests: e.target.value.split(',').map(s => s.trim())}))}
-                            />
-                        </div>
-                    </CardContent>
-                </Card>
-                
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Gallery</CardTitle>
-                    </CardHeader>
-                    <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                        {editedProfile.gallery?.map((img, i) => (
-                            <div key={i} className="relative aspect-video group">
-                                <Image src={img} alt={`Gallery image ${i + 1}`} fill className="rounded-md object-cover" />
-                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <Button size="sm" variant="destructive">Remove</Button>
-                                </div>
+                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Button variant="secondary" onClick={() => profileImageInputRef.current?.click()}><Camera className="mr-2" />Change Photo</Button>
                             </div>
-                        ))}
-                        <div className="relative aspect-video border-2 border-dashed rounded-md flex items-center justify-center text-muted-foreground hover:bg-accent hover:border-primary transition">
-                            <Button variant="ghost"><Camera className="mr-2 h-4 w-4" />Add Photo</Button>
                         </div>
-                    </CardContent>
-                </Card>
+                        <CardContent className="p-6 space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="name">Name</Label>
+                                <Input id="name" name="name" value={editedProfile.name} onChange={handleChange} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="age">Age</Label>
+                                <Input id="age" name="age" type="number" value={editedProfile.age} onChange={handleChange} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="location">Location</Label>
+                                <Input id="location" name="location" value={editedProfile.location} onChange={handleChange} />
+                            </div>
+                            <div className="flex space-x-2 pt-4">
+                                <Button size="lg" className="flex-1" onClick={handleSave}>Save Profile</Button>
+                                <Button size="lg" variant="outline" className="flex-1" onClick={onCancel}>Cancel</Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Attributes</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <dl className="grid grid-cols-2 gap-x-4 gap-y-4">
-                            {editedProfile.attributes && Object.entries(editedProfile.attributes).map(([key, value]) => (
-                                <div key={key} className="space-y-1">
-                                    <Label htmlFor={`attr-${key}`}>{key}</Label>
-                                    <Input id={`attr-${key}`} value={value} onChange={(e) => handleAttributeChange(e, key)} />
+                <div className="w-full lg:w-2/3 space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>About {profile.name}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Textarea 
+                                name="bio"
+                                value={editedProfile.bio} 
+                                onChange={handleChange}
+                                className="min-h-[120px]" 
+                                placeholder="Tell us about yourself..."
+                            />
+                        </CardContent>
+                    </Card>
+                    
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Wants & Interests</CardTitle>
+                            <CardDescription>Separate tags with a comma.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div>
+                                <Label htmlFor="wants">Wants</Label>
+                                <Input 
+                                    id="wants"
+                                    name="wants"
+                                    value={editedProfile.wants?.join(', ')} 
+                                    onChange={(e) => setEditedProfile(prev => ({...prev, wants: e.target.value.split(',').map(s => s.trim())}))}
+                                />
+                            </div>
+                            <div>
+                                <Label htmlFor="interests">Interests</Label>
+                                <Input 
+                                    id="interests"
+                                    name="interests"
+                                    value={editedProfile.interests?.join(', ')} 
+                                    onChange={(e) => setEditedProfile(prev => ({...prev, interests: e.target.value.split(',').map(s => s.trim())}))}
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Gallery</CardTitle>
+                        </CardHeader>
+                        <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            {editedProfile.gallery?.map((img, i) => (
+                                <div key={i} className="relative aspect-video group">
+                                    <Image src={img} alt={`Gallery image ${i + 1}`} fill className="rounded-md object-cover" />
+                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Button size="sm" variant="destructive" onClick={() => handleRemoveGalleryImage(i)}>Remove</Button>
+                                    </div>
                                 </div>
                             ))}
-                        </dl>
-                    </CardContent>
-                </Card>
+                            <div className="relative aspect-video border-2 border-dashed rounded-md flex items-center justify-center text-muted-foreground hover:bg-accent hover:border-primary transition">
+                                <Button variant="ghost" onClick={() => galleryImageInputRef.current?.click()}><Camera className="mr-2 h-4 w-4" />Add Photo</Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Attributes</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <dl className="grid grid-cols-2 gap-x-4 gap-y-4">
+                                {editedProfile.attributes && Object.entries(editedProfile.attributes).map(([key, value]) => (
+                                    <div key={key} className="space-y-1">
+                                        <Label htmlFor={`attr-${key}`}>{key}</Label>
+                                        <Input id={`attr-${key}`} value={value as string} onChange={(e) => handleAttributeChange(e, key)} />
+                                    </div>
+                                ))}
+                            </dl>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

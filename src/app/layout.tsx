@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
 import { Toaster } from "@/components/ui/toaster";
 import './globals.css';
-import { Playfair_Display, Roboto } from 'next/font/google';
+import { Alegreya } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 
@@ -10,17 +10,10 @@ export const metadata: Metadata = {
   description: 'An exclusive platform for ambitious and attractive individuals',
 };
 
-const fontHeadline = Playfair_Display({
+const fontAlegreya = Alegreya({
   subsets: ['latin'],
-  variable: '--font-headline',
-  weight: ['400', '700'],
-  style: ['normal', 'italic'],
-});
-
-const fontBody = Roboto({
-  subsets: ['latin'],
-  weight: ['300', '400', '700'],
-  variable: '--font-body',
+  variable: '--font-alegreya',
+  weight: ['400', '500', '700', '800', '900'],
   style: ['normal', 'italic'],
 });
 
@@ -34,8 +27,7 @@ export default function RootLayout({
       <body
         className={cn(
           'font-body antialiased',
-          fontHeadline.variable,
-          fontBody.variable
+          fontAlegreya.variable
         )}
       >
         <ThemeProvider

@@ -7,7 +7,7 @@ export function Hero() {
   return (
     <section className="relative h-[70vh] w-full text-white">
       <Image
-        src="https://placehold.co/1920x1080"
+        src="https://web-developer.one/imgs/sugar-daddy-002.jpg"
         alt="A stylish couple in an urban setting"
         data-ai-hint="couple city"
         fill

@@ -18,10 +18,10 @@ export function Footer() {
   return (
     <footer className="w-full border-t bg-card text-card-foreground">
       <div className="container mx-auto px-4 md:px-6 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8 text-center">
           {/* Column 1: Logo & Name */}
           <div className="space-y-4">
-            <Link href="/" className="font-headline text-2xl font-bold text-primary">
+            <Link href="/" className="font-headline text-xl font-bold text-primary inline-block">
               SugarConnect
             </Link>
             <p className="text-sm text-muted-foreground">
@@ -62,7 +62,7 @@ export function Footer() {
           </div>
         </div>
         
-        <div className="border-t pt-6 flex flex-col sm:flex-row items-center justify-center">
+        <div className="border-t pt-6 text-center">
             <p className="text-sm text-muted-foreground">
               &copy; {currentYear} SugarConnect. All rights reserved.
             </p>

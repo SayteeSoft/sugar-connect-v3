@@ -69,7 +69,7 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
         <div className="flex flex-1 items-center justify-start">
           <Link href="/">
-            <span className="font-headline text-xl font-bold text-primary">
+            <span className="font-headline text-lg font-bold text-primary">
               SugarConnect
             </span>
           </Link>
@@ -102,10 +102,9 @@ export function Header() {
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
           {isLoggedIn && profile?.role === 'daddy' && (
-            <Button>
-              <Coins className="mr-2 h-4 w-4" />
+            <Button size="sm">
               Buy Credits
-              <Badge variant="secondary" className="ml-2 rounded-full px-2">{credits}</Badge>
+              <Badge variant="secondary" className="rounded-full px-2">{credits}</Badge>
             </Button>
           )}
           {isLoggedIn && profile?.role === 'baby' && (

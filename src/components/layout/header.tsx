@@ -34,8 +34,15 @@ export function Header() {
       if (loggedInStatus) {
         // In a real app, you'd get the user ID from the session/token.
         // For this demo, we'll use the static ID for the admin user.
-        setProfile(getProfile(2));
-        setCredits(150); // Mock credits
+        const userProfile = getProfile(2);
+        setProfile(userProfile);
+        if (userProfile) {
+          if (userProfile.role === 'daddy') {
+            setCredits(15);
+          } else {
+            setCredits(Infinity);
+          }
+        }
       }
     }
   }, []);
@@ -94,12 +101,18 @@ export function Header() {
           </Link>
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
-          {isLoggedIn && (
+          {isLoggedIn && profile?.role === 'daddy' && (
             <Button>
               <Coins className="mr-2 h-4 w-4" />
               Buy Credits
               <Badge variant="secondary" className="ml-2 rounded-full px-2">{credits}</Badge>
             </Button>
+          )}
+          {isLoggedIn && profile?.role === 'baby' && (
+             <div className="flex items-center gap-2 h-10 px-3 text-sm font-medium">
+                <Coins className="h-4 w-4 text-primary" />
+                <span className="text-foreground">Unlimited Credits</span>
+            </div>
           )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

@@ -21,8 +21,8 @@ import { AlertCircle } from "lucide-react";
 
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("saytee.software@gmail.com");
+  const [password, setPassword] = useState("admin");
   const [error, setError] = useState("");
   const router = useRouter();
 

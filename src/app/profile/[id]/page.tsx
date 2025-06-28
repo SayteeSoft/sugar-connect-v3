@@ -1,9 +1,8 @@
-
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { getProfile, updateProfile, type Profile } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -306,7 +305,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
 };
 
 
-export default function ProfilePage({ params }: { params: { id: string } }) {
+export default function ProfilePage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [profileData, setProfileData] = useState<Profile | undefined>();
   const [isLoading, setIsLoading] = useState(true);
@@ -314,6 +313,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
   const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
   const { toast } = useToast();
   const router = useRouter();
+  const params = useParams<{ id: string }>();
 
   const profileId = parseInt(params.id, 10);
   const isOwnProfile = profileId === loggedInUserId;

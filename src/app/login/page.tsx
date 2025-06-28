@@ -17,8 +17,9 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow flex items-center justify-center p-4 bg-background">
-        <Card className="w-full max-w-md mx-auto">
+      <main className="flex-grow flex items-center justify-center p-4 relative bg-hero-bg bg-cover bg-center">
+        <div className="absolute inset-0 bg-black/50" />
+        <Card className="w-full max-w-md mx-auto z-10">
           <CardHeader className="text-center">
             <CardTitle className="font-headline text-3xl">Welcome Back</CardTitle>
             <CardDescription>

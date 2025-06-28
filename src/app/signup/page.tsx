@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,8 +12,9 @@ export default function SignupPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow flex items-center justify-center p-4 bg-background">
-        <Card className="w-full max-w-md mx-auto">
+      <main className="flex-grow flex items-center justify-center p-4 relative bg-hero-bg bg-cover bg-center">
+        <div className="absolute inset-0 bg-black/50" />
+        <Card className="w-full max-w-md mx-auto z-10">
           <CardHeader className="text-center">
             <CardTitle className="font-headline text-3xl">100% Free Signup</CardTitle>
             <CardDescription>Join our exclusive community today.</CardDescription>
@@ -44,7 +46,7 @@ export default function SignupPage() {
             </form>
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
-              <Link href="#" className="underline">
+              <Link href="/login" className="underline">
                 Sign in
               </Link>
             </div>

@@ -16,9 +16,12 @@ import { User, LogOut, Settings, LogIn } from "lucide-react";
 import { ThemeSwitcher } from "../theme-switcher";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import type { Profile } from "@/lib/data";
+import { getProfile } from "@/lib/data";
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [profile, setProfile] = useState<Profile | undefined>();
   const router = useRouter();
 
   useEffect(() => {
@@ -26,12 +29,18 @@ export function Header() {
     if (typeof window !== 'undefined') {
       const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
       setIsLoggedIn(loggedInStatus);
+      if (loggedInStatus) {
+        // In a real app, you'd get the user ID from the session/token.
+        // For this demo, we'll use the static ID for the admin user.
+        setProfile(getProfile(2));
+      }
     }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
     setIsLoggedIn(false);
+    setProfile(undefined);
     router.push("/login");
   };
 
@@ -89,11 +98,11 @@ export function Header() {
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
                   <AvatarImage
-                    src="https://placehold.co/100x100"
-                    data-ai-hint="person"
-                    alt="@user"
+                    src={profile?.imageUrl ?? "https://placehold.co/100x100"}
+                    data-ai-hint={profile?.hint ?? "person"}
+                    alt={profile?.name ?? "@user"}
                   />
-                  <AvatarFallback>U</AvatarFallback>
+                  <AvatarFallback>{profile?.name?.charAt(0).toUpperCase() ?? "U"}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
@@ -102,7 +111,7 @@ export function Header() {
                 <>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">saytee.software</p>
+                      <p className="text-sm font-medium leading-none">{profile?.name ?? 'saytee.software'}</p>
                       <p className="text-xs leading-none text-muted-foreground">
                         saytee.software@gmail.com
                       </p>

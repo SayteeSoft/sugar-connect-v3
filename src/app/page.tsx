@@ -5,6 +5,7 @@ import { Footer } from '@/components/layout/footer';
 import { Testimonials } from '@/components/home/testimonials';
 import { SecurityPrivacy } from '@/components/home/security-privacy';
 import { ByTheNumbers } from '@/components/home/by-the-numbers';
+import { WhatIsSugarRelationship } from '@/components/home/what-is-sugar-relationship';
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
         <Testimonials />
         <SecurityPrivacy />
         <ByTheNumbers />
+        <WhatIsSugarRelationship />
       </main>
       <Footer />
     </div>

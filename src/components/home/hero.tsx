@@ -14,10 +14,20 @@ export function Hero() {
           An exclusive platform for ambitious and attractive individuals
         </p>
         <div className="flex flex-col items-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-          <Button asChild size="lg" variant="secondary" className="w-52">
+          <Button
+            asChild
+            size="lg"
+            variant="secondary"
+            className="w-52 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+          >
             <Link href="/signup">I'm a Sugar Baby</Link>
           </Button>
-          <Button asChild size="lg" variant="secondary" className="w-52">
+          <Button
+            asChild
+            size="lg"
+            variant="secondary"
+            className="w-52 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+          >
             <Link href="/signup">I'm a Sugar Daddy</Link>
           </Button>
         </div>

@@ -58,7 +58,7 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
         <div className="flex flex-1 items-center justify-start">
           <Link href="/">
-            <span className="font-headline text-4xl font-bold text-primary">
+            <span className="font-headline text-3xl font-bold text-primary">
               SugarConnect
             </span>
           </Link>

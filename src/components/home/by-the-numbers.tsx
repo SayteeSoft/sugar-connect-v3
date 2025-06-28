@@ -3,7 +3,8 @@ import { CakeSlice, Users, HeartHandshake } from 'lucide-react';
 const stats = [
   {
     icon: CakeSlice,
-    line1: 'Average Sugar Baby Age: 23',
+    line1: 'Average Sugar Baby',
+    line2: 'Age: 23',
   },
   {
     icon: Users,

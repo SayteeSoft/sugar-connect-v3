@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bell, Heart, CreditCard, User, LogOut, Settings } from "lucide-react";
+import { ThemeSwitcher } from "../theme-switcher";
 
 export function Header() {
   return (
@@ -101,6 +102,7 @@ export function Header() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <ThemeSwitcher />
         </div>
       </div>
     </header>

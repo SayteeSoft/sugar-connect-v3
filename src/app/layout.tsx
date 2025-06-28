@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import './globals.css';
 import { Playfair_Display, Roboto } from 'next/font/google';
 import { cn } from '@/lib/utils';
+import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
   title: 'SugarConnect',
@@ -29,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
           'font-body antialiased',
@@ -37,8 +38,15 @@ export default function RootLayout({
           fontBody.variable
         )}
       >
-        {children}
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

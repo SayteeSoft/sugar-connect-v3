@@ -18,6 +18,21 @@ export type Profile = {
   };
 };
 
+export type Message = {
+  id: number;
+  senderId: number; // Corresponds to a Profile ID
+  text: string;
+  timestamp: string; // ISO string for simplicity
+};
+
+export type Conversation = {
+  id: number;
+  participant: Profile;
+  messages: Message[];
+  unreadCount: number;
+};
+
+
 export const featuredProfiles: Profile[] = [
   {
     id: 1,
@@ -165,6 +180,53 @@ export const featuredProfiles: Profile[] = [
 
 const PROFILES_STORAGE_KEY = 'sugarconnect_profiles';
 
+const now = new Date();
+const getTimestamp = (minutesAgo: number) => new Date(now.getTime() - minutesAgo * 60 * 1000).toISOString();
+
+
+const conversationsData: Conversation[] = [
+    {
+        id: 1,
+        participant: featuredProfiles.find(p => p.id === 1)!,
+        unreadCount: 2,
+        messages: [
+            { id: 1, senderId: 1, text: 'Hey there! Loved your profile, especially your taste in art.', timestamp: getTimestamp(120) },
+            { id: 2, senderId: 2, text: 'Thank you, Jessica. I appreciate that. You have a wonderful smile.', timestamp: getTimestamp(115) },
+            { id: 3, senderId: 1, text: 'Aww, thanks! You seem like a really interesting person. What are you up to this weekend?', timestamp: getTimestamp(10) },
+            { id: 4, senderId: 1, text: 'Let me know if you might be free for a drink.', timestamp: getTimestamp(9) },
+        ]
+    },
+    {
+        id: 2,
+        participant: featuredProfiles.find(p => p.id === 3)!,
+        unreadCount: 0,
+        messages: [
+            { id: 1, senderId: 2, text: 'Good morning, Sophie. I hope you have a great day.', timestamp: getTimestamp(1440) },
+            { id: 2, senderId: 3, text: 'Morning! You too. Thanks for the message :)', timestamp: getTimestamp(1430) },
+            { id: 3, senderId: 2, text: 'Any plans for the upcoming week?', timestamp: getTimestamp(900) },
+            { id: 4, senderId: 3, text: 'Not yet! Still trying to figure things out. You?', timestamp: getTimestamp(895) },
+        ]
+    },
+     {
+        id: 3,
+        participant: featuredProfiles.find(p => p.id === 5)!,
+        unreadCount: 0,
+        messages: [
+            { id: 1, senderId: 5, text: 'Your profile mentioned you enjoy fine dining. Any favorite spots?', timestamp: getTimestamp(2880) },
+            { id: 2, senderId: 2, text: 'Absolutely. There\'s a fantastic French place downtown I could recommend. Perhaps I could take you sometime.', timestamp: getTimestamp(2870) },
+        ]
+    },
+    {
+        id: 4,
+        participant: featuredProfiles.find(p => p.id === 7)!,
+        unreadCount: 1,
+        messages: [
+            { id: 1, senderId: 7, text: 'Hi! I saw you\'re a travel partner. What\'s the most amazing place you\'ve visited?', timestamp: getTimestamp(5) },
+        ]
+    },
+];
+
+
 /**
  * Retrieves profiles from localStorage. If not present, seeds localStorage with initial data.
  * This function should only be called on the client side for dynamic data.
@@ -229,4 +291,18 @@ export const updateProfile = (updatedProfile: Profile): boolean => {
     console.error('Failed to update profile in localStorage:', error);
     return false;
   }
+};
+
+/**
+ * Retrieves all conversations. In a real app, this would be for the logged-in user.
+ * @returns {Conversation[]} An array of conversation objects.
+ */
+export const getConversations = (): Conversation[] => {
+    // In a real app, you'd fetch this from an API. For now, we return static data.
+    // Sorting by the most recent message
+    return conversationsData.sort((a, b) => {
+        const lastMessageA = new Date(a.messages[a.messages.length - 1].timestamp).getTime();
+        const lastMessageB = new Date(b.messages[b.messages.length - 1].timestamp).getTime();
+        return lastMessageB - lastMessageA;
+    });
 };

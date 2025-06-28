@@ -1,13 +1,327 @@
+
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { getProfile, updateProfile, type Profile } from '@/lib/data';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import {
+  BadgeCheck,
+  Pencil,
+  Gift,
+  Heart,
+  MoreHorizontal,
+  Flag,
+  Mail,
+  Camera,
+} from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { useToast } from "@/hooks/use-toast";
+
+
+const ProfileView = ({ profile, onEdit }: { profile: Profile; onEdit: () => void }) => (
+  <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+    {/* Left Column */}
+    <div className="w-full lg:w-1/3 space-y-6">
+      <Card className="overflow-hidden shadow-lg">
+        <div className="relative">
+          <Image
+            src={profile.imageUrl}
+            alt={`Profile of ${profile.name}`}
+            width={600}
+            height={400}
+            className="w-full object-cover aspect-[3/2]"
+          />
+          {profile.verified && (
+            <Badge className="absolute top-4 left-4 border-2 border-white/50 bg-primary text-primary-foreground">
+              <BadgeCheck className="mr-1 h-4 w-4" />
+              Verified
+            </Badge>
+          )}
+        </div>
+        <CardContent className="p-6 space-y-4">
+          <div>
+            <h1 className="text-3xl font-bold font-headline">{profile.name}</h1>
+            <p className="text-muted-foreground text-lg">{profile.age}, {profile.location}</p>
+          </div>
+          <div className="flex flex-col space-y-2">
+            <Button size="lg"><Mail className="mr-2" /> Message</Button>
+            <Button variant="secondary" onClick={onEdit}><Pencil className="mr-2" /> Edit Profile</Button>
+            <Button variant="secondary"><Gift className="mr-2" /> Send a Gift</Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+
+    {/* Right Column */}
+    <div className="w-full lg:w-2/3 space-y-6">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>About {profile.name}</CardTitle>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon"><Heart className="h-5 w-5 text-muted-foreground" /></Button>
+            <Button variant="ghost" size="icon"><MoreHorizontal className="h-5 w-5 text-muted-foreground" /></Button>
+            <Button variant="ghost" size="icon"><Flag className="h-5 w-5 text-muted-foreground" /></Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">{profile.bio}</p>
+        </CardContent>
+      </Card>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>Wants & Interests</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <h3 className="font-semibold mb-2 text-sm">Wants</h3>
+            <div className="flex flex-wrap gap-2">
+              {profile.wants?.map(item => <Badge key={item} variant="secondary" className="rounded-full px-3 py-1">{item}</Badge>)}
+            </div>
+          </div>
+          <div>
+            <h3 className="font-semibold mb-2 text-sm">Interests</h3>
+            <div className="flex flex-wrap gap-2">
+              {profile.interests?.map(item => <Badge key={item} variant="secondary" className="rounded-full px-3 py-1">{item}</Badge>)}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>Gallery</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {profile.gallery?.map((img, i) => (
+            <div key={i} className="relative aspect-video">
+              <Image src={img} alt={`Gallery image ${i + 1}`} fill className="rounded-md object-cover" />
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Attributes</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+            {profile.attributes && Object.entries(profile.attributes).map(([key, value]) => (
+              <React.Fragment key={key}>
+                <dt className="font-medium text-foreground">{key}</dt>
+                <dd className="text-muted-foreground">{value}</dd>
+              </React.Fragment>
+            ))}
+          </dl>
+        </CardContent>
+      </Card>
+    </div>
+  </div>
+);
+
+const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: (p: Profile) => void; onCancel: () => void }) => {
+    const [editedProfile, setEditedProfile] = useState(profile);
+    
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setEditedProfile(prev => ({...prev, [name]: value}));
+    };
+
+    const handleAttributeChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
+        const { value } = e.target;
+        setEditedProfile(prev => ({
+            ...prev,
+            attributes: { ...prev.attributes, [key]: value }
+        }));
+    };
+
+    const handleSave = () => {
+        onSave(editedProfile);
+    };
+
+    return (
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+            <div className="w-full lg:w-1/3 space-y-6">
+                <Card className="overflow-hidden shadow-lg">
+                    <div className="relative group">
+                        <Image
+                            src={editedProfile.imageUrl}
+                            alt={`Profile of ${editedProfile.name}`}
+                            width={600}
+                            height={400}
+                            className="w-full object-cover aspect-[3/2]"
+                        />
+                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button variant="secondary"><Camera className="mr-2" />Change Photo</Button>
+                        </div>
+                    </div>
+                    <CardContent className="p-6 space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="name">Name</Label>
+                            <Input id="name" name="name" value={editedProfile.name} onChange={handleChange} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="age">Age</Label>
+                            <Input id="age" name="age" type="number" value={editedProfile.age} onChange={handleChange} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="location">Location</Label>
+                            <Input id="location" name="location" value={editedProfile.location} onChange={handleChange} />
+                        </div>
+                        <div className="flex space-x-2 pt-4">
+                            <Button size="lg" className="flex-1" onClick={handleSave}>Save Profile</Button>
+                            <Button size="lg" variant="outline" className="flex-1" onClick={onCancel}>Cancel</Button>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            <div className="w-full lg:w-2/3 space-y-6">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>About {profile.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Textarea 
+                            name="bio"
+                            value={editedProfile.bio} 
+                            onChange={handleChange}
+                            className="min-h-[120px]" 
+                            placeholder="Tell us about yourself..."
+                        />
+                    </CardContent>
+                </Card>
+                
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Wants & Interests</CardTitle>
+                        <CardDescription>Separate tags with a comma.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div>
+                            <Label htmlFor="wants">Wants</Label>
+                            <Input 
+                                id="wants"
+                                name="wants"
+                                value={editedProfile.wants?.join(', ')} 
+                                onChange={(e) => setEditedProfile(prev => ({...prev, wants: e.target.value.split(',').map(s => s.trim())}))}
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="interests">Interests</Label>
+                            <Input 
+                                id="interests"
+                                name="interests"
+                                value={editedProfile.interests?.join(', ')} 
+                                onChange={(e) => setEditedProfile(prev => ({...prev, interests: e.target.value.split(',').map(s => s.trim())}))}
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+                
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Gallery</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        {editedProfile.gallery?.map((img, i) => (
+                            <div key={i} className="relative aspect-video group">
+                                <Image src={img} alt={`Gallery image ${i + 1}`} fill className="rounded-md object-cover" />
+                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Button size="sm" variant="destructive">Remove</Button>
+                                </div>
+                            </div>
+                        ))}
+                        <div className="relative aspect-video border-2 border-dashed rounded-md flex items-center justify-center text-muted-foreground hover:bg-accent hover:border-primary transition">
+                            <Button variant="ghost"><Camera className="mr-2 h-4 w-4" />Add Photo</Button>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Attributes</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <dl className="grid grid-cols-2 gap-x-4 gap-y-4">
+                            {editedProfile.attributes && Object.entries(editedProfile.attributes).map(([key, value]) => (
+                                <div key={key} className="space-y-1">
+                                    <Label htmlFor={`attr-${key}`}>{key}</Label>
+                                    <Input id={`attr-${key}`} value={value} onChange={(e) => handleAttributeChange(e, key)} />
+                                </div>
+                            ))}
+                        </dl>
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
+    );
+};
 
 export default function ProfilePage() {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [profileData, setProfileData] = useState<Profile | undefined>();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Using a static profile for now. In a real app, this would come from auth.
+    setProfileData(getProfile(2));
+  }, []);
+
+  if (!profileData) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-grow container mx-auto p-4 md:p-6 text-center">
+          <p className="text-muted-foreground">Loading profile...</p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+  
+  const handleSaveProfile = (updatedProfile: Profile) => {
+    const success = updateProfile(updatedProfile);
+    if (success) {
+      setProfileData(updatedProfile);
+      setIsEditMode(false);
+      toast({
+        title: "Profile Saved",
+        description: "Your changes have been saved successfully.",
+      })
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to save your profile. Please try again.",
+      })
+    }
+  }
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-secondary">
       <Header />
       <main className="flex-grow container mx-auto p-4 md:p-6">
-        <h1 className="font-headline text-4xl">Profile</h1>
-        <p className="mt-4 text-muted-foreground">Your profile page content goes here.</p>
+        {isEditMode ? (
+          <ProfileEdit 
+            profile={profileData} 
+            onSave={handleSaveProfile} 
+            onCancel={() => setIsEditMode(false)} 
+          />
+        ) : (
+          <ProfileView 
+            profile={profileData} 
+            onEdit={() => setIsEditMode(true)} 
+          />
+        )}
       </main>
       <Footer />
     </div>

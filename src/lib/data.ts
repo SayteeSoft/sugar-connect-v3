@@ -8,6 +8,14 @@ export type Profile = {
   role: 'baby' | 'daddy';
   online: boolean;
   hint: string;
+  verified?: boolean;
+  bio?: string;
+  wants?: string[];
+  interests?: string[];
+  gallery?: string[];
+  attributes?: {
+    [key: string]: string;
+  };
 };
 
 export const featuredProfiles: Profile[] = [
@@ -23,13 +31,35 @@ export const featuredProfiles: Profile[] = [
   },
   {
     id: 2,
-    name: 'David',
-    age: 45,
-    location: 'Manchester, UK',
+    name: 'saytee.software',
+    age: 49,
+    location: 'London, UK',
     imageUrl: 'https://placehold.co/600x400',
     hint: 'portrait man',
     role: 'daddy',
     online: false,
+    verified: true,
+    bio: "I'm a successful entrepreneur with a passion for the finer things in life. I enjoy mentoring ambitious individuals and exploring the world. Looking for a genuine connection with someone who is intelligent, driven, and has a great sense of humor.",
+    wants: ['Mentorship', 'Discreet', 'Long-term', 'Travel Partner'],
+    interests: ['Art', 'Travel', 'Fine Dining', 'Theatre', 'Wine Tasting'],
+    gallery: [
+      'https://placehold.co/600x400',
+      'https://placehold.co/600x400',
+      'https://placehold.co/600x400',
+      'https://placehold.co/600x400',
+      'https://placehold.co/600x400',
+      'https://placehold.co/600x400',
+    ],
+    attributes: {
+      'Age': "49",
+      'Height': "6'1\"",
+      'Body Type': 'Athletic',
+      'Ethnicity': 'Caucasian',
+      'Hair Color': 'Brown',
+      'Eye Color': 'Blue',
+      'Piercings': 'None',
+      'Tattoos': 'Sleeve on left arm',
+    },
   },
   {
     id: 3,

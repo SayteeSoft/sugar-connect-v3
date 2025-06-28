@@ -13,7 +13,6 @@ import { Footer } from '@/components/layout/footer';
 import {
   BadgeCheck,
   Pencil,
-  Heart,
   MoreHorizontal,
   Flag,
   Mail,
@@ -65,7 +64,6 @@ const ProfileView = ({ profile, onEdit }: { profile: Profile; onEdit: () => void
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>About {profile.name}</CardTitle>
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon"><Heart className="h-5 w-5 text-muted-foreground" /></Button>
             <Button variant="ghost" size="icon"><MoreHorizontal className="h-5 w-5 text-muted-foreground" /></Button>
             <Button variant="ghost" size="icon"><Flag className="h-5 w-5 text-muted-foreground" /></Button>
           </div>

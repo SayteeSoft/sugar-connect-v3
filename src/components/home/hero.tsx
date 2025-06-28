@@ -1,19 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 
 export function Hero() {
   return (
-    <section className="relative h-[70vh] w-full text-white">
-      <Image
-        src="https://web-developer.one/imgs/sugar-daddy-002.jpg"
-        alt="A stylish couple in an urban setting"
-        data-ai-hint="couple city"
-        fill
-        className="object-cover"
-        priority
-      />
+    <section className="relative h-screen w-full bg-hero-bg bg-cover bg-center bg-fixed text-white">
       <div className="absolute inset-0 bg-black/50" />
       <div className="relative z-10 flex h-full flex-col items-center justify-center space-y-6 px-4 text-center">
         <h1 className="font-headline text-7xl font-bold tracking-tight md:text-9xl">

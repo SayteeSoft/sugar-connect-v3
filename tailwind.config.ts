@@ -14,6 +14,9 @@ export default {
         headline: ['var(--font-headline)', 'serif'],
         code: ['monospace'],
       },
+      backgroundImage: {
+        'hero-bg': "url('https://web-developer.one/imgs/sugar-daddy-002.jpg')",
+      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

@@ -21,7 +21,7 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Column 1: Logo & Name */}
           <div className="space-y-4">
-            <Link href="/" className="font-headline text-3xl font-bold text-primary">
+            <Link href="/" className="font-headline text-2xl font-bold text-primary">
               SugarConnect
             </Link>
             <p className="text-sm text-muted-foreground">

@@ -1,7 +1,9 @@
+
 'use client';
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { Heart } from 'lucide-react';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -21,7 +23,8 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8 text-center">
           {/* Column 1: Logo & Name */}
           <div className="space-y-4">
-            <Link href="/" className="font-headline text-xl font-bold text-primary inline-block">
+            <Link href="/" className="font-headline text-xl font-bold text-primary inline-flex items-center gap-2 justify-center">
+              <Heart className="h-5 w-5" />
               SugarConnect
             </Link>
             <p className="text-sm text-muted-foreground">

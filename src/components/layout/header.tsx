@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, LogOut, Settings, LogIn, Coins } from "lucide-react";
+import { User, LogOut, Settings, LogIn, Coins, Heart } from "lucide-react";
 import { ThemeSwitcher } from "../theme-switcher";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -68,7 +68,8 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
       <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
         <div className="flex flex-1 items-center justify-start">
-          <Link href="/">
+          <Link href="/" className="flex items-center gap-2">
+            <Heart className="h-5 w-5 text-primary" />
             <span className="font-headline text-lg font-bold text-primary">
               SugarConnect
             </span>
@@ -104,7 +105,7 @@ export function Header() {
           {isLoggedIn && profile?.role === 'daddy' && (
             <Button size="sm">
               Buy Credits
-              <Badge variant="secondary" className="rounded-full px-2">{credits}</Badge>
+              <Badge variant="secondary" className="ml-2 rounded-full px-2">{credits}</Badge>
             </Button>
           )}
           {isLoggedIn && profile?.role === 'baby' && (

@@ -21,7 +21,7 @@ import { AlertCircle } from "lucide-react";
 
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
@@ -30,7 +30,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
-    if (email === "saytee.software" && password === "12345") {
+    if (username === "saytee.software" && password === "12345") {
       // In a real app, you'd get a token from your API
       // For this demo, we'll use localStorage to simulate a session
       localStorage.setItem("isLoggedIn", "true");
@@ -64,14 +64,14 @@ export default function LoginPage() {
                 </Alert>
               )}
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="username">Username</Label>
                 <Input
-                  id="email"
-                  type="email"
+                  id="username"
+                  type="text"
                   placeholder="saytee.software"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
               <div className="space-y-2">

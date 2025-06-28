@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, LogOut, Settings, LogIn, Coin } from "lucide-react";
+import { User, LogOut, Settings, LogIn, Coins } from "lucide-react";
 import { ThemeSwitcher } from "../theme-switcher";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -96,7 +96,7 @@ export function Header() {
         <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
           {isLoggedIn && (
             <Button>
-              <Coin className="mr-2 h-4 w-4" />
+              <Coins className="mr-2 h-4 w-4" />
               Buy Credits
               <Badge variant="secondary" className="ml-2 rounded-full px-2">{credits}</Badge>
             </Button>

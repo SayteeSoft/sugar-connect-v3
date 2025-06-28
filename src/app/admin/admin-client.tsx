@@ -87,7 +87,9 @@ export function AdminClient({ initialProfiles }: { initialProfiles: Profile[] })
                       <TableCell className="font-medium">
                         <div className="flex items-center gap-2">
                           {profile.name}
-                          {profile.role === 'daddy' ? (
+                           {profile.id === 1 ? (
+                            <Badge>Admin</Badge>
+                          ) : profile.role === 'daddy' ? (
                             <Badge variant="secondary">Daddy</Badge>
                           ) : (
                             <Badge variant="outline">Baby</Badge>
@@ -111,7 +113,7 @@ export function AdminClient({ initialProfiles }: { initialProfiles: Profile[] })
                           </Button>
                           <AlertDialog>
                               <AlertDialogTrigger asChild>
-                                  <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                                  <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" disabled={profile.id === 1}>
                                     <Trash2 className="h-4 w-4" />
                                     <span className="sr-only">Delete</span>
                                   </Button>

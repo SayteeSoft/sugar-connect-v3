@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
 import { Toaster } from "@/components/ui/toaster";
 import './globals.css';
-import { Cormorant_Garamond, Lato } from 'next/font/google';
+import { Cormorant_Garamond, Lato, Great_Vibes } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
@@ -23,6 +23,12 @@ const fontBody = Lato({
   style: ['normal', 'italic'],
 });
 
+const fontLogo = Great_Vibes({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-logo',
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,7 +40,8 @@ export default function RootLayout({
         className={cn(
           'font-body antialiased',
           fontHeadline.variable,
-          fontBody.variable
+          fontBody.variable,
+          fontLogo.variable
         )}
       >
         {children}

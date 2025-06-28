@@ -16,7 +16,7 @@ export function Hero() {
       />
       <div className="absolute inset-0 bg-black/50" />
       <div className="relative z-10 flex h-full flex-col items-center justify-center space-y-6 px-4 text-center">
-        <h1 className="font-headline text-5xl font-bold tracking-tight md:text-7xl">
+        <h1 className="font-logo text-7xl font-normal tracking-tight md:text-9xl">
           Sugar Connect
         </h1>
         <p className="max-w-2xl text-lg text-gray-200 md:text-xl">

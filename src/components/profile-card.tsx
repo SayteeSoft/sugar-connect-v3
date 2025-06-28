@@ -36,7 +36,7 @@ export function ProfileCard({ profile, onRemove }: ProfileCardProps) {
   return (
     <Link href={`/profile/${profile.id}`} className="block">
       <Card className="group overflow-hidden rounded-lg shadow-lg transition-transform duration-300 ease-in-out hover:-translate-y-2">
-        <div className="relative aspect-[3/2] w-full">
+        <div className="relative aspect-[4/5] w-full">
           <Image
             src={profile.imageUrl}
             alt={`Profile of ${profile.name}`}

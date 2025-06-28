@@ -1,156 +1,69 @@
 'use client';
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { aiMatch, type AiMatchOutput } from '@/ai/flows/ai-match';
+import { useState, useEffect } from 'react';
+import type { Profile } from '@/lib/data';
+import { getProfiles } from '@/lib/data';
+import { ProfileCard } from '@/components/profile-card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Heart, Eye, Footprints } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Sparkles } from 'lucide-react';
-
-const formSchema = z.object({
-  profileDescription: z.string().min(50, {
-    message: 'Profile description must be at least 50 characters.',
-  }),
-  preferences: z.string().min(10, {
-    message: 'Preferences must be at least 10 characters.',
-  }),
-});
-
-export function AIMatchForm() {
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<AiMatchOutput | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      profileDescription: '',
-      preferences: '',
-    },
-  });
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setLoading(true);
-    setResult(null);
-    setError(null);
-    try {
-      const response = await aiMatch(values);
-      setResult(response);
-    } catch (e) {
-      setError('An error occurred while fetching matches. Please try again.');
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
+const ProfilesGrid = ({ profiles }: { profiles: Profile[] }) => {
+  if (profiles.length === 0) {
+    return (
+      <div className="text-center text-muted-foreground py-10">
+        No profiles to display.
+      </div>
+    );
   }
 
   return (
-    <div>
-      <Card>
-        <CardContent className="p-6">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="profileDescription"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Your Profile Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Describe yourself, your interests, lifestyle, and what makes you unique..."
-                        className="min-h-[120px]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Be detailed to get the best matches.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="preferences"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>What are you looking for?</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., age range 20-30, non-smoker, loves travel"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Specify your preferences for a potential match.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" disabled={loading} className="w-full">
-                {loading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Sparkles className="mr-2 h-4 w-4" />
-                )}
-                Find My AI Matches
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-
-      {loading && (
-        <div className="mt-8 text-center">
-          <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
-          <p className="mt-2 text-muted-foreground">
-            Our AI is finding your matches...
-          </p>
-        </div>
-      )}
-
-      {error && <p className="mt-8 text-center text-destructive">{error}</p>}
-
-      {result && (
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 font-headline text-2xl">
-              <Sparkles className="text-primary" />
-              Your AI Match Results
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div>
-              <h3 className="font-semibold mb-2">Suggested Matches:</h3>
-              <ul className="list-disc list-inside space-y-1 rounded-md border p-4 bg-secondary/50">
-                {result.suggestedMatches.map((match, index) => (
-                  <li key={index}>{match}</li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-2">Reasoning:</h3>
-              <p className="text-muted-foreground">{result.reasoning}</p>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+      {profiles.map((profile) => (
+        <ProfileCard key={profile.id} profile={profile} />
+      ))}
     </div>
+  );
+};
+
+export function MatchesTabs() {
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+
+  useEffect(() => {
+    // In a real app, this data would be fetched based on the logged-in user
+    // For this demo, we'll use the static data
+    setProfiles(getProfiles());
+  }, []);
+
+  // Mock data for each tab
+  const favorites = profiles.slice(0, 4);
+  const visitors = profiles.slice(4, 8);
+  const viewed = profiles.slice(8, 12);
+
+  return (
+    <Tabs defaultValue="favorites" className="w-full">
+      <TabsList className="grid w-full grid-cols-3">
+        <TabsTrigger value="favorites">
+          <Heart className="mr-2 h-4 w-4" />
+          Favorites
+        </TabsTrigger>
+        <TabsTrigger value="visitors">
+          <Footprints className="mr-2 h-4 w-4" />
+          Visitors
+        </TabsTrigger>
+        <TabsTrigger value="viewed">
+          <Eye className="mr-2 h-4 w-4" />
+          Viewed
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="favorites" className="mt-6">
+        <ProfilesGrid profiles={favorites} />
+      </TabsContent>
+      <TabsContent value="visitors" className="mt-6">
+        <ProfilesGrid profiles={visitors} />
+      </TabsContent>
+      <TabsContent value="viewed" className="mt-6">
+        <ProfilesGrid profiles={viewed} />
+      </TabsContent>
+    </Tabs>
   );
 }

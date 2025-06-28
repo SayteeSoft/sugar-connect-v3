@@ -77,7 +77,7 @@ export function Header() {
             href="/ai-match"
             className="text-foreground/60 transition-colors hover:text-foreground"
           >
-            AI Match
+            Matches
           </Link>
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">

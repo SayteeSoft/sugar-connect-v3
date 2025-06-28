@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
 import { Toaster } from "@/components/ui/toaster";
 import './globals.css';
-import { Alegreya } from 'next/font/google';
+import { Inter, Playfair_Display } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 
@@ -10,12 +10,17 @@ export const metadata: Metadata = {
   description: 'An exclusive platform for ambitious and attractive individuals',
 };
 
-const fontAlegreya = Alegreya({
+const fontInter = Inter({
   subsets: ['latin'],
-  variable: '--font-alegreya',
-  weight: ['400', '500', '700', '800', '900'],
-  style: ['normal', 'italic'],
+  variable: '--font-inter',
 });
+
+const fontPlayfairDisplay = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair-display',
+  weight: ['400', '500', '600', '700', '800', '900'],
+});
+
 
 export default function RootLayout({
   children,
@@ -27,7 +32,8 @@ export default function RootLayout({
       <body
         className={cn(
           'font-body antialiased',
-          fontAlegreya.variable
+          fontInter.variable,
+          fontPlayfairDisplay.variable
         )}
       >
         <ThemeProvider

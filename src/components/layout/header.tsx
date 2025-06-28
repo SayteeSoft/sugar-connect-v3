@@ -15,9 +15,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, LogOut, Settings, LogIn } from "lucide-react";
 import { ThemeSwitcher } from "../theme-switcher";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
@@ -29,7 +31,7 @@ export function Header() {
             </span>
           </Link>
         </div>
-        <nav className="hidden items-center justify-center space-x-6 text-base font-medium md:flex">
+        <nav className="hidden items-center justify-center space-x-6 text-lg font-medium md:flex">
           <Link
             href="/profile"
             className="text-foreground/60 transition-colors hover:text-foreground"
@@ -99,7 +101,7 @@ export function Header() {
                   </DropdownMenuItem>
                 </>
               ) : (
-                <DropdownMenuItem onClick={() => setIsLoggedIn(true)}>
+                <DropdownMenuItem onSelect={() => router.push('/login')}>
                   <LogIn className="mr-2 h-4 w-4" />
                   <span>Log In</span>
                 </DropdownMenuItem>

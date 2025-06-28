@@ -6,8 +6,10 @@ import { getProfiles } from '@/lib/data';
 import { ProfileCard } from '@/components/profile-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Heart, Eye, Footprints } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
-const ProfilesGrid = ({ profiles }: { profiles: Profile[] }) => {
+
+const ProfilesGrid = ({ profiles, onRemove }: { profiles: Profile[]; onRemove: (profileId: number) => void; }) => {
   if (profiles.length === 0) {
     return (
       <div className="text-center text-muted-foreground py-10">
@@ -19,25 +21,46 @@ const ProfilesGrid = ({ profiles }: { profiles: Profile[] }) => {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
       {profiles.map((profile) => (
-        <ProfileCard key={profile.id} profile={profile} />
+        <ProfileCard key={profile.id} profile={profile} onRemove={onRemove} />
       ))}
     </div>
   );
 };
 
 export function MatchesTabs() {
-  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const { toast } = useToast();
+  const [favorites, setFavorites] = useState<Profile[]>([]);
+  const [visitors, setVisitors] = useState<Profile[]>([]);
+  const [viewed, setViewed] = useState<Profile[]>([]);
 
   useEffect(() => {
     // In a real app, this data would be fetched based on the logged-in user
     // For this demo, we'll use the static data
-    setProfiles(getProfiles());
+    const allProfiles = getProfiles();
+    setFavorites(allProfiles.slice(0, 4));
+    setVisitors(allProfiles.slice(4, 8));
+    setViewed(allProfiles.slice(8, 12));
   }, []);
+  
+  const handleRemove = (profileId: number, listType: 'favorites' | 'visitors' | 'viewed') => {
+    let profileName = '';
+    
+    if (listType === 'favorites') {
+      profileName = favorites.find(p => p.id === profileId)?.name || 'Profile';
+      setFavorites(prev => prev.filter(p => p.id !== profileId));
+    } else if (listType === 'visitors') {
+      profileName = visitors.find(p => p.id === profileId)?.name || 'Profile';
+      setVisitors(prev => prev.filter(p => p.id !== profileId));
+    } else if (listType === 'viewed') {
+      profileName = viewed.find(p => p.id === profileId)?.name || 'Profile';
+      setViewed(prev => prev.filter(p => p.id !== profileId));
+    }
 
-  // Mock data for each tab
-  const favorites = profiles.slice(0, 4);
-  const visitors = profiles.slice(4, 8);
-  const viewed = profiles.slice(8, 12);
+    toast({
+      title: "Profile Removed",
+      description: `${profileName} has been removed from your ${listType} list.`,
+    });
+  };
 
   return (
     <Tabs defaultValue="favorites" className="w-full">
@@ -56,13 +79,13 @@ export function MatchesTabs() {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="favorites" className="mt-6">
-        <ProfilesGrid profiles={favorites} />
+        <ProfilesGrid profiles={favorites} onRemove={(id) => handleRemove(id, 'favorites')} />
       </TabsContent>
       <TabsContent value="visitors" className="mt-6">
-        <ProfilesGrid profiles={visitors} />
+        <ProfilesGrid profiles={visitors} onRemove={(id) => handleRemove(id, 'visitors')} />
       </TabsContent>
       <TabsContent value="viewed" className="mt-6">
-        <ProfilesGrid profiles={viewed} />
+        <ProfilesGrid profiles={viewed} onRemove={(id) => handleRemove(id, 'viewed')} />
       </TabsContent>
     </Tabs>
   );

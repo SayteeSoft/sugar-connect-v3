@@ -3,13 +3,62 @@
 import { useState, useEffect } from 'react';
 import type { Profile } from '@/lib/data';
 import { getProfiles } from '@/lib/data';
-import { ProfileCard } from '@/components/profile-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Heart, Eye, Footprints } from 'lucide-react';
+import { Heart, Eye, Footprints, MessageSquare, Trash2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from 'next/navigation';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+
+const ProfileListItem = ({ profile, onRemove }: { profile: Profile; onRemove: (profileId: number) => void; }) => {
+  const router = useRouter();
+
+  const handleChat = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    router.push('/messages');
+  };
+
+  const handleRemoveClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onRemove(profile.id);
+  };
+  
+  return (
+    <Card className="w-full hover:bg-muted/50 transition-colors">
+      <CardContent className="flex items-center p-4 gap-4">
+        <Avatar className="h-16 w-16 border">
+          <AvatarImage src={profile.imageUrl} alt={profile.name} data-ai-hint={profile.hint} />
+          <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
+        </Avatar>
+        <div className="flex-grow">
+          <div className="flex items-center gap-2">
+            <h3 className="font-semibold text-lg">
+                {profile.name}, {profile.age}
+            </h3>
+             {profile.online && (
+              <div className="h-2.5 w-2.5 rounded-full bg-green-500" />
+            )}
+          </div>
+          <p className="text-sm text-muted-foreground">{profile.location}</p>
+        </div>
+        <div className="flex items-center gap-2">
+           <Button variant="outline" size="sm" onClick={handleChat}>
+            <MessageSquare className="mr-2 h-4 w-4" />
+            Chat
+          </Button>
+          <Button variant="ghost" size="icon" onClick={handleRemoveClick} className="text-muted-foreground hover:text-destructive">
+            <Trash2 className="h-4 w-4" />
+            <span className="sr-only">Remove</span>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 
-const ProfilesGrid = ({ profiles, onRemove }: { profiles: Profile[]; onRemove: (profileId: number) => void; }) => {
+const ProfilesList = ({ profiles, onRemove }: { profiles: Profile[]; onRemove: (profileId: number) => void; }) => {
   if (profiles.length === 0) {
     return (
       <div className="text-center text-muted-foreground py-10">
@@ -19,9 +68,9 @@ const ProfilesGrid = ({ profiles, onRemove }: { profiles: Profile[]; onRemove: (
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+    <div className="space-y-3 max-w-3xl mx-auto">
       {profiles.map((profile) => (
-        <ProfileCard key={profile.id} profile={profile} onRemove={onRemove} />
+        <ProfileListItem key={profile.id} profile={profile} onRemove={onRemove} />
       ))}
     </div>
   );
@@ -64,7 +113,7 @@ export function MatchesTabs() {
 
   return (
     <Tabs defaultValue="favorites" className="w-full">
-      <TabsList className="grid w-full grid-cols-3">
+      <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto">
         <TabsTrigger value="favorites">
           <Heart className="mr-2 h-4 w-4" />
           Favorites
@@ -79,13 +128,13 @@ export function MatchesTabs() {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="favorites" className="mt-6">
-        <ProfilesGrid profiles={favorites} onRemove={(id) => handleRemove(id, 'favorites')} />
+        <ProfilesList profiles={favorites} onRemove={(id) => handleRemove(id, 'favorites')} />
       </TabsContent>
       <TabsContent value="visitors" className="mt-6">
-        <ProfilesGrid profiles={visitors} onRemove={(id) => handleRemove(id, 'visitors')} />
+        <ProfilesList profiles={visitors} onRemove={(id) => handleRemove(id, 'visitors')} />
       </TabsContent>
       <TabsContent value="viewed" className="mt-6">
-        <ProfilesGrid profiles={viewed} onRemove={(id) => handleRemove(id, 'viewed')} />
+        <ProfilesList profiles={viewed} onRemove={(id) => handleRemove(id, 'viewed')} />
       </TabsContent>
     </Tabs>
   );

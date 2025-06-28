@@ -12,16 +12,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, LogOut, Settings, LogIn } from "lucide-react";
+import { User, LogOut, Settings, LogIn, Coin } from "lucide-react";
 import { ThemeSwitcher } from "../theme-switcher";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { Profile } from "@/lib/data";
 import { getProfile } from "@/lib/data";
+import { Badge } from "@/components/ui/badge";
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [profile, setProfile] = useState<Profile | undefined>();
+  const [credits, setCredits] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
@@ -33,6 +35,7 @@ export function Header() {
         // In a real app, you'd get the user ID from the session/token.
         // For this demo, we'll use the static ID for the admin user.
         setProfile(getProfile(2));
+        setCredits(150); // Mock credits
       }
     }
   }, []);
@@ -41,6 +44,7 @@ export function Header() {
     localStorage.removeItem("isLoggedIn");
     setIsLoggedIn(false);
     setProfile(undefined);
+    setCredits(0);
     router.push("/login");
   };
 
@@ -58,7 +62,7 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
         <div className="flex flex-1 items-center justify-start">
           <Link href="/">
-            <span className="font-headline text-2xl font-bold text-primary">
+            <span className="font-headline text-xl font-bold text-primary">
               SugarConnect
             </span>
           </Link>
@@ -90,9 +94,13 @@ export function Header() {
           </Link>
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
-          <Button>
-            Buy Credits
-          </Button>
+          {isLoggedIn && (
+            <Button>
+              <Coin className="mr-2 h-4 w-4" />
+              Buy Credits
+              <Badge variant="secondary" className="ml-2 rounded-full px-2">{credits}</Badge>
+            </Button>
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">

@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bell, Heart, User, LogOut, Settings } from "lucide-react";
+import { User, LogOut, Settings } from "lucide-react";
 import { ThemeSwitcher } from "../theme-switcher";
 
 export function Header() {
@@ -55,14 +55,6 @@ export function Header() {
         <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
           <Button>
             Buy Credits
-          </Button>
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-            <Bell className="h-5 w-5" />
-            <span className="sr-only">Notifications</span>
-          </Button>
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-            <Heart className="h-5 w-5" />
-            <span className="sr-only">Favorites</span>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

@@ -21,7 +21,7 @@ import { AlertCircle } from "lucide-react";
 
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
@@ -30,13 +30,13 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
-    if (username === "saytee.software" && password === "12345") {
+    if (email === "saytee.software@gmail.com" && password === "admin") {
       // In a real app, you'd get a token from your API
       // For this demo, we'll use localStorage to simulate a session
       localStorage.setItem("isLoggedIn", "true");
       router.push("/profile");
     } else {
-      setError("Invalid username or password.");
+      setError("Invalid email or password.");
     }
   };
 
@@ -64,14 +64,14 @@ export default function LoginPage() {
                 </Alert>
               )}
               <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="email">Email Address</Label>
                 <Input
-                  id="username"
-                  type="text"
-                  placeholder="saytee.software"
+                  id="email"
+                  type="email"
+                  placeholder="saytee.software@gmail.com"
                   required
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
@@ -82,7 +82,7 @@ export default function LoginPage() {
                   required 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="12345"
+                  placeholder="admin"
                 />
               </div>
               <Button type="submit" className="w-full">

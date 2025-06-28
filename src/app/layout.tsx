@@ -1,11 +1,25 @@
 import type {Metadata} from 'next';
 import { Toaster } from "@/components/ui/toaster";
 import './globals.css';
+import { Playfair_Display, Roboto } from 'next/font/google';
+import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
   title: 'SugarConnect',
   description: 'An exclusive platform for ambitious and attractive individuals',
 };
+
+const fontHeadline = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-headline',
+  weight: ['400', '700'],
+});
+
+const fontBody = Roboto({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-body',
+});
 
 export default function RootLayout({
   children,
@@ -14,12 +28,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&display=swap" rel="stylesheet" />
-      </head>
-      <body className="font-body antialiased">
+      <body
+        className={cn(
+          'font-body antialiased',
+          fontHeadline.variable,
+          fontBody.variable
+        )}
+      >
         {children}
         <Toaster />
       </body>

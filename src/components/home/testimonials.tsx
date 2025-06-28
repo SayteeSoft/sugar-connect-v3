@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Star } from "lucide-react";
 
 const testimonials = [
   {
@@ -35,7 +36,14 @@ export function Testimonials() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {testimonials.map((testimonial, index) => (
             <Card key={index} className="flex flex-col">
-              <CardContent className="flex flex-col items-center text-center p-6 flex-grow">
+              <CardContent className="flex flex-col p-6 flex-grow">
+                <div className="flex gap-0.5 mb-2">
+                    <Star className="w-5 h-5 text-primary fill-primary" />
+                    <Star className="w-5 h-5 text-primary fill-primary" />
+                    <Star className="w-5 h-5 text-primary fill-primary" />
+                    <Star className="w-5 h-5 text-primary fill-primary" />
+                    <Star className="w-5 h-5 text-primary fill-primary" />
+                </div>
                 <p className="text-muted-foreground italic mb-4">"{testimonial.quote}"</p>
                 <div className="flex items-center mt-auto">
                   <Avatar className="h-12 w-12 mr-4">

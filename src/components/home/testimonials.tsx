@@ -1,6 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const testimonials = [
   {
@@ -24,41 +31,69 @@ const testimonials = [
     avatar: "https://placehold.co/100x100",
     hint: "woman face"
   },
+  {
+    quote: "The quality of profiles on this site is unmatched. I've made meaningful connections that have enriched my life in every aspect.",
+    name: "Michael",
+    role: "Sugar Daddy",
+    avatar: "https://placehold.co/100x100",
+    hint: "man profile"
+  },
+  {
+    quote: "Finding someone who understands my ambition and lifestyle was easy with SugarConnect. It's a game-changer for successful dating.",
+    name: "Isabella",
+    role: "Sugar Baby",
+    avatar: "https://placehold.co/100x100",
+    hint: "woman smile"
+  },
 ];
 
 export function Testimonials() {
   return (
     <section className="bg-secondary py-12 md:py-20">
       <div className="container mx-auto px-4 md:px-6">
-        <h2 className="mb-8 text-center font-headline text-3xl font-bold text-primary md:text-4xl">
+        <h2 className="mb-12 text-center font-headline text-3xl font-bold text-primary md:text-4xl">
           What Our Members Say
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-          {testimonials.map((testimonial, index) => (
-            <Card key={index} className="flex flex-col">
-              <CardContent className="flex flex-col p-6 flex-grow">
-                <div className="flex gap-0.5 mb-2">
-                    <Star className="w-5 h-5 text-primary fill-primary" />
-                    <Star className="w-5 h-5 text-primary fill-primary" />
-                    <Star className="w-5 h-5 text-primary fill-primary" />
-                    <Star className="w-5 h-5 text-primary fill-primary" />
-                    <Star className="w-5 h-5 text-primary fill-primary" />
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full max-w-sm sm:max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto"
+        >
+          <CarouselContent className="-ml-4">
+            {testimonials.map((testimonial, index) => (
+              <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                <div className="p-1 h-full">
+                  <Card className="flex flex-col h-full">
+                    <CardContent className="flex flex-col p-6 flex-grow">
+                      <div className="flex gap-0.5 mb-2">
+                          <Star className="w-5 h-5 text-primary fill-primary" />
+                          <Star className="w-5 h-5 text-primary fill-primary" />
+                          <Star className="w-5 h-5 text-primary fill-primary" />
+                          <Star className="w-5 h-5 text-primary fill-primary" />
+                          <Star className="w-5 h-5 text-primary fill-primary" />
+                      </div>
+                      <p className="text-muted-foreground italic mb-4 flex-grow">"{testimonial.quote}"</p>
+                      <div className="flex items-center mt-auto">
+                        <Avatar className="h-12 w-12 mr-4">
+                          <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.hint} alt={testimonial.name} />
+                          <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-semibold">{testimonial.name}</p>
+                          <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
-                <p className="text-muted-foreground italic mb-4">"{testimonial.quote}"</p>
-                <div className="flex items-center mt-auto">
-                  <Avatar className="h-12 w-12 mr-4">
-                    <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.hint} alt={testimonial.name} />
-                    <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </div>
     </section>
   );

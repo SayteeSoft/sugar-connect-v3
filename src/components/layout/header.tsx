@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -11,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bell, Heart, CreditCard, User, LogOut, Settings } from "lucide-react";
+import { Bell, Heart, Diamond, User, LogOut, Settings } from "lucide-react";
 import { ThemeSwitcher } from "../theme-switcher";
 
 export function Header() {
@@ -53,7 +54,7 @@ export function Header() {
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
           <Button>
-            <CreditCard className="mr-2 h-4 w-4" />
+            <Diamond className="mr-2 h-4 w-4" />
             Buy Credits
           </Button>
           <Button variant="ghost" size="icon" className="hidden md:inline-flex">

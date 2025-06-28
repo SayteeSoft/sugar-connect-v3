@@ -17,12 +17,14 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
       <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
-        <Link href="/" className="mr-6 flex items-center space-x-2">
-          <span className="font-headline text-4xl font-bold text-primary">
-            SugarConnect
-          </span>
-        </Link>
-        <nav className="hidden flex-1 items-center justify-center space-x-6 text-sm font-medium md:flex">
+        <div className="flex flex-1 items-center justify-start">
+          <Link href="/" className="flex items-center space-x-2">
+            <span className="font-headline text-4xl font-bold text-primary">
+              SugarConnect
+            </span>
+          </Link>
+        </div>
+        <nav className="hidden items-center justify-center space-x-6 text-sm font-medium md:flex">
           <Link
             href="/profile"
             className="text-foreground/60 transition-colors hover:text-foreground"
@@ -65,7 +67,11 @@ export function Header() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="https://placehold.co/100x100" data-ai-hint="person" alt="@user" />
+                  <AvatarImage
+                    src="https://placehold.co/100x100"
+                    data-ai-hint="person"
+                    alt="@user"
+                  />
                   <AvatarFallback>U</AvatarFallback>
                 </Avatar>
               </Button>

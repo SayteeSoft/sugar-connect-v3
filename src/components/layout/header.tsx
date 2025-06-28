@@ -34,7 +34,7 @@ export function Header() {
       if (loggedInStatus) {
         // In a real app, you'd get the user ID from the session/token.
         // For this demo, we'll use the static ID for the admin user.
-        const userProfile = getProfile(2);
+        const userProfile = getProfile(1);
         setProfile(userProfile);
         if (userProfile) {
           if (userProfile.role === 'daddy') {

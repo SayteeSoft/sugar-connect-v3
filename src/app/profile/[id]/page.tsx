@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -326,7 +327,7 @@ export default function ProfilePage() {
       router.replace('/login');
     } else {
       // For demo, hardcoding logged in user ID
-      setLoggedInUserId(2); 
+      setLoggedInUserId(1); 
       setProfileData(getProfile(profileId));
       setIsLoading(false);
     }

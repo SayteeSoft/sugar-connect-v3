@@ -36,16 +36,6 @@ export type Conversation = {
 export const featuredProfiles: Profile[] = [
   {
     id: 1,
-    name: 'Jessica',
-    age: 24,
-    location: 'London, UK',
-    imageUrl: 'https://placehold.co/600x400',
-    hint: 'portrait woman',
-    role: 'baby',
-    online: true,
-  },
-  {
-    id: 2,
     name: 'saytee.software',
     age: 49,
     location: 'London, UK',
@@ -75,6 +65,16 @@ export const featuredProfiles: Profile[] = [
       'Piercings': 'None',
       'Tattoos': 'Sleeve on left arm',
     },
+  },
+  {
+    id: 2,
+    name: 'Jessica',
+    age: 24,
+    location: 'London, UK',
+    imageUrl: 'https://placehold.co/600x400',
+    hint: 'portrait woman',
+    role: 'baby',
+    online: true,
   },
   {
     id: 3,
@@ -187,13 +187,13 @@ const getTimestamp = (minutesAgo: number) => new Date(now.getTime() - minutesAgo
 const conversationsData: Conversation[] = [
     {
         id: 1,
-        participant: featuredProfiles.find(p => p.id === 1)!,
+        participant: featuredProfiles.find(p => p.id === 2)!,
         unreadCount: 2,
         messages: [
-            { id: 1, senderId: 1, text: 'Hey there! Loved your profile, especially your taste in art.', timestamp: getTimestamp(120) },
-            { id: 2, senderId: 2, text: 'Thank you, Jessica. I appreciate that. You have a wonderful smile.', timestamp: getTimestamp(115) },
-            { id: 3, senderId: 1, text: 'Aww, thanks! You seem like a really interesting person. What are you up to this weekend?', timestamp: getTimestamp(10) },
-            { id: 4, senderId: 1, text: 'Let me know if you might be free for a drink.', timestamp: getTimestamp(9) },
+            { id: 1, senderId: 2, text: 'Hey there! Loved your profile, especially your taste in art.', timestamp: getTimestamp(120) },
+            { id: 2, senderId: 1, text: 'Thank you, Jessica. I appreciate that. You have a wonderful smile.', timestamp: getTimestamp(115) },
+            { id: 3, senderId: 2, text: 'Aww, thanks! You seem like a really interesting person. What are you up to this weekend?', timestamp: getTimestamp(10) },
+            { id: 4, senderId: 2, text: 'Let me know if you might be free for a drink.', timestamp: getTimestamp(9) },
         ]
     },
     {
@@ -201,9 +201,9 @@ const conversationsData: Conversation[] = [
         participant: featuredProfiles.find(p => p.id === 3)!,
         unreadCount: 0,
         messages: [
-            { id: 1, senderId: 2, text: 'Good morning, Sophie. I hope you have a great day.', timestamp: getTimestamp(1440) },
+            { id: 1, senderId: 1, text: 'Good morning, Sophie. I hope you have a great day.', timestamp: getTimestamp(1440) },
             { id: 2, senderId: 3, text: 'Morning! You too. Thanks for the message :)', timestamp: getTimestamp(1430) },
-            { id: 3, senderId: 2, text: 'Any plans for the upcoming week?', timestamp: getTimestamp(900) },
+            { id: 3, senderId: 1, text: 'Any plans for the upcoming week?', timestamp: getTimestamp(900) },
             { id: 4, senderId: 3, text: 'Not yet! Still trying to figure things out. You?', timestamp: getTimestamp(895) },
         ]
     },
@@ -213,7 +213,7 @@ const conversationsData: Conversation[] = [
         unreadCount: 0,
         messages: [
             { id: 1, senderId: 5, text: 'Your profile mentioned you enjoy fine dining. Any favorite spots?', timestamp: getTimestamp(2880) },
-            { id: 2, senderId: 2, text: 'Absolutely. There\'s a fantastic French place downtown I could recommend. Perhaps I could take you sometime.', timestamp: getTimestamp(2870) },
+            { id: 2, senderId: 1, text: 'Absolutely. There\'s a fantastic French place downtown I could recommend. Perhaps I could take you sometime.', timestamp: getTimestamp(2870) },
         ]
     },
     {

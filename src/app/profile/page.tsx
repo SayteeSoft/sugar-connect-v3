@@ -12,8 +12,8 @@ export default function ProfileRedirectPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // In a real app, get the user's ID from session. For now, hardcode to 2.
-    const loggedInUserId = 2;
+    // In a real app, get the user's ID from session. For now, hardcode to 1.
+    const loggedInUserId = 1;
     router.replace(`/profile/${loggedInUserId}`);
   }, [router]);
 

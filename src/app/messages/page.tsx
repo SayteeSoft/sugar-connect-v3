@@ -5,8 +5,8 @@ import { getConversations } from '@/lib/data';
 
 export default function MessagesPage() {
   const conversations = getConversations();
-  // Assume current user is the one with id 2 ('saytee.software')
-  const currentUser = { id: 2, name: 'saytee.software' };
+  // Assume current user is the one with id 1 ('saytee.software')
+  const currentUser = { id: 1, name: 'saytee.software' };
 
   return (
     <div className="flex flex-col h-screen bg-secondary">

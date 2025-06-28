@@ -3,6 +3,7 @@ import { Hero } from '@/components/home/hero';
 import { FeaturedProfiles } from '@/components/home/featured-profiles';
 import { Footer } from '@/components/layout/footer';
 import { Testimonials } from '@/components/home/testimonials';
+import { SecurityPrivacy } from '@/components/home/security-privacy';
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
         <Hero />
         <FeaturedProfiles />
         <Testimonials />
+        <SecurityPrivacy />
       </main>
       <Footer />
     </div>

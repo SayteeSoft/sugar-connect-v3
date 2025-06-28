@@ -14,12 +14,35 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, LogOut, Settings, LogIn } from "lucide-react";
 import { ThemeSwitcher } from "../theme-switcher";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    // Check login status from localStorage on component mount
+    if (typeof window !== 'undefined') {
+      const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
+      setIsLoggedIn(loggedInStatus);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    setIsLoggedIn(false);
+    router.push("/login");
+  };
+
+  const handleLogin = () => {
+    router.push("/login");
+  };
+  
+  const handleProfile = () => {
+    router.push("/profile");
+  };
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
@@ -79,14 +102,14 @@ export function Header() {
                 <>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">User</p>
+                      <p className="text-sm font-medium leading-none">saytee.software</p>
                       <p className="text-xs leading-none text-muted-foreground">
                         user@example.com
                       </p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onSelect={handleProfile}>
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>
@@ -95,13 +118,13 @@ export function Header() {
                     <span>Settings</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
+                  <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
                 </>
               ) : (
-                <DropdownMenuItem onSelect={() => router.push('/login')}>
+                <DropdownMenuItem onSelect={handleLogin}>
                   <LogIn className="mr-2 h-4 w-4" />
                   <span>Log In</span>
                 </DropdownMenuItem>

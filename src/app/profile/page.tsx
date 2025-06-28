@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { getProfile, updateProfile, type Profile } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -18,6 +19,7 @@ import {
   Flag,
   Mail,
   Camera,
+  Loader2,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -269,14 +271,36 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
 export default function ProfilePage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [profileData, setProfileData] = useState<Profile | undefined>();
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
-    // Using a static profile for now. In a real app, this would come from auth.
-    setProfileData(getProfile(2));
-  }, []);
+    const isLoggedIn = typeof window !== 'undefined' && localStorage.getItem('isLoggedIn') === 'true';
+    if (!isLoggedIn) {
+      router.replace('/login');
+    } else {
+      // Using a static profile for now. In a real app, this would come from auth.
+      setProfileData(getProfile(2));
+      setIsLoading(false);
+    }
+  }, [router]);
+
+  if (isLoading) {
+    return (
+     <div className="flex flex-col min-h-screen">
+       <Header />
+       <main className="flex-grow container mx-auto p-4 md:p-6 flex justify-center items-center">
+         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+       </main>
+       <Footer />
+     </div>
+   );
+ }
 
   if (!profileData) {
+    // This case will be hit briefly if the user is not logged in, before redirect.
+    // Or if the profile doesn't exist.
     return (
       <div className="flex flex-col min-h-screen">
         <Header />

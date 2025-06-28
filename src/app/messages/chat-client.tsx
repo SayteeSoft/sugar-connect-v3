@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -85,7 +86,7 @@ export function ChatClient({ initialConversations, currentUser }: ChatClientProp
 
 
   return (
-    <div className="flex h-full bg-background border-t">
+    <div className="flex h-full w-full bg-background">
       {/* Left Pane: Conversation List */}
       <aside className="w-full md:w-1/3 lg:w-1/4 h-full flex flex-col border-r">
         <div className="p-4 border-b">

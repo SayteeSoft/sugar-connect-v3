@@ -4,6 +4,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
+import { CookiePolicyModal } from '../cookie-policy-modal';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -47,7 +48,7 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">Policies</h3>
             <ul className="space-y-2">
-              <li><Link href="/cookie-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Cookie Policy</Link></li>
+              <li><CookiePolicyModal /></li>
               <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link></li>
               <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Use</Link></li>
             </ul>

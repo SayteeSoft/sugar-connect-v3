@@ -20,10 +20,10 @@ export function Footer() {
   return (
     <footer className="w-full border-t bg-card text-card-foreground">
       <div className="container mx-auto px-4 md:px-6 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8 text-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8 text-center sm:text-left">
           {/* Column 1: Logo & Name */}
-          <div className="space-y-4">
-            <Link href="/" className="font-headline text-xl font-bold text-primary inline-flex items-center gap-2 justify-center">
+          <div className="space-y-4 text-center">
+            <Link href="/" className="font-headline text-lg font-bold text-primary inline-flex items-center gap-2 justify-center">
               <Heart className="h-5 w-5" />
               SugarConnect
             </Link>
@@ -33,7 +33,7 @@ export function Footer() {
           </div>
 
           {/* Column 2: Site */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-center">
             <h3 className="font-semibold text-lg">Site</h3>
             <ul className="space-y-2">
               <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">About Us</Link></li>
@@ -43,7 +43,7 @@ export function Footer() {
           </div>
 
           {/* Column 3: Policies */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-center">
             <h3 className="font-semibold text-lg">Policies</h3>
             <ul className="space-y-2">
               <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Cookie Policy</Link></li>
@@ -53,13 +53,13 @@ export function Footer() {
           </div>
 
           {/* Column 4: Help */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-center">
             <h3 className="font-semibold text-lg">Help</h3>
             <ul className="space-y-2">
               <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact Us</Link></li>
               <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Sitemap</Link></li>
               {isLoggedIn && (
-                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Admin</Link></li>
+                <li><Link href="/admin" className="text-sm text-muted-foreground hover:text-primary transition-colors">Admin</Link></li>
               )}
             </ul>
           </div>

@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
 import { Toaster } from "@/components/ui/toaster";
 import './globals.css';
-import { Playfair_Display, Roboto } from 'next/font/google';
+import { Cormorant_Garamond, Lato } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
@@ -9,16 +9,18 @@ export const metadata: Metadata = {
   description: 'An exclusive platform for ambitious and attractive individuals',
 };
 
-const fontHeadline = Playfair_Display({
+const fontHeadline = Cormorant_Garamond({
   subsets: ['latin'],
   variable: '--font-headline',
   weight: ['400', '700'],
+  style: ['normal', 'italic'],
 });
 
-const fontBody = Roboto({
+const fontBody = Lato({
   subsets: ['latin'],
-  weight: ['400', '500', '700'],
+  weight: ['300', '400', '700'],
   variable: '--font-body',
+  style: ['normal', 'italic'],
 });
 
 export default function RootLayout({

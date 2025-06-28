@@ -8,8 +8,8 @@ export function FeaturedProfiles() {
         <h2 className="mb-8 text-center font-headline text-3xl font-bold text-primary md:text-4xl">
           Featured Profiles
         </h2>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6 lg:grid-cols-4">
-          {featuredProfiles.map((profile) => (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          {featuredProfiles.slice(0, 4).map((profile) => (
             <ProfileCard key={profile.id} profile={profile} />
           ))}
         </div>

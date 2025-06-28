@@ -26,7 +26,7 @@ export function Header() {
             </span>
           </Link>
         </div>
-        <nav className="hidden items-center justify-center space-x-6 text-sm font-medium md:flex">
+        <nav className="hidden items-center justify-center space-x-6 text-base font-medium md:flex">
           <Link
             href="/profile"
             className="text-foreground/60 transition-colors hover:text-foreground"

@@ -4,6 +4,7 @@ import { FeaturedProfiles } from '@/components/home/featured-profiles';
 import { Footer } from '@/components/layout/footer';
 import { Testimonials } from '@/components/home/testimonials';
 import { SecurityPrivacy } from '@/components/home/security-privacy';
+import { ByTheNumbers } from '@/components/home/by-the-numbers';
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
         <FeaturedProfiles />
         <Testimonials />
         <SecurityPrivacy />
+        <ByTheNumbers />
       </main>
       <Footer />
     </div>

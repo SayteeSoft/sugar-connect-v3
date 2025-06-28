@@ -113,7 +113,7 @@ export function MatchesTabs() {
 
   return (
     <Tabs defaultValue="favorites" className="w-full">
-      <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto">
+      <TabsList className="grid w-full lg:w-1/3 grid-cols-3 mx-auto">
         <TabsTrigger value="favorites">
           <Heart className="mr-2 h-4 w-4" />
           Favorites

@@ -30,7 +30,7 @@ const ProfileView = ({ profile, onEdit }: { profile: Profile; onEdit: () => void
     {/* Left Column */}
     <div className="w-full lg:w-1/3 space-y-6">
       <Card className="overflow-hidden shadow-lg">
-        <div className="relative">
+        <div className="relative group">
           <Image
             src={profile.imageUrl}
             alt={`Profile of ${profile.name}`}
@@ -44,6 +44,9 @@ const ProfileView = ({ profile, onEdit }: { profile: Profile; onEdit: () => void
               Verified
             </Badge>
           )}
+           <Button variant="secondary" size="icon" className="absolute bottom-4 right-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" onClick={onEdit}>
+            <Pencil className="h-4 w-4" />
+          </Button>
         </div>
         <CardContent className="p-6 space-y-4">
           <div>
@@ -186,7 +189,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
             <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
                 <div className="w-full lg:w-1/3 space-y-6">
                     <Card className="overflow-hidden shadow-lg">
-                        <div className="relative group">
+                        <div className="relative">
                             <Image
                                 src={editedProfile.imageUrl}
                                 alt={`Profile of ${editedProfile.name}`}
@@ -194,9 +197,9 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                                 height={400}
                                 className="w-full object-cover aspect-[3/2]"
                             />
-                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <Button variant="secondary" onClick={() => profileImageInputRef.current?.click()}><Camera className="mr-2" />Change Photo</Button>
-                            </div>
+                            <Button variant="secondary" size="icon" className="absolute bottom-4 right-4 rounded-full" onClick={() => profileImageInputRef.current?.click()}>
+                                <Camera className="h-4 w-4" />
+                            </Button>
                         </div>
                         <CardContent className="p-6 space-y-4">
                             <div className="space-y-2">

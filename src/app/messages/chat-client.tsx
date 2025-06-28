@@ -47,6 +47,11 @@ export function ChatClient({ initialConversations, currentUser }: ChatClientProp
   );
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const selectedConversation = conversations.find(
     (c) => c.id === selectedConversationId
@@ -116,7 +121,7 @@ export function ChatClient({ initialConversations, currentUser }: ChatClientProp
                 <div className="flex justify-between items-center">
                   <h3 className="font-semibold truncate">{convo.participant.name}</h3>
                   <p className="text-xs text-muted-foreground whitespace-nowrap">
-                    {formatTimestamp(convo.messages[convo.messages.length - 1].timestamp)}
+                    {isClient ? formatTimestamp(convo.messages[convo.messages.length - 1].timestamp) : null}
                   </p>
                 </div>
                 <div className="flex justify-between items-start">
@@ -156,7 +161,7 @@ export function ChatClient({ initialConversations, currentUser }: ChatClientProp
               <div>
                 <h2 className="font-semibold text-lg">{selectedConversation.participant.name}</h2>
                 <p className="text-xs text-muted-foreground">
-                  {selectedConversation.participant.online ? 'Online' : `Last seen ${formatTimestamp(new Date(Date.now() - 1000 * 60 * 15).toISOString())}`}
+                  {selectedConversation.participant.online ? 'Online' : `Last seen ${isClient ? formatTimestamp(new Date(Date.now() - 1000 * 60 * 15).toISOString()) : 'recently'}`}
                 </p>
               </div>
               <div className="ml-auto flex items-center gap-2">

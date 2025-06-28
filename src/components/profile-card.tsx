@@ -9,7 +9,7 @@ interface ProfileCardProps {
 export function ProfileCard({ profile }: ProfileCardProps) {
   return (
     <Card className="group overflow-hidden rounded-lg shadow-lg transition-transform duration-300 ease-in-out hover:-translate-y-2">
-      <div className="relative aspect-[2/3] w-full">
+      <div className="relative aspect-[3/2] w-full">
         <Image
           src={profile.imageUrl}
           alt={`Profile of ${profile.name}`}

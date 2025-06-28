@@ -41,8 +41,9 @@ export function ProfileCard({ profile, onRemove }: ProfileCardProps) {
             src={profile.imageUrl}
             alt={`Profile of ${profile.name}`}
             data-ai-hint={profile.hint}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            width={600}
+            height={400}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
           

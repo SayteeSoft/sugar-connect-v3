@@ -1,8 +1,9 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
 import type { Profile } from '@/lib/data';
-import { getProfiles } from '@/lib/data';
+import { getProfiles, getProfile } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Heart, Eye, Footprints, MessageSquare, Trash2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -11,8 +12,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 
-const ProfileListItem = ({ profile, onRemove }: { profile: Profile; onRemove: (profileId: number) => void; }) => {
+const ProfileListItem = ({ profile, onRemove, loggedInUser }: { profile: Profile; onRemove: (profileId: number) => void; loggedInUser?: Profile; }) => {
   const router = useRouter();
+  const canChat = loggedInUser && loggedInUser.role !== profile.role;
 
   const handleChat = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -43,10 +45,12 @@ const ProfileListItem = ({ profile, onRemove }: { profile: Profile; onRemove: (p
           <p className="text-sm text-muted-foreground">{profile.location}</p>
         </div>
         <div className="flex items-center gap-2">
-           <Button variant="outline" size="sm" onClick={handleChat}>
-            <MessageSquare className="mr-2 h-4 w-4" />
-            Chat
-          </Button>
+           {canChat && (
+            <Button variant="outline" size="sm" onClick={handleChat}>
+              <MessageSquare className="mr-2 h-4 w-4" />
+              Chat
+            </Button>
+           )}
           <Button variant="ghost" size="icon" onClick={handleRemoveClick} className="text-muted-foreground hover:text-destructive">
             <Trash2 className="h-4 w-4" />
             <span className="sr-only">Remove</span>
@@ -58,7 +62,7 @@ const ProfileListItem = ({ profile, onRemove }: { profile: Profile; onRemove: (p
 };
 
 
-const ProfilesList = ({ profiles, onRemove }: { profiles: Profile[]; onRemove: (profileId: number) => void; }) => {
+const ProfilesList = ({ profiles, onRemove, loggedInUser }: { profiles: Profile[]; onRemove: (profileId: number) => void; loggedInUser?: Profile; }) => {
   if (profiles.length === 0) {
     return (
       <div className="text-center text-muted-foreground py-10">
@@ -70,7 +74,7 @@ const ProfilesList = ({ profiles, onRemove }: { profiles: Profile[]; onRemove: (
   return (
     <div className="space-y-3 max-w-3xl mx-auto">
       {profiles.map((profile) => (
-        <ProfileListItem key={profile.id} profile={profile} onRemove={onRemove} />
+        <ProfileListItem key={profile.id} profile={profile} onRemove={onRemove} loggedInUser={loggedInUser} />
       ))}
     </div>
   );
@@ -81,6 +85,7 @@ export function MatchesTabs() {
   const [favorites, setFavorites] = useState<Profile[]>([]);
   const [visitors, setVisitors] = useState<Profile[]>([]);
   const [viewed, setViewed] = useState<Profile[]>([]);
+  const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>();
 
   useEffect(() => {
     // In a real app, this data would be fetched based on the logged-in user
@@ -89,6 +94,7 @@ export function MatchesTabs() {
     setFavorites(allProfiles.slice(0, 4));
     setVisitors(allProfiles.slice(4, 8));
     setViewed(allProfiles.slice(8, 12));
+    setLoggedInUser(getProfile(1));
   }, []);
   
   const handleRemove = (profileId: number, listType: 'favorites' | 'visitors' | 'viewed') => {
@@ -128,13 +134,13 @@ export function MatchesTabs() {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="favorites" className="mt-6">
-        <ProfilesList profiles={favorites} onRemove={(id) => handleRemove(id, 'favorites')} />
+        <ProfilesList profiles={favorites} onRemove={(id) => handleRemove(id, 'favorites')} loggedInUser={loggedInUser} />
       </TabsContent>
       <TabsContent value="visitors" className="mt-6">
-        <ProfilesList profiles={visitors} onRemove={(id) => handleRemove(id, 'visitors')} />
+        <ProfilesList profiles={visitors} onRemove={(id) => handleRemove(id, 'visitors')} loggedInUser={loggedInUser} />
       </TabsContent>
       <TabsContent value="viewed" className="mt-6">
-        <ProfilesList profiles={viewed} onRemove={(id) => handleRemove(id, 'viewed')} />
+        <ProfilesList profiles={viewed} onRemove={(id) => handleRemove(id, 'viewed')} loggedInUser={loggedInUser} />
       </TabsContent>
     </Tabs>
   );

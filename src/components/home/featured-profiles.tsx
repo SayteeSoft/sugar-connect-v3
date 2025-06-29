@@ -1,18 +1,21 @@
+
 'use client';
 
 import { useState, useEffect } from "react";
 import type { Profile } from "@/lib/data";
-import { getProfiles } from "@/lib/data";
+import { getProfiles, getProfile } from "@/lib/data";
 import { ProfileCard } from "@/components/profile-card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function FeaturedProfiles() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>();
 
   useEffect(() => {
     // Get profiles from client-side storage to reflect any updates
     const allProfiles = getProfiles();
     setProfiles(allProfiles);
+    setLoggedInUser(getProfile(1));
   }, []);
 
   const displayedProfiles = profiles.slice(0, 4);
@@ -26,7 +29,7 @@ export function FeaturedProfiles() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {displayedProfiles.length > 0 ? (
             displayedProfiles.map((profile) => (
-              <ProfileCard key={profile.id} profile={profile} />
+              <ProfileCard key={profile.id} profile={profile} loggedInUser={loggedInUser} />
             ))
           ) : (
             Array.from({ length: 4 }).map((_, index) => (

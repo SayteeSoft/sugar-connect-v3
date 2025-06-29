@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -32,7 +33,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavorite, onReport, onBlock }: { 
+const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavorite, onReport, onBlock, loggedInUser }: { 
   profile: Profile; 
   onEdit: () => void; 
   isOwnProfile: boolean; 
@@ -41,7 +42,11 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
   onFavorite: (profileName: string) => void;
   onReport: (profileName: string) => void;
   onBlock: (profileId: number, profileName: string) => void;
-}) => (
+  loggedInUser?: Profile;
+}) => {
+    const canMessage = !isOwnProfile && loggedInUser && profile.role !== loggedInUser.role;
+
+    return (
   <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
     {/* Left Column */}
     <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-24">
@@ -77,7 +82,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
             </div>
           </div>
           <div className="flex flex-col space-y-2">
-            {!isOwnProfile && <Button size="lg" onClick={() => onMessage(profile.id)}><Mail className="mr-2" /> Message</Button>}
+            {canMessage && <Button size="lg" onClick={() => onMessage(profile.id)}><Mail className="mr-2" /> Message</Button>}
             {canEdit && <Button variant="secondary" onClick={onEdit}><Pencil className="mr-2" /> Edit Profile</Button>}
           </div>
         </CardContent>
@@ -103,17 +108,19 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
                     <p>Add to Favorites</p>
                   </TooltipContent>
                 </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" onClick={() => onMessage(profile.id)}>
-                      <MessageSquare className="h-5 w-5 text-muted-foreground" />
-                      <span className="sr-only">Send Message</span>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Send Message</p>
-                  </TooltipContent>
-                </Tooltip>
+                {canMessage && (
+                    <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="ghost" size="icon" onClick={() => onMessage(profile.id)}>
+                        <MessageSquare className="h-5 w-5 text-muted-foreground" />
+                        <span className="sr-only">Send Message</span>
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Send Message</p>
+                    </TooltipContent>
+                    </Tooltip>
+                )}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="icon" onClick={() => onReport(profile.name)}>
@@ -201,7 +208,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
       </Card>
     </div>
   </div>
-);
+)};
 
 const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: (p: Profile) => void; onCancel: () => void }) => {
     const [editedProfile, setEditedProfile] = useState(profile);
@@ -452,6 +459,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
+  const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>();
   const { toast } = useToast();
   const router = useRouter();
   const params = useParams<{ id: string }>();
@@ -470,6 +478,7 @@ export default function ProfilePage() {
     } else {
       // For demo, hardcoding logged in user ID
       setLoggedInUserId(1); 
+      setLoggedInUser(getProfile(1));
       setProfileData(getProfile(profileId));
       setIsLoading(false);
     }
@@ -565,6 +574,7 @@ export default function ProfilePage() {
             onFavorite={handleFavorite}
             onReport={handleReport}
             onBlock={handleBlock}
+            loggedInUser={loggedInUser}
           />
         )}
       </main>

@@ -3,7 +3,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import type { Profile } from '@/lib/data';
-import { getProfiles } from '@/lib/data';
+import { getProfiles, getProfile } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -46,9 +46,11 @@ export function SearchClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [uiFilters, setUiFilters] = useState(defaultFilters);
   const [appliedFilters, setAppliedFilters] = useState(defaultFilters);
+  const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>();
 
   useEffect(() => {
     setProfiles(getProfiles());
+    setLoggedInUser(getProfile(1));
     setIsLoading(false);
   }, []);
   
@@ -166,7 +168,7 @@ export function SearchClient() {
             {filteredProfiles.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                   {filteredProfiles.map(profile => (
-                    <ProfileCard key={profile.id} profile={profile} />
+                    <ProfileCard key={profile.id} profile={profile} loggedInUser={loggedInUser} />
                   ))}
                 </div>
             ) : (

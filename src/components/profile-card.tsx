@@ -18,13 +18,15 @@ import { useRouter } from "next/navigation";
 interface ProfileCardProps {
   profile: Profile;
   onRemove?: (profileId: number) => void;
+  loggedInUser?: Profile;
 }
 
-export function ProfileCard({ profile, onRemove }: ProfileCardProps) {
+export function ProfileCard({ profile, onRemove, loggedInUser }: ProfileCardProps) {
   const router = useRouter();
+  const canChat = loggedInUser && loggedInUser.role !== profile.role;
 
   const handleChat = () => {
-    router.push('/messages');
+    router.push(`/messages?chatWith=${profile.id}`);
   };
 
   const handleRemove = () => {
@@ -60,10 +62,12 @@ export function ProfileCard({ profile, onRemove }: ProfileCardProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onSelect={handleChat}>
-                  <MessageSquare className="mr-2 h-4 w-4" />
-                  <span>Chat</span>
-                </DropdownMenuItem>
+                {canChat && (
+                  <DropdownMenuItem onSelect={handleChat}>
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    <span>Chat</span>
+                  </DropdownMenuItem>
+                )}
                 {onRemove && (
                   <DropdownMenuItem onSelect={handleRemove} className="text-destructive focus:text-destructive focus:bg-destructive/10">
                     <Trash2 className="mr-2 h-4 w-4" />

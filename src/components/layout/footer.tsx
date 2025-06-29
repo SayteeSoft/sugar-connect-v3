@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
 import { CookiePolicyModal } from '../cookie-policy-modal';
 import { PrivacyPolicyModal } from '../privacy-policy-modal';
+import { TermsOfUseModal } from '../terms-of-use-modal';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -49,7 +50,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li><CookiePolicyModal /></li>
               <li><PrivacyPolicyModal /></li>
-              <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Use</Link></li>
+              <li><TermsOfUseModal /></li>
             </ul>
           </div>
 

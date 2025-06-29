@@ -58,13 +58,13 @@ export function SocialActivitySimulator() {
             };
 
             toast({
-                title: (
-                    <div className="flex items-center font-semibold">
+                title: randomActor.name,
+                description: (
+                    <div className="flex items-center">
                         {randomEvent.icon}
-                        <span>{randomActor.name}</span>
+                        <span className="ml-1">{`just ${randomEvent.text}!`}</span>
                     </div>
                 ),
-                description: `just ${randomEvent.text}!`,
                 action: (
                     <Button
                         variant="secondary"
@@ -91,3 +91,4 @@ export function SocialActivitySimulator() {
 
   return null;
 }
+

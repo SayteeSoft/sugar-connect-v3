@@ -4,7 +4,7 @@ import { ChatClient } from './chat-client';
 import { getConversations, getProfile } from '@/lib/data';
 
 type PageProps = {
-  params: { [key: string]: string | undefined };
+  params: { [key: string]: string | string[] | undefined };
   searchParams: { [key: string]: string | string[] | undefined };
 };
 

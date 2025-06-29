@@ -60,7 +60,7 @@ export default function SitemapPage() {
       <main className="flex-grow container mx-auto p-4 md:p-6">
         <Card>
           <CardHeader>
-            <CardTitle className="font-headline text-4xl text-primary">Sitemap</Title>
+            <CardTitle className="font-headline text-4xl text-primary">Sitemap</CardTitle>
             <p className="text-muted-foreground pt-2">Navigate through all the pages available on SugarConnect.</p>
           </CardHeader>
           <CardContent>

@@ -3,7 +3,7 @@ import { Header } from '@/components/layout/header';
 import { MatchesTabs } from './match-form';
 import { getProfiles, getProfile } from '@/lib/data';
 
-export default async function MatchesPage() {
+export default function MatchesPage() {
   const allProfiles = getProfiles();
   const currentUser = getProfile(1);
 

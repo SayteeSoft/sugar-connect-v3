@@ -390,45 +390,45 @@ export const featuredProfiles: Profile[] = [
 const PROFILES_STORAGE_KEY = 'sugarconnect_profiles';
 
 const rawConversationsData = [
-    {
-        id: 1,
-        participantId: 2,
-        unreadCount: 2,
-        messages: [
-            { id: 1, senderId: 2, text: 'Hey there! Loved your profile, especially your taste in art.', timestamp: '2024-07-28T10:00:00.000Z' },
-            { id: 2, senderId: 1, text: 'Thank you, Darianna. I appreciate that. You have a wonderful smile.', timestamp: '2024-07-28T10:05:00.000Z' },
-            { id: 3, senderId: 2, text: 'Aww, thanks! You seem like a really interesting person. What are you up to this weekend?', timestamp: '2024-07-28T11:20:00.000Z' },
-            { id: 4, senderId: 2, text: 'Let me know if you might be free for a drink.', timestamp: '2024-07-28T11:21:00.000Z' },
-        ]
-    },
-    {
-        id: 2,
-        participantId: 3,
-        unreadCount: 0,
-        messages: [
-            { id: 1, senderId: 1, text: 'Good morning, Kateryna. I hope you have a great day.', timestamp: '2024-07-27T09:00:00.000Z' },
-            { id: 2, senderId: 3, text: 'Morning! You too. Thanks for the message :)', timestamp: '2024-07-27T09:12:00.000Z' },
-            { id: 3, senderId: 1, text: 'Any plans for the upcoming week?', timestamp: '2024-07-27T18:30:00.000Z' },
-            { id: 4, senderId: 3, text: 'Not yet! Still trying to figure things out. You?', timestamp: '2024-07-27T18:35:00.000Z' },
-        ]
-    },
-     {
-        id: 3,
-        participantId: 5,
-        unreadCount: 0,
-        messages: [
-            { id: 1, senderId: 5, text: 'Your profile mentioned you enjoy fine dining. Any favorite spots?', timestamp: '2024-07-26T15:00:00.000Z' },
-            { id: 2, senderId: 1, text: 'Absolutely. There\'s a fantastic French place downtown I could recommend. Perhaps I could take you sometime.', timestamp: '2024-07-26T15:10:00.000Z' },
-        ]
-    },
-    {
-        id: 4,
-        participantId: 7,
-        unreadCount: 1,
-        messages: [
-            { id: 1, senderId: 7, text: 'Hi! I saw you\'re a travel partner. What\'s the most amazing place you\'ve visited?', timestamp: '2024-07-28T12:00:00.000Z' },
-        ]
-    },
+  {
+      id: 1,
+      participantId: 2,
+      unreadCount: 2,
+      messages: [
+          { id: 1, senderId: 2, text: 'Hey there! Loved your profile, especially your taste in art.', timestamp: '2024-07-28T10:00:00.000Z' },
+          { id: 2, senderId: 1, text: 'Thank you, Darianna. I appreciate that. You have a wonderful smile.', timestamp: '2024-07-28T10:05:00.000Z' },
+          { id: 3, senderId: 2, text: 'Aww, thanks! You seem like a really interesting person. What are you up to this weekend?', timestamp: '2024-07-28T11:20:00.000Z' },
+          { id: 4, senderId: 2, text: 'Let me know if you might be free for a drink.', timestamp: '2024-07-28T11:21:00.000Z' },
+      ]
+  },
+  {
+      id: 2,
+      participantId: 3,
+      unreadCount: 0,
+      messages: [
+          { id: 1, senderId: 1, text: 'Good morning, Kateryna. I hope you have a great day.', timestamp: '2024-07-27T09:00:00.000Z' },
+          { id: 2, senderId: 3, text: 'Morning! You too. Thanks for the message :)', timestamp: '2024-07-27T09:12:00.000Z' },
+          { id: 3, senderId: 1, text: 'Any plans for the upcoming week?', timestamp: '2024-07-27T18:30:00.000Z' },
+          { id: 4, senderId: 3, text: 'Not yet! Still trying to figure things out. You?', timestamp: '2024-07-27T18:35:00.000Z' },
+      ]
+  },
+   {
+      id: 3,
+      participantId: 5,
+      unreadCount: 0,
+      messages: [
+          { id: 1, senderId: 5, text: 'Your profile mentioned you enjoy fine dining. Any favorite spots?', timestamp: '2024-07-26T15:00:00.000Z' },
+          { id: 2, senderId: 1, text: 'Absolutely. There\'s a fantastic French place downtown I could recommend. Perhaps I could take you sometime.', timestamp: '2024-07-26T15:10:00.000Z' },
+      ]
+  },
+  {
+      id: 4,
+      participantId: 7,
+      unreadCount: 1,
+      messages: [
+          { id: 1, senderId: 7, text: 'Hi! I saw you\'re a travel partner. What\'s the most amazing place you\'ve visited?', timestamp: '2024-07-28T12:00:00.000Z' },
+      ]
+  },
 ];
 
 
@@ -559,5 +559,3 @@ export const getConversations = (): Conversation[] => {
         return lastMessageB - lastMessageA;
     });
 };
-
-    

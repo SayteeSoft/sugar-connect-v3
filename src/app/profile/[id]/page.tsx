@@ -156,12 +156,18 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit }: { profile: Prof
         <CardHeader>
           <CardTitle>Gallery</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {profile.gallery?.map((img, i) => (
-            <div key={i} className="relative aspect-video">
-              <Image src={img} alt={`Gallery image ${i + 1}`} fill className="rounded-md object-cover" />
+        <CardContent>
+          {profile.gallery && profile.gallery.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {profile.gallery.map((img, i) => (
+                <div key={i} className="relative aspect-square">
+                  <Image src={img} alt={`Gallery image ${i + 1}`} fill className="rounded-md object-cover" />
+                </div>
+              ))}
             </div>
-          ))}
+          ) : (
+            <p className="text-muted-foreground italic">This user hasn't added any photos to their gallery yet.</p>
+          )}
         </CardContent>
       </Card>
 
@@ -331,7 +337,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                         </CardHeader>
                         <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                             {editedProfile.gallery?.map((img, i) => (
-                                <div key={i} className="relative aspect-video group">
+                                <div key={i} className="relative aspect-square group">
                                     <Image src={img} alt={`Gallery image ${i + 1}`} fill className="rounded-md object-cover" />
                                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                         <Button size="sm" variant="destructive" onClick={() => handleRemoveGalleryImage(i)}>Remove</Button>
@@ -339,7 +345,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                                 </div>
                             ))}
                             {(editedProfile.gallery || []).length < 5 && (
-                              <div className="relative aspect-video border-2 border-dashed rounded-md flex items-center justify-center text-muted-foreground hover:bg-accent hover:border-primary transition">
+                              <div className="relative aspect-square border-2 border-dashed rounded-md flex items-center justify-center text-muted-foreground hover:bg-accent hover:border-primary transition">
                                   <Button variant="ghost" onClick={() => galleryImageInputRef.current?.click()}><Camera className="mr-2 h-4 w-4" />Add Photo</Button>
                               </div>
                             )}

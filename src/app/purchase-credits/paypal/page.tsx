@@ -64,7 +64,7 @@ export default function PayPalPaymentPage() {
       <main className="flex-grow container mx-auto p-4 md:p-6 flex items-center justify-center">
         <Card className="w-full max-w-md text-center">
           <CardHeader>
-            <p className="font-bold text-5xl text-blue-600 mx-auto"><i>PayPal</i></p>
+            <p className="font-bold text-5xl text-[#f5a3f5] mx-auto"><i>PayPal</i></p>
             <CardTitle className="font-headline text-2xl pt-4">Redirecting to PayPal</CardTitle>
             <CardDescription>
               You are purchasing {selectedPackage.credits} credits for £{selectedPackage.price}.00

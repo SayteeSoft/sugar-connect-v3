@@ -11,7 +11,7 @@ import { Heart, Footprints } from 'lucide-react';
 
 const socialEvents = [
     { type: 'favorite', text: 'favorited your profile', icon: <Heart className="mr-2 h-4 w-4 text-pink-500 fill-current" /> },
-    { type: 'visit', text: 'visited your profile', icon: <Footprints className="mr-2 h-4 w-4 text-blue-500" /> },
+    { type: 'visit', text: 'visited your profile', icon: <Footprints className="mr-2 h-4 w-4 text-[#f5a3f5]" /> },
 ];
 
 export function SocialActivitySimulator() {

@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -293,8 +294,11 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                     <Card className="overflow-hidden shadow-lg">
                         <div className="relative">
                             <img
+                                key={editedProfile.imageUrl}
                                 src={editedProfile.imageUrl ?? 'https://placehold.co/600x600'}
                                 alt={`Profile of ${editedProfile.name}`}
+                                width={600}
+                                height={600}
                                 className="w-full object-cover aspect-square"
                                 data-ai-hint={editedProfile.hint}
                             />
@@ -374,7 +378,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                         <CardContent>
                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                             {editedProfile.gallery?.map((img, i) => (
-                                <div key={i} className="relative aspect-square group">
+                                <div key={img || i} className="relative aspect-square group">
                                     <img src={img} alt={`Gallery image ${i + 1}`} className="w-full h-full rounded-md object-cover" />
                                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                         <Button size="sm" variant="destructive" onClick={() => handleRemoveGalleryImage(i)}>Remove</Button>

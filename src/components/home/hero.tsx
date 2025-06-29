@@ -6,7 +6,7 @@ export function Hero() {
   return (
     <section className="relative h-[664px] w-full bg-hero-bg bg-cover bg-center bg-fixed text-white">
       <div className="absolute inset-0 bg-black/50" />
-      <div className="relative z-10 flex h-full flex-col items-center justify-center space-y-4 px-4 text-center">
+      <div className="relative z-10 flex h-full flex-col items-center justify-center space-y-6 px-4 text-center">
         <h1 className="font-headline text-7xl font-bold tracking-tight md:text-9xl">
           Sugar Connect
         </h1>

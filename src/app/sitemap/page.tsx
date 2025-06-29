@@ -18,6 +18,7 @@ const sitemapLinks = {
     { href: "/purchase-credits", title: "Purchase Credits", description: "Buy credits to connect with others." },
   ],
   "Information & Legal": [
+    { href: "/about", title: "About Us", description: "Learn more about our mission and community." },
     { href: "/contact", title: "Contact Us", description: "Get in touch with our support team." },
     { href: "/cookie-policy", title: "Cookie Policy", description: "Our policy on cookies." },
     { href: "/sitemap", title: "Sitemap", description: "A map of all pages on the site." },

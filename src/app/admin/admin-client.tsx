@@ -169,17 +169,17 @@ export function AdminClient() {
                       <TableCell className="hidden lg:table-cell">{profile.location}</TableCell>
                       <TableCell>
                         <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="icon" onClick={() => handleView(profile.id)}>
+                          <Button variant="ghost" size="icon" onClick={() => handleView(profile.id)} className="hover:bg-transparent">
                             <Eye className="h-4 w-4" />
                             <span className="sr-only">View</span>
                           </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleEdit(profile.id)}>
+                          <Button variant="ghost" size="icon" onClick={() => handleEdit(profile.id)} className="hover:bg-transparent">
                             <Pencil className="h-4 w-4" />
                             <span className="sr-only">Edit</span>
                           </Button>
                           <AlertDialog>
                               <AlertDialogTrigger asChild>
-                                  <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" disabled={profile.id === 1}>
+                                  <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive hover:bg-transparent" disabled={profile.id === 1}>
                                     <Trash2 className="h-4 w-4" />
                                     <span className="sr-only">Delete</span>
                                   </Button>

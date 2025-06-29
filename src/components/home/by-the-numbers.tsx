@@ -1,3 +1,5 @@
+'use client';
+
 import { CakeSlice, Users, HeartHandshake } from 'lucide-react';
 
 const stats = [

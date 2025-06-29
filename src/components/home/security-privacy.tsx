@@ -1,3 +1,5 @@
+'use client';
+
 import { ShieldCheck, Lock, LifeBuoy } from 'lucide-react';
 
 const features = [

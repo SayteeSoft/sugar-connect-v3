@@ -1,3 +1,5 @@
+'use client';
+
 export function WhatIsSugarRelationship() {
   return (
     <section className="bg-background py-12 md:pt-12 md:pb-20">

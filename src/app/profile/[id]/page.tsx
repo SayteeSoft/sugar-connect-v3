@@ -1,9 +1,10 @@
+
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter, useParams } from 'next/navigation';
-import { getProfile, updateProfile, type Profile, wantsOptions, interestsOptions, attributeKeys, deleteProfile } from '@/lib/data';
+import { getProfile, updateProfile, type Profile, wantsOptions, interestsOptions, attributeKeys, deleteProfile, bodyTypeOptions, ethnicityOptions, hairColorOptions, eyeColorOptions } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -224,6 +225,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
     
     const wantsSelectOptions: MultiSelectOption[] = wantsOptions.map(o => ({ value: o, label: o }));
     const interestsSelectOptions: MultiSelectOption[] = interestsOptions.map(o => ({ value: o, label: o }));
+    const yesNoOptions: MultiSelectOption[] = [{value: 'Yes', label: 'Yes'}, {value: 'No', label: 'No'}];
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -344,12 +346,11 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
         }));
     };
 
-    const handleAttributeChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
-        const { value } = e.target;
-        setEditedProfile(prev => ({
-            ...prev,
-            attributes: { ...(prev.attributes || {}), [key]: value }
-        }));
+    const handleAttributeChange = (key: string, value: string) => {
+      setEditedProfile(prev => ({
+          ...prev,
+          attributes: { ...(prev.attributes || {}), [key]: value }
+      }));
     };
 
     const handleSave = () => {
@@ -486,12 +487,64 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                         </CardHeader>
                         <CardContent>
                             <dl className="grid grid-cols-2 gap-x-4 gap-y-4">
-                                {attributeKeys.map((key) => (
-                                    <div key={key} className="space-y-1">
-                                        <Label htmlFor={`attr-${key}`}>{key}</Label>
-                                        <Input id={`attr-${key}`} value={editedProfile.attributes?.[key] || ''} onChange={(e) => handleAttributeChange(e, key)} />
-                                    </div>
-                                ))}
+                                <div className="space-y-1">
+                                    <Label htmlFor="attr-Height">Height</Label>
+                                    <Input id="attr-Height" value={editedProfile.attributes?.['Height'] || ''} onChange={(e) => handleAttributeChange('Height', e.target.value)} />
+                                </div>
+                                <div className="space-y-1">
+                                    <Label htmlFor="attr-Body Type">Body Type</Label>
+                                    <Select onValueChange={(value) => handleAttributeChange('Body Type', value)} value={editedProfile.attributes?.['Body Type'] || ''}>
+                                        <SelectTrigger id="attr-Body Type"><SelectValue placeholder="Select..." /></SelectTrigger>
+                                        <SelectContent>
+                                            {bodyTypeOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-1">
+                                    <Label htmlFor="attr-Ethnicity">Ethnicity</Label>
+                                    <Select onValueChange={(value) => handleAttributeChange('Ethnicity', value)} value={editedProfile.attributes?.['Ethnicity'] || ''}>
+                                        <SelectTrigger id="attr-Ethnicity"><SelectValue placeholder="Select..." /></SelectTrigger>
+                                        <SelectContent>
+                                            {ethnicityOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-1">
+                                    <Label htmlFor="attr-Hair Color">Hair Color</Label>
+                                    <Select onValueChange={(value) => handleAttributeChange('Hair Color', value)} value={editedProfile.attributes?.['Hair Color'] || ''}>
+                                        <SelectTrigger id="attr-Hair Color"><SelectValue placeholder="Select..." /></SelectTrigger>
+                                        <SelectContent>
+                                            {hairColorOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-1">
+                                    <Label htmlFor="attr-Eye Color">Eye Color</Label>
+                                    <Select onValueChange={(value) => handleAttributeChange('Eye Color', value)} value={editedProfile.attributes?.['Eye Color'] || ''}>
+                                        <SelectTrigger id="attr-Eye Color"><SelectValue placeholder="Select..." /></SelectTrigger>
+                                        <SelectContent>
+                                            {eyeColorOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-1">
+                                    <Label htmlFor="attr-Piercings">Piercings</Label>
+                                    <Select onValueChange={(value) => handleAttributeChange('Piercings', value)} value={editedProfile.attributes?.['Piercings'] || ''}>
+                                        <SelectTrigger id="attr-Piercings"><SelectValue placeholder="Select..." /></SelectTrigger>
+                                        <SelectContent>
+                                            {yesNoOptions.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-1">
+                                    <Label htmlFor="attr-Tattoos">Tattoos</Label>
+                                    <Select onValueChange={(value) => handleAttributeChange('Tattoos', value)} value={editedProfile.attributes?.['Tattoos'] || ''}>
+                                        <SelectTrigger id="attr-Tattoos"><SelectValue placeholder="Select..." /></SelectTrigger>
+                                        <SelectContent>
+                                            {yesNoOptions.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </dl>
                         </CardContent>
                     </Card>

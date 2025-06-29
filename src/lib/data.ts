@@ -42,6 +42,12 @@ export const interestsOptions = [
   'Sports', 'Music', 'Movies', 'Reading', 'Cooking', 'Fitness'
 ];
 
+export const bodyTypeOptions = ['Slim', 'Athletic', 'Average', 'Curvy', 'A few extra pounds'];
+export const ethnicityOptions = ["Black/African Descent", "North/African Descent", "East Asian", "South Asian", "Hispanic/Latino", "Middle Eastern", "Native American/Indigenous", "White"];
+export const hairColorOptions = ["Brown", "Black", "Blonde", "Chestnut", "Grey", "Auburn", "Red"];
+export const eyeColorOptions = ["Blue", "Brown", "Green", "Grey", "Hazel"];
+export const yesNoOptions = [{value: 'Yes', label: 'Yes'}, {value: 'No', label: 'No'}];
+
 export const attributeKeys = [
   'Height',
   'Body Type',
@@ -253,7 +259,7 @@ export const featuredProfiles: Profile[] = [
     role: 'daddy',
     online: false,
     verified: true,
-    bio: 'Architect with an appreciation for design, history, and good whiskey. I\'m looking for an elegant and intelligent young woman to accompany me to social events and on travels.',
+    bio: 'Architect with an appreciation for design, history, and good whiskey. I\'m looking for an elegant and intelligent young woman to accompany me to to social events and on travels.',
     wants: ['Travel Partner', 'Discreet', 'Networking'],
     interests: ['Architecture', 'History', 'Whiskey', 'Fine Dining'],
     gallery: [

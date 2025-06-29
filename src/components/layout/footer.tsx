@@ -13,12 +13,13 @@ const TermsOfUseModal = dynamic(() => import('../terms-of-use-modal').then(mod =
 
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
     // Check login status from localStorage on component mount
     if (typeof window !== 'undefined') {
       const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";

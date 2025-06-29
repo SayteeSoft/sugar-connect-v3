@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import type { Profile } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -40,12 +40,16 @@ const defaultFilters = {
     location: '',
 };
 
-export function SearchClient({ initialProfiles, initialLoggedInUser }: { initialProfiles: Profile[], initialLoggedInUser?: Profile }) {
-  const [profiles] = useState<Profile[]>(initialProfiles);
-  const [isLoading] = useState(false);
+export function SearchClient({ initialProfiles, initialLoggedInUser, isLoading }: { initialProfiles: Profile[], initialLoggedInUser?: Profile, isLoading: boolean }) {
+  const [profiles, setProfiles] = useState<Profile[]>(initialProfiles);
   const [uiFilters, setUiFilters] = useState(defaultFilters);
   const [appliedFilters, setAppliedFilters] = useState(defaultFilters);
-  const [loggedInUser] = useState<Profile | undefined>(initialLoggedInUser);
+  const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>(initialLoggedInUser);
+  
+  useEffect(() => {
+    setProfiles(initialProfiles);
+    setLoggedInUser(initialLoggedInUser);
+  }, [initialProfiles, initialLoggedInUser]);
   
   const handleClearFilters = () => {
     setUiFilters(defaultFilters);

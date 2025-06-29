@@ -28,6 +28,7 @@ export function Footer() {
             <Heart className="h-5 w-5" />
             SugarConnect
           </Link>
+          <p>test</p>
         </div>
 
         {/* Links */}

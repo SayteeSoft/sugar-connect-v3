@@ -46,7 +46,7 @@ export default function SignupPage() {
             </form>
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
-              <Link href="/login" className="underline">
+              <Link href="/login" className="text-primary underline hover:text-primary/90 transition-colors">
                 Sign in
               </Link>
             </div>

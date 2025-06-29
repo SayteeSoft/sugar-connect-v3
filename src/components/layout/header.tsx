@@ -15,16 +15,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, LogOut, Settings, LogIn, Coins, Heart } from "lucide-react";
 import { ThemeSwitcher } from "../theme-switcher";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { Profile } from "@/lib/data";
 import { getProfile } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [profile, setProfile] = useState<Profile | undefined>();
   const [credits, setCredits] = useState(0);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     // Check login status from localStorage on component mount
@@ -63,6 +65,12 @@ export function Header() {
     router.push("/profile");
   };
 
+  const navLinks = [
+    { href: "/profile", label: "Profile" },
+    { href: "/messages", label: "Messages" },
+    { href: "/search", label: "Search" },
+    { href: "/ai-match", label: "Matches" },
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
@@ -74,30 +82,18 @@ export function Header() {
           </span>
         </Link>
         <nav className="hidden items-center justify-center space-x-6 text-lg font-medium md:flex flex-grow">
-          <Link
-            href="/profile"
-            className="text-foreground/60 transition-colors hover:text-foreground"
-          >
-            Profile
-          </Link>
-          <Link
-            href="/messages"
-            className="text-foreground/60 transition-colors hover:text-foreground"
-          >
-            Messages
-          </Link>
-          <Link
-            href="/search"
-            className="text-foreground/60 transition-colors hover:text-foreground"
-          >
-            Search
-          </Link>
-          <Link
-            href="/ai-match"
-            className="text-foreground/60 transition-colors hover:text-foreground"
-          >
-            Matches
-          </Link>
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "text-foreground/60 transition-colors hover:text-primary",
+                (pathname.startsWith(link.href)) && "text-primary"
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
           {isLoggedIn && profile && (profile.role === 'daddy' && profile.id !== 1) && (

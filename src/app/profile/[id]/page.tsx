@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -40,6 +39,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage }: { pr
       <Card className="overflow-hidden shadow-lg">
         <div className="relative group">
           <Image
+            key={profile.imageUrl}
             src={profile.imageUrl ?? 'https://placehold.co/600x600'}
             alt={`Profile of ${profile.name}`}
             width={600}
@@ -59,13 +59,13 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage }: { pr
         </div>
         <CardContent className="p-6 space-y-4">
            <div>
-            <div className="flex items-baseline gap-2 mb-1">
-                <h1 className="text-3xl font-bold font-headline">{profile.name}</h1>
+            <h1 className="text-3xl font-bold font-headline">{profile.name}</h1>
+            <div className="flex items-center gap-4 mt-2">
                 <Badge variant={profile.role === 'daddy' ? 'secondary' : 'outline'}>
                     {profile.role === 'daddy' ? 'Sugar Daddy' : 'Sugar Baby'}
                 </Badge>
+                <p className="text-muted-foreground text-lg">{profile.age}, {profile.location}</p>
             </div>
-            <p className="text-muted-foreground text-lg">{profile.age}, {profile.location}</p>
           </div>
           <div className="flex flex-col space-y-2">
             {!isOwnProfile && <Button size="lg" onClick={() => onMessage(profile.id)}><Mail className="mr-2" /> Message</Button>}
@@ -398,7 +398,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                         </CardHeader>
                         <CardContent>
                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                            {editedProfile.gallery?.map((img, i) => (
+                            {(editedProfile.gallery || []).map((img, i) => (
                                 <div key={img || i} className="relative aspect-square group">
                                     <img src={img} alt={`Gallery image ${i + 1}`} className="w-full h-full rounded-md object-cover" />
                                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">

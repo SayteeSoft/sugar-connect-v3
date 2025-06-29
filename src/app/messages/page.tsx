@@ -3,8 +3,10 @@ import { Header } from '@/components/layout/header';
 import { ChatClient } from './chat-client';
 import { getConversations, getProfile } from '@/lib/data';
 
-export default function MessagesPage({ searchParams }: {
-  searchParams?: { chatWith?: string };
+export default function MessagesPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const allConversations = getConversations();
   // Assume current user is the one with id 1 ('saytee.software')
@@ -15,8 +17,9 @@ export default function MessagesPage({ searchParams }: {
     ? allConversations.filter(convo => convo.participant.role !== currentUserProfile.role)
     : [];
 
-  const initialSelectedProfileId = searchParams?.chatWith
-    ? parseInt(searchParams.chatWith, 10)
+  const chatWithParam = searchParams?.chatWith;
+  const initialSelectedProfileId = chatWithParam
+    ? parseInt(Array.isArray(chatWithParam) ? chatWithParam[0] : chatWithParam, 10)
     : undefined;
 
   return (

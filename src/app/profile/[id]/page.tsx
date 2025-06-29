@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter, useParams } from 'next/navigation';
-import { getProfile, updateProfile, type Profile, wantsOptions, interestsOptions, attributeKeys } from '@/lib/data';
+import { getProfile, updateProfile, type Profile, wantsOptions, interestsOptions, attributeKeys, getProfiles } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -193,6 +193,14 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
     const profileImageInputRef = useRef<HTMLInputElement>(null);
     const galleryImageInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
+    const blobUrls = useRef<string[]>([]); // To track temporary blob URLs for cleanup
+
+    // On unmount, revoke all blob URLs created in this component instance to prevent memory leaks.
+    useEffect(() => {
+        return () => {
+            blobUrls.current.forEach(url => URL.revokeObjectURL(url));
+        }
+    }, []);
     
     const wantsSelectOptions: MultiSelectOption[] = wantsOptions.map(o => ({ value: o, label: o }));
     const interestsSelectOptions: MultiSelectOption[] = interestsOptions.map(o => ({ value: o, label: o }));
@@ -205,15 +213,13 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
     const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setEditedProfile(prev => ({...prev, imageUrl: reader.result as string}));
-                toast({
-                    title: "Image Changed",
-                    description: "Your profile picture has been updated. Remember to save your profile.",
-                });
-            };
-            reader.readAsDataURL(file);
+            const tempUrl = URL.createObjectURL(file);
+            blobUrls.current.push(tempUrl);
+            setEditedProfile(prev => ({...prev, imageUrl: tempUrl}));
+            toast({
+                title: "Image Preview Updated",
+                description: "Your profile picture preview has been updated. Remember to save your profile.",
+            });
         }
     };
 
@@ -242,32 +248,20 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
             });
         }
 
-        const readPromises = filesToProcess.map(file => {
-            return new Promise<string>((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result as string);
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
+        const newImageUrls = filesToProcess.map(file => {
+            const url = URL.createObjectURL(file);
+            blobUrls.current.push(url);
+            return url;
         });
 
-        Promise.all(readPromises).then(newImages => {
-            setEditedProfile(prev => ({
-                ...prev,
-                gallery: [...(prev.gallery || []), ...newImages]
-            }));
-            
-            toast({
-                title: "Gallery Updated",
-                description: `${newImages.length} photo(s) were added to your gallery. Remember to save your profile.`,
-            });
-        }).catch(error => {
-            console.error("Error reading files:", error);
-            toast({
-                variant: 'destructive',
-                title: 'Upload Error',
-                description: 'There was a problem reading your files. Please try again.',
-            });
+        setEditedProfile(prev => ({
+            ...prev,
+            gallery: [...(prev.gallery || []), ...newImageUrls]
+        }));
+        
+        toast({
+            title: "Gallery Preview Updated",
+            description: `${newImageUrls.length} photo(s) were added to your gallery preview. Remember to save your profile.`,
         });
     };
 
@@ -476,14 +470,30 @@ export default function ProfilePage() {
   }
   
   const handleSaveProfile = (updatedProfile: Profile) => {
-    const success = updateProfile(updatedProfile);
+    // Create a copy to modify before saving, to avoid altering the preview state
+    const profileToSave: Profile = JSON.parse(JSON.stringify(updatedProfile));
+
+    // Replace blob URLs with placeholders to avoid localStorage quota issues.
+    // This simulates a real backend upload where you'd save the URL.
+    if (profileToSave.imageUrl && profileToSave.imageUrl.startsWith('blob:')) {
+        profileToSave.imageUrl = 'https://placehold.co/600x750';
+    }
+    if (profileToSave.gallery) {
+        profileToSave.gallery = profileToSave.gallery.map((img: string) =>
+            img.startsWith('blob:') ? 'https://placehold.co/600x400' : img
+        );
+    }
+
+    const success = updateProfile(profileToSave);
     if (success) {
-      setProfileData(updatedProfile);
+      // After saving, we set the profile data to what's now in storage.
+      // This will show the placeholders instead of the temporary blob URLs.
+      setProfileData(getProfile(profileId));
       setIsEditMode(false);
       window.dispatchEvent(new Event('profileUpdated'));
       toast({
         title: "Profile Saved",
-        description: "Your changes have been saved successfully.",
+        description: "Your changes have been saved successfully. For this demo, images are stored as placeholders.",
       })
     } else {
       toast({

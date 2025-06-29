@@ -82,7 +82,7 @@ export const featuredProfiles: Profile[] = [
   },
   {
     id: 2,
-    name: 'Jessica',
+    name: 'Darianna',
     age: 24,
     location: 'London, UK',
     imageUrl: 'https://placehold.co/600x750',
@@ -394,7 +394,7 @@ const rawConversationsData = [
         unreadCount: 2,
         messages: [
             { id: 1, senderId: 2, text: 'Hey there! Loved your profile, especially your taste in art.', timestamp: getTimestamp(120) },
-            { id: 2, senderId: 1, text: 'Thank you, Jessica. I appreciate that. You have a wonderful smile.', timestamp: getTimestamp(115) },
+            { id: 2, senderId: 1, text: 'Thank you, Darianna. I appreciate that. You have a wonderful smile.', timestamp: getTimestamp(115) },
             { id: 3, senderId: 2, text: 'Aww, thanks! You seem like a really interesting person. What are you up to this weekend?', timestamp: getTimestamp(10) },
             { id: 4, senderId: 2, text: 'Let me know if you might be free for a drink.', timestamp: getTimestamp(9) },
         ]

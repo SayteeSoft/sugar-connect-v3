@@ -65,7 +65,6 @@ export const featuredProfiles: Profile[] = [
       'https://placehold.co/600x400',
     ],
     attributes: {
-      'Age': "49",
       'Height': "6'1\"",
       'Body Type': 'Athletic',
       'Ethnicity': 'Caucasian',

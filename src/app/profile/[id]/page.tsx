@@ -33,6 +33,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+const attributeKeys = ['Height', 'Body Type', 'Ethnicity', 'Hair Color', 'Eye Color', 'Piercings', 'Tattoos'];
 
 const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit }: { profile: Profile; onEdit: () => void; isOwnProfile: boolean; canEdit: boolean; }) => (
   <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
@@ -170,10 +171,10 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit }: { profile: Prof
         </CardHeader>
         <CardContent>
           <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-            {profile.attributes && Object.entries(profile.attributes).map(([key, value]) => (
+            {attributeKeys.map((key) => (
               <React.Fragment key={key}>
                 <dt className="font-medium text-foreground">{key}</dt>
-                <dd className="text-muted-foreground">{value}</dd>
+                <dd className="text-muted-foreground">{profile.attributes?.[key] || 'N/A'}</dd>
               </React.Fragment>
             ))}
           </dl>
@@ -232,7 +233,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
         const { value } = e.target;
         setEditedProfile(prev => ({
             ...prev,
-            attributes: { ...prev.attributes, [key]: value }
+            attributes: { ...(prev.attributes || {}), [key]: value }
         }));
     };
 
@@ -351,10 +352,10 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                         </CardHeader>
                         <CardContent>
                             <dl className="grid grid-cols-2 gap-x-4 gap-y-4">
-                                {editedProfile.attributes && Object.entries(editedProfile.attributes).map(([key, value]) => (
+                                {attributeKeys.map((key) => (
                                     <div key={key} className="space-y-1">
                                         <Label htmlFor={`attr-${key}`}>{key}</Label>
-                                        <Input id={`attr-${key}`} value={value as string} onChange={(e) => handleAttributeChange(e, key)} />
+                                        <Input id={`attr-${key}`} value={editedProfile.attributes?.[key] || ''} onChange={(e) => handleAttributeChange(e, key)} />
                                     </div>
                                 ))}
                             </dl>

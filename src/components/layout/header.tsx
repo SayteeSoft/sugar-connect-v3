@@ -81,7 +81,7 @@ export function Header() {
     { href: "/profile", label: "Profile" },
     { href: "/messages", label: "Messages" },
     { href: "/search", label: "Search" },
-    { href: "/match", label: "Matches" },
+    { href: "/matches", label: "Matches" },
   ];
 
   return (

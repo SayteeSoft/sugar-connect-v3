@@ -79,11 +79,11 @@ export const featuredProfiles: Profile[] = [
     attributes: {
       'Height': "6'1\"",
       'Body Type': 'Athletic',
-      'Ethnicity': 'Caucasian',
+      'Ethnicity': 'White',
       'Hair Color': 'Brown',
       'Eye Color': 'Blue',
-      'Piercings': 'None',
-      'Tattoos': 'Sleeve on left arm',
+      'Piercings': 'No',
+      'Tattoos': 'Yes',
     },
   },
   {
@@ -108,11 +108,11 @@ export const featuredProfiles: Profile[] = [
     attributes: {
       'Height': "5'5\"",
       'Body Type': 'Slim',
-      'Ethnicity': 'Caucasian',
+      'Ethnicity': 'White',
       'Hair Color': 'Blonde',
       'Eye Color': 'Blue',
-      'Piercings': 'None',
-      'Tattoos': 'None',
+      'Piercings': 'No',
+      'Tattoos': 'No',
     },
   },
   {
@@ -136,11 +136,11 @@ export const featuredProfiles: Profile[] = [
     attributes: {
       'Height': "5'7\"",
       'Body Type': 'Athletic',
-      'Ethnicity': 'Caucasian',
-      'Hair Color': 'Brunette',
+      'Ethnicity': 'White',
+      'Hair Color': 'Brown',
       'Eye Color': 'Hazel',
-      'Piercings': 'Ears',
-      'Tattoos': 'Small one on wrist',
+      'Piercings': 'Yes',
+      'Tattoos': 'Yes',
     },
   },
   {
@@ -165,11 +165,11 @@ export const featuredProfiles: Profile[] = [
     attributes: {
       'Height': "6'0\"",
       'Body Type': 'Average',
-      'Ethnicity': 'Caucasian',
-      'Hair Color': 'Salt & Pepper',
+      'Ethnicity': 'White',
+      'Hair Color': 'Grey',
       'Eye Color': 'Brown',
-      'Piercings': 'None',
-      'Tattoos': 'None',
+      'Piercings': 'No',
+      'Tattoos': 'No',
     },
   },
   {
@@ -184,7 +184,7 @@ export const featuredProfiles: Profile[] = [
     verified: true,
     bio: 'Fashion designer with an eye for beauty and a heart for adventure. I\'m looking for a sophisticated gentleman to share elegant evenings and exciting journeys with.',
     wants: ['Discreet', 'Casual', 'Travel Partner'],
-    interests: ['Art', 'Theatre', 'Reading', 'Fashion'],
+    interests: ['Art', 'Theatre', 'Reading', 'Cooking'],
     gallery: [
       'https://placehold.co/600x400.png',
       'https://placehold.co/600x400.png'
@@ -192,11 +192,11 @@ export const featuredProfiles: Profile[] = [
     attributes: {
       'Height': "5'8\"",
       'Body Type': 'Curvy',
-      'Ethnicity': 'Mixed',
+      'Ethnicity': 'Hispanic/Latino',
       'Hair Color': 'Black',
       'Eye Color': 'Brown',
-      'Piercings': 'Nose',
-      'Tattoos': 'None',
+      'Piercings': 'Yes',
+      'Tattoos': 'No',
     },
   },
   {
@@ -211,18 +211,18 @@ export const featuredProfiles: Profile[] = [
     verified: false,
     bio: 'Tech CEO who works hard and plays harder. I enjoy sailing, trying new tech, and intellectual conversations. Seeking a bright, witty companion for dates and possibly more.',
     wants: ['Networking', 'No Strings Attached', 'Casual'],
-    interests: ['Technology', 'Sailing', 'Movies', 'Music'],
+    interests: ['Sports', 'Music', 'Movies', 'Reading'],
     gallery: [
       'https://placehold.co/600x400.png'
     ],
     attributes: {
       'Height': "5'11\"",
       'Body Type': 'Athletic',
-      'Ethnicity': 'Caucasian',
+      'Ethnicity': 'White',
       'Hair Color': 'Black',
       'Eye Color': 'Green',
-      'Piercings': 'None',
-      'Tattoos': 'None',
+      'Piercings': 'No',
+      'Tattoos': 'No',
     },
   },
   {
@@ -237,16 +237,16 @@ export const featuredProfiles: Profile[] = [
     verified: true,
     bio: 'University student studying literature. I\'m a romantic at heart and love poetry, long walks, and deep conversations. Hoping to find a kind, generous man to create beautiful memories with.',
     wants: ['Long-term', 'Friendship', 'Mentorship'],
-    interests: ['Reading', 'Theatre', 'Art', 'Travel'],
+    interests: ['Reading', 'Cooking', 'Art', 'Travel'],
     gallery: [],
     attributes: {
       'Height': "5'4\"",
-      'Body Type': 'Petite',
-      'Ethnicity': 'Caucasian',
+      'Body Type': 'Slim',
+      'Ethnicity': 'White',
       'Hair Color': 'Red',
       'Eye Color': 'Green',
-      'Piercings': 'None',
-      'Tattoos': 'None',
+      'Piercings': 'No',
+      'Tattoos': 'No',
     },
   },
   {
@@ -261,7 +261,7 @@ export const featuredProfiles: Profile[] = [
     verified: true,
     bio: 'Architect with an appreciation for design, history, and good whiskey. I\'m looking for an elegant and intelligent young woman to accompany me to to social events and on travels.',
     wants: ['Travel Partner', 'Discreet', 'Networking'],
-    interests: ['Architecture', 'History', 'Whiskey', 'Fine Dining'],
+    interests: ['Travel', 'Fine Dining', 'Theatre', 'Wine Tasting'],
     gallery: [
       'https://placehold.co/600x400.png',
       'https://placehold.co/600x400.png',
@@ -270,11 +270,11 @@ export const featuredProfiles: Profile[] = [
     attributes: {
       'Height': "6'2\"",
       'Body Type': 'Slim',
-      'Ethnicity': 'Caucasian',
+      'Ethnicity': 'White',
       'Hair Color': 'Brown',
       'Eye Color': 'Blue',
-      'Piercings': 'None',
-      'Tattoos': 'None',
+      'Piercings': 'No',
+      'Tattoos': 'No',
     },
   },
   {
@@ -297,11 +297,11 @@ export const featuredProfiles: Profile[] = [
     attributes: {
       'Height': "5'6\"",
       'Body Type': 'Athletic',
-      'Ethnicity': 'Hispanic',
+      'Ethnicity': 'Hispanic/Latino',
       'Hair Color': 'Brown',
       'Eye Color': 'Brown',
-      'Piercings': 'Ears',
-      'Tattoos': 'Floral design on back',
+      'Piercings': 'Yes',
+      'Tattoos': 'Yes',
     },
   },
   {
@@ -316,18 +316,18 @@ export const featuredProfiles: Profile[] = [
     verified: true,
     bio: 'Lawyer with a sharp mind and a generous heart. When I\'m not in the courtroom, I enjoy rugby, classical music, and fine wine. Looking for a bright, ambitious partner to share my success with.',
     wants: ['Long-term', 'Mentorship'],
-    interests: ['Sports', 'Music', 'Wine Tasting', 'Politics'],
+    interests: ['Sports', 'Music', 'Wine Tasting', 'Reading'],
     gallery: [
         'https://placehold.co/600x400.png'
     ],
     attributes: {
       'Height': "5'10\"",
       'Body Type': 'Average',
-      'Ethnicity': 'Caucasian',
+      'Ethnicity': 'White',
       'Hair Color': 'Blonde',
       'Eye Color': 'Blue',
-      'Piercings': 'None',
-      'Tattoos': 'None',
+      'Piercings': 'No',
+      'Tattoos': 'No',
     },
   },
   {
@@ -351,11 +351,11 @@ export const featuredProfiles: Profile[] = [
     attributes: {
       'Height': "5'7\"",
       'Body Type': 'Slim',
-      'Ethnicity': 'Caucasian',
+      'Ethnicity': 'White',
       'Hair Color': 'Black',
       'Eye Color': 'Green',
-      'Piercings': 'None',
-      'Tattoos': 'Musical note on ankle',
+      'Piercings': 'No',
+      'Tattoos': 'Yes',
     },
   },
   {
@@ -370,19 +370,19 @@ export const featuredProfiles: Profile[] = [
     verified: false,
     bio: 'Retired naval officer, now enjoying a life of leisure. I spend my time sailing, golfing, and enjoying good company. Looking for a cheerful and easygoing companion for dinners, events, and travel.',
     wants: ['Casual', 'Travel Partner', 'No Strings Attached'],
-    interests: ['Sailing', 'Golf', 'Fine Dining', 'History'],
+    interests: ['Sports', 'Travel', 'Fine Dining', 'Reading'],
     gallery: [
       'https://placehold.co/600x400.png',
       'https://placehold.co/600x400.png',
     ],
     attributes: {
       'Height': "5'9\"",
-      'Body Type': 'Stocky',
-      'Ethnicity': 'Caucasian',
+      'Body Type': 'Average',
+      'Ethnicity': 'White',
       'Hair Color': 'Grey',
       'Eye Color': 'Hazel',
-      'Piercings': 'None',
-      'Tattoos': 'Anchor on arm',
+      'Piercings': 'No',
+      'Tattoos': 'Yes',
     },
   },
 ];
@@ -395,10 +395,10 @@ const rawConversationsData = [
         participantId: 2,
         unreadCount: 2,
         messages: [
-            { id: 1, senderId: 2, text: 'Hey there! Loved your profile, especially your taste in art.', timestamp: '2024-07-01T08:00:00.000Z' },
-            { id: 2, senderId: 1, text: 'Thank you, Darianna. I appreciate that. You have a wonderful smile.', timestamp: '2024-07-01T08:05:00.000Z' },
-            { id: 3, senderId: 2, text: 'Aww, thanks! You seem like a really interesting person. What are you up to this weekend?', timestamp: '2024-07-01T09:50:00.000Z' },
-            { id: 4, senderId: 2, text: 'Let me know if you might be free for a drink.', timestamp: '2024-07-01T09:51:00.000Z' },
+            { id: 1, senderId: 2, text: 'Hey there! Loved your profile, especially your taste in art.', timestamp: '2024-07-28T10:00:00.000Z' },
+            { id: 2, senderId: 1, text: 'Thank you, Darianna. I appreciate that. You have a wonderful smile.', timestamp: '2024-07-28T10:05:00.000Z' },
+            { id: 3, senderId: 2, text: 'Aww, thanks! You seem like a really interesting person. What are you up to this weekend?', timestamp: '2024-07-28T11:20:00.000Z' },
+            { id: 4, senderId: 2, text: 'Let me know if you might be free for a drink.', timestamp: '2024-07-28T11:21:00.000Z' },
         ]
     },
     {
@@ -406,10 +406,10 @@ const rawConversationsData = [
         participantId: 3,
         unreadCount: 0,
         messages: [
-            { id: 1, senderId: 1, text: 'Good morning, Kateryna. I hope you have a great day.', timestamp: '2024-06-30T10:00:00.000Z' },
-            { id: 2, senderId: 3, text: 'Morning! You too. Thanks for the message :)', timestamp: '2024-06-30T10:10:00.000Z' },
-            { id: 3, senderId: 1, text: 'Any plans for the upcoming week?', timestamp: '2024-06-30T19:00:00.000Z' },
-            { id: 4, senderId: 3, text: 'Not yet! Still trying to figure things out. You?', timestamp: '2024-06-30T19:05:00.000Z' },
+            { id: 1, senderId: 1, text: 'Good morning, Kateryna. I hope you have a great day.', timestamp: '2024-07-27T09:00:00.000Z' },
+            { id: 2, senderId: 3, text: 'Morning! You too. Thanks for the message :)', timestamp: '2024-07-27T09:12:00.000Z' },
+            { id: 3, senderId: 1, text: 'Any plans for the upcoming week?', timestamp: '2024-07-27T18:30:00.000Z' },
+            { id: 4, senderId: 3, text: 'Not yet! Still trying to figure things out. You?', timestamp: '2024-07-27T18:35:00.000Z' },
         ]
     },
      {
@@ -417,8 +417,8 @@ const rawConversationsData = [
         participantId: 5,
         unreadCount: 0,
         messages: [
-            { id: 1, senderId: 5, text: 'Your profile mentioned you enjoy fine dining. Any favorite spots?', timestamp: '2024-06-29T10:00:00.000Z' },
-            { id: 2, senderId: 1, text: 'Absolutely. There\'s a fantastic French place downtown I could recommend. Perhaps I could take you sometime.', timestamp: '2024-06-29T10:10:00.000Z' },
+            { id: 1, senderId: 5, text: 'Your profile mentioned you enjoy fine dining. Any favorite spots?', timestamp: '2024-07-26T15:00:00.000Z' },
+            { id: 2, senderId: 1, text: 'Absolutely. There\'s a fantastic French place downtown I could recommend. Perhaps I could take you sometime.', timestamp: '2024-07-26T15:10:00.000Z' },
         ]
     },
     {
@@ -426,7 +426,7 @@ const rawConversationsData = [
         participantId: 7,
         unreadCount: 1,
         messages: [
-            { id: 1, senderId: 7, text: 'Hi! I saw you\'re a travel partner. What\'s the most amazing place you\'ve visited?', timestamp: '2024-07-01T09:55:00.000Z' },
+            { id: 1, senderId: 7, text: 'Hi! I saw you\'re a travel partner. What\'s the most amazing place you\'ve visited?', timestamp: '2024-07-28T12:00:00.000Z' },
         ]
     },
 ];
@@ -559,3 +559,5 @@ export const getConversations = (): Conversation[] => {
         return lastMessageB - lastMessageA;
     });
 };
+
+    

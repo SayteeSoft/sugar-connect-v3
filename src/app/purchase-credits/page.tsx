@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { CreditCard } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 const creditPackages = [
   { id: 'pkg-1', credits: 100, price: 20, popular: false },
@@ -17,7 +19,8 @@ const creditPackages = [
 ];
 
 const paymentMethods = [
-  { id: 'credit-card', name: 'Credit / Debit Card', icon: <CreditCard className="w-6 h-6 text-muted-foreground" /> },
+  { id: 'credit-card', name: 'Credit Card', icon: <CreditCard className="w-6 h-6 text-muted-foreground" /> },
+  { id: 'debit-card', name: 'Debit Card', icon: <CreditCard className="w-6 h-6 text-muted-foreground" /> },
   { id: 'paypal', name: 'PayPal', icon: <p className="font-bold w-6 text-center text-foreground">P</p> },
   { id: 'stripe', name: 'Stripe', icon: <p className="font-bold w-6 text-center text-foreground">S</p> },
 ];
@@ -25,6 +28,40 @@ const paymentMethods = [
 export default function PurchaseCreditsPage() {
   const [selectedPackage, setSelectedPackage] = useState(creditPackages[1].id);
   const [selectedPayment, setSelectedPayment] = useState(paymentMethods[0].id);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handlePurchase = () => {
+      if (!selectedPackage || !selectedPayment) {
+          toast({
+              variant: "destructive",
+              title: "Selection missing",
+              description: "Please select a credit package and a payment method.",
+          });
+          return;
+      }
+      
+      const packageParam = `?packageId=${selectedPackage}`;
+
+      switch (selectedPayment) {
+          case 'credit-card':
+          case 'debit-card':
+              router.push(`/purchase-credits/credit-card${packageParam}`);
+              break;
+          case 'paypal':
+              router.push(`/purchase-credits/paypal${packageParam}`);
+              break;
+          case 'stripe':
+              router.push(`/purchase-credits/stripe${packageParam}`);
+              break;
+          default:
+               toast({
+                variant: "destructive",
+                title: "Invalid Payment Method",
+                description: "Please select a valid payment method.",
+              });
+      }
+  };
 
   return (
     <>
@@ -95,7 +132,7 @@ export default function PurchaseCreditsPage() {
                     </RadioGroup>
                 </CardContent>
                 <CardFooter>
-                     <Button size="lg" className="w-full">
+                     <Button size="lg" className="w-full" onClick={handlePurchase}>
                         Complete Purchase
                     </Button>
                 </CardFooter>

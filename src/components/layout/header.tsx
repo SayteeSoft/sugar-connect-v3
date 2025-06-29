@@ -19,6 +19,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useEffect } from "react";
 
 export function Header() {
   const { isLoggedIn, user, isLoading, logout } = useAuth();

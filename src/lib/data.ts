@@ -387,10 +387,10 @@ const now = new Date();
 const getTimestamp = (minutesAgo: number) => new Date(now.getTime() - minutesAgo * 60 * 1000).toISOString();
 
 
-const conversationsData: Conversation[] = [
+const rawConversationsData = [
     {
         id: 1,
-        participant: featuredProfiles.find(p => p.id === 2)!,
+        participantId: 2,
         unreadCount: 2,
         messages: [
             { id: 1, senderId: 2, text: 'Hey there! Loved your profile, especially your taste in art.', timestamp: getTimestamp(120) },
@@ -401,7 +401,7 @@ const conversationsData: Conversation[] = [
     },
     {
         id: 2,
-        participant: featuredProfiles.find(p => p.id === 3)!,
+        participantId: 3,
         unreadCount: 0,
         messages: [
             { id: 1, senderId: 1, text: 'Good morning, Sophie. I hope you have a great day.', timestamp: getTimestamp(1440) },
@@ -412,7 +412,7 @@ const conversationsData: Conversation[] = [
     },
      {
         id: 3,
-        participant: featuredProfiles.find(p => p.id === 5)!,
+        participantId: 5,
         unreadCount: 0,
         messages: [
             { id: 1, senderId: 5, text: 'Your profile mentioned you enjoy fine dining. Any favorite spots?', timestamp: getTimestamp(2880) },
@@ -421,7 +421,7 @@ const conversationsData: Conversation[] = [
     },
     {
         id: 4,
-        participant: featuredProfiles.find(p => p.id === 7)!,
+        participantId: 7,
         unreadCount: 1,
         messages: [
             { id: 1, senderId: 7, text: 'Hi! I saw you\'re a travel partner. What\'s the most amazing place you\'ve visited?', timestamp: getTimestamp(5) },
@@ -501,9 +501,25 @@ export const updateProfile = (updatedProfile: Profile): boolean => {
  * @returns {Conversation[]} An array of conversation objects.
  */
 export const getConversations = (): Conversation[] => {
-    // In a real app, you'd fetch this from an API. For now, we return static data.
+    const profiles = getProfiles();
+
+    const conversations: Conversation[] = rawConversationsData.map(convo => {
+        const participant = profiles.find(p => p.id === convo.participantId);
+        // If a participant profile is deleted, we'll filter out the conversation.
+        // In a real app, you might want to handle this differently.
+        if (!participant) {
+            return null;
+        }
+        return {
+            id: convo.id,
+            participant: participant,
+            messages: convo.messages,
+            unreadCount: convo.unreadCount,
+        };
+    }).filter((c): c is Conversation => c !== null);
+
     // Sorting by the most recent message
-    return conversationsData.sort((a, b) => {
+    return conversations.sort((a, b) => {
         const lastMessageA = new Date(a.messages[a.messages.length - 1].timestamp).getTime();
         const lastMessageB = new Date(b.messages[b.messages.length - 1].timestamp).getTime();
         return lastMessageB - lastMessageA;

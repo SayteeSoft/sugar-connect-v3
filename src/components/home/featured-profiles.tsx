@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from "react";
@@ -35,8 +36,8 @@ export function FeaturedProfiles() {
       if (profile.id === loggedInUser.id) {
         return false;
       }
-      // If logged in, show opposite roles.
-      if (profile.role === loggedInUser.role) {
+      // If logged in, show opposite roles, unless user is admin
+      if (loggedInUser.id !== 1 && profile.role === loggedInUser.role) {
         return false;
       }
       return true;

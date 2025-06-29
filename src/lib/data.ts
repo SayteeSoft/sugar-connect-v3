@@ -497,6 +497,38 @@ export const updateProfile = (updatedProfile: Profile): boolean => {
 };
 
 /**
+ * Deletes a profile from localStorage.
+ * This function should only be called on the client side.
+ * @param {number} profileId - The ID of the profile to delete.
+ * @returns {boolean} True if the deletion was successful, false otherwise.
+ */
+export const deleteProfile = (profileId: number): boolean => {
+  if (typeof window === 'undefined') {
+    console.warn('deleteProfile can only be called on the client side.');
+    return false;
+  }
+
+  try {
+    let profiles = getProfiles();
+    const initialLength = profiles.length;
+    profiles = profiles.filter(p => p.id !== profileId);
+    
+    if (profiles.length === initialLength) {
+        console.warn(`Profile with id ${profileId} not found for deletion.`);
+        return false;
+    }
+
+    window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
+    window.dispatchEvent(new Event('profileUpdated'));
+    return true;
+  } catch (error) {
+    console.error('Failed to delete profile from localStorage:', error);
+    return false;
+  }
+};
+
+
+/**
  * Retrieves all conversations. In a real app, this would be for the logged-in user.
  * @returns {Conversation[]} An array of conversation objects.
  */

@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import type { Profile } from '@/lib/data';
-import { getProfiles } from '@/lib/data';
+import { getProfiles, deleteProfile } from '@/lib/data';
 import {
   Table,
   TableBody,
@@ -37,7 +37,17 @@ export function AdminClient({ initialProfiles }: { initialProfiles: Profile[] })
   const { toast } = useToast();
 
   useEffect(() => {
-    setProfiles(getProfiles());
+    const handleProfileUpdate = () => {
+      setProfiles(getProfiles());
+    };
+
+    handleProfileUpdate(); // Initial fetch from client-side storage
+
+    window.addEventListener('profileUpdated', handleProfileUpdate);
+
+    return () => {
+      window.removeEventListener('profileUpdated', handleProfileUpdate);
+    };
   }, []);
 
   const handleView = (id: number) => {
@@ -50,13 +60,21 @@ export function AdminClient({ initialProfiles }: { initialProfiles: Profile[] })
 
   const handleDelete = (id: number) => {
     const profileToDelete = profiles.find(p => p.id === id);
-    setProfiles(profiles.filter(p => p.id !== id));
-    toast({
-        title: "Profile Deleted",
-        description: `${profileToDelete?.name || 'User'} has been removed.`,
-        variant: "destructive"
-    });
-    // In a real app, you would also make an API call to delete the profile from the database.
+    const success = deleteProfile(id);
+
+    if (success) {
+        toast({
+            title: "Profile Deleted",
+            description: `${profileToDelete?.name || 'User'} has been removed.`,
+            variant: "destructive"
+        });
+    } else {
+        toast({
+            title: "Error",
+            description: "Failed to delete the profile.",
+            variant: "destructive"
+        });
+    }
   };
 
   // A fake email generator for display purposes

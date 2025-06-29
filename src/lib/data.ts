@@ -434,15 +434,13 @@ const rawConversationsData = [
 
 /**
  * Retrieves profiles from localStorage. If not present, seeds localStorage with initial data.
- * This function should only be called on the client side for dynamic data.
- * On the server, it returns the static list.
+ * This function should only be called on the client side.
  * @returns {Profile[]} An array of profiles.
  */
 export const getProfiles = (): Profile[] => {
   if (typeof window === 'undefined') {
-    return featuredProfiles;
+    return []; // Return empty array on server to prevent mismatch.
   }
-
   try {
     const storedProfiles = window.localStorage.getItem(PROFILES_STORAGE_KEY);
     if (storedProfiles) {
@@ -459,11 +457,14 @@ export const getProfiles = (): Profile[] => {
 
 /**
  * Retrieves a single profile by ID.
- * Uses localStorage on the client, and static data on the server.
+ * This function is client-side only.
  * @param {number} id - The ID of the profile to retrieve.
  * @returns {Profile | undefined} The profile object or undefined if not found.
  */
 export const getProfile = (id: number): Profile | undefined => {
+  if (typeof window === 'undefined') {
+    return undefined;
+  }
   const profiles = getProfiles();
   return profiles.find(p => p.id === id);
 };
@@ -476,10 +477,8 @@ export const getProfile = (id: number): Profile | undefined => {
  */
 export const updateProfile = (updatedProfile: Profile): boolean => {
   if (typeof window === 'undefined') {
-    console.warn('updateProfile can only be called on the client side.');
     return false;
   }
-
   try {
     const profiles = getProfiles();
     const profileIndex = profiles.findIndex(p => p.id === updatedProfile.id);
@@ -508,10 +507,8 @@ export const updateProfile = (updatedProfile: Profile): boolean => {
  */
 export const deleteProfile = (profileId: number): boolean => {
   if (typeof window === 'undefined') {
-    console.warn('deleteProfile can only be called on the client side.');
     return false;
   }
-
   try {
     let profiles = getProfiles();
     const initialLength = profiles.length;
@@ -534,9 +531,13 @@ export const deleteProfile = (profileId: number): boolean => {
 
 /**
  * Retrieves all conversations. In a real app, this would be for the logged-in user.
+ * This function is client-side only.
  * @returns {Conversation[]} An array of conversation objects.
  */
 export const getConversations = (): Conversation[] => {
+    if (typeof window === 'undefined') {
+      return [];
+    }
     const profiles = getProfiles();
 
     const conversations: Conversation[] = rawConversationsData.map(convo => {

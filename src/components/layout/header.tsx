@@ -102,13 +102,15 @@ export function Header() {
           </Link>
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
-          {isLoggedIn && profile?.role === 'daddy' && (
-            <Button size="sm">
-              Buy Credits
-              <Badge variant="secondary" className="ml-2 rounded-full px-2">{credits}</Badge>
+          {isLoggedIn && profile && (profile.role === 'daddy' && profile.id !== 1) && (
+            <Button asChild size="sm">
+              <Link href="/purchase-credits">
+                Buy Credits
+                <Badge variant="secondary" className="ml-2 rounded-full px-2">{credits}</Badge>
+              </Link>
             </Button>
           )}
-          {isLoggedIn && profile?.role === 'baby' && (
+          {isLoggedIn && profile && (profile.role === 'baby' || profile.id === 1) && (
              <div className="flex items-center gap-2 h-10 px-3 text-sm font-medium">
                 <Coins className="h-4 w-4 text-primary" />
                 <span className="text-foreground">Unlimited Credits</span>

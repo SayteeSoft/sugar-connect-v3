@@ -29,25 +29,38 @@ export function Header() {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Check login status from localStorage on component mount
-    if (typeof window !== 'undefined') {
-      const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
-      setIsLoggedIn(loggedInStatus);
-      if (loggedInStatus) {
-        // In a real app, you'd get the user ID from the session/token.
-        // For this demo, we'll use the static ID for the admin user.
-        const userProfile = getProfile(1);
-        setProfile(userProfile);
-        if (userProfile) {
-          if (userProfile.role === 'daddy') {
-            setCredits(15);
-          } else {
-            setCredits(Infinity);
+    const updateProfileData = () => {
+      if (typeof window !== 'undefined') {
+        const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
+        setIsLoggedIn(loggedInStatus);
+
+        if (loggedInStatus) {
+          const userProfile = getProfile(1);
+          setProfile(userProfile);
+          if (userProfile) {
+            if (userProfile.role === 'baby' || userProfile.id === 1) {
+              setCredits(Infinity);
+            } else {
+              setCredits(15);
+            }
           }
+        } else {
+          setIsLoggedIn(false);
+          setProfile(undefined);
+          setCredits(0);
         }
       }
-    }
+    };
+    
+    updateProfileData();
+
+    window.addEventListener('profileUpdated', updateProfileData);
+
+    return () => {
+      window.removeEventListener('profileUpdated', updateProfileData);
+    };
   }, []);
+
 
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
@@ -87,8 +100,8 @@ export function Header() {
               key={link.href}
               href={link.href}
               className={cn(
-                "text-foreground/60 transition-colors hover:text-primary",
-                (pathname.startsWith(link.href)) && "text-primary"
+                "text-foreground/60 transition-colors",
+                pathname.startsWith(link.href) ? "text-[#800080]" : "hover:text-[#800080]"
               )}
             >
               {link.label}

@@ -366,6 +366,7 @@ export default function ProfilePage() {
     if (success) {
       setProfileData(updatedProfile);
       setIsEditMode(false);
+      window.dispatchEvent(new Event('profileUpdated'));
       toast({
         title: "Profile Saved",
         description: "Your changes have been saved successfully.",

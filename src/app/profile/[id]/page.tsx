@@ -205,12 +205,15 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
     const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            // Simulate upload by using a placeholder. This avoids localStorage size limits.
-            setEditedProfile(prev => ({...prev, imageUrl: 'https://placehold.co/600x750'}));
-             toast({
-                title: "Image Changed",
-                description: "Your profile picture has been updated. Remember to save your profile.",
-            });
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setEditedProfile(prev => ({...prev, imageUrl: reader.result as string}));
+                toast({
+                    title: "Image Changed",
+                    description: "Your profile picture has been updated. Remember to save your profile.",
+                });
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -230,7 +233,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
             return;
         }
         
-        const filesToProcessCount = Math.min(files.length, spaceAvailable);
+        const filesToProcess = Array.from(files).slice(0, spaceAvailable);
 
         if (files.length > spaceAvailable) {
             toast({
@@ -238,18 +241,33 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                 description: `You can only add ${spaceAvailable} more photo(s). The first ${spaceAvailable} have been added.`,
             });
         }
-        
-        // Simulate upload by adding placeholders to avoid localStorage size limits.
-        const newImages = Array.from({ length: filesToProcessCount }, () => 'https://placehold.co/600x400');
 
-        setEditedProfile(prev => ({
-            ...prev,
-            gallery: [...(prev.gallery || []), ...newImages]
-        }));
-        
-        toast({
-            title: "Gallery Updated",
-            description: `${filesToProcessCount} photo(s) were added to your gallery. Remember to save your profile.`,
+        const readPromises = filesToProcess.map(file => {
+            return new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result as string);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        });
+
+        Promise.all(readPromises).then(newImages => {
+            setEditedProfile(prev => ({
+                ...prev,
+                gallery: [...(prev.gallery || []), ...newImages]
+            }));
+            
+            toast({
+                title: "Gallery Updated",
+                description: `${newImages.length} photo(s) were added to your gallery. Remember to save your profile.`,
+            });
+        }).catch(error => {
+            console.error("Error reading files:", error);
+            toast({
+                variant: 'destructive',
+                title: 'Upload Error',
+                description: 'There was a problem reading your files. Please try again.',
+            });
         });
     };
 
@@ -499,5 +517,3 @@ export default function ProfilePage() {
     </>
   );
 }
-
-    

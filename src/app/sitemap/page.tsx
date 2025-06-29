@@ -9,7 +9,7 @@ const sitemapLinks = {
     { href: "/", title: "Home", description: "The main landing page of SugarConnect." },
     { href: "/search", title: "Search", description: "Find and filter profiles." },
     { href: "/messages", title: "Messages", description: "Your private conversations." },
-    { href: "/ai-match", title: "Matches", description: "View your matches and favorites." },
+    { href: "/match", title: "Matches", description: "View your matches and favorites." },
   ],
   "User Account": [
     { href: "/profile", title: "My Profile", description: "View and edit your profile." },

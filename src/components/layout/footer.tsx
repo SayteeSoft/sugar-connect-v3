@@ -27,9 +27,6 @@ export function Footer() {
             <Heart className="h-5 w-5" />
             SugarConnect
           </Link>
-          <p className="text-sm text-muted-foreground max-w-xs mx-auto">
-            An exclusive platform for ambitious and attractive individuals.
-          </p>
         </div>
 
         {/* Links */}
@@ -67,7 +64,10 @@ export function Footer() {
           </div>
         </div>
         
-        <div className="border-t pt-6">
+        <div className="border-t pt-6 space-y-2">
+            <p className="text-sm text-muted-foreground">
+              An exclusive platform for ambitious and attractive individuals.
+            </p>
             <p className="text-sm text-muted-foreground">
               &copy; {currentYear} SugarConnect. All rights reserved.
             </p>

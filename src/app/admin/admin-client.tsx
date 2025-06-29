@@ -30,18 +30,21 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function AdminClient() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
     const handleProfileUpdate = () => {
       setProfiles(getProfiles());
+      setIsLoading(false);
     };
 
-    handleProfileUpdate(); // Initial fetch from client-side storage
+    handleProfileUpdate();
 
     window.addEventListener('profileUpdated', handleProfileUpdate);
 
@@ -77,10 +80,50 @@ export function AdminClient() {
     }
   };
 
-  // A fake email generator for display purposes
   const getEmailFromName = (name: string) => {
       if (name === 'saytee.software') return 'saytee.software@gmail.com';
       return `${name.toLowerCase().replace(/ /g, '.')}@example.com`;
+  }
+
+  if (isLoading) {
+    return (
+        <Card>
+            <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Image</TableHead>
+                                <TableHead>Name</TableHead>
+                                <TableHead className="hidden md:table-cell">Email</TableHead>
+                                <TableHead className="hidden sm:table-cell">Age</TableHead>
+                                <TableHead className="hidden lg:table-cell">Location</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <TableRow key={i}>
+                                    <TableCell><Skeleton className="h-10 w-10 rounded-full" /></TableCell>
+                                    <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                                    <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-48" /></TableCell>
+                                    <TableCell className="hidden sm:table-cell"><Skeleton className="h-4 w-8" /></TableCell>
+                                    <TableCell className="hidden lg:table-cell"><Skeleton className="h-4 w-24" /></TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center justify-end gap-2">
+                                            <Skeleton className="h-8 w-8" />
+                                            <Skeleton className="h-8 w-8" />
+                                            <Skeleton className="h-8 w-8" />
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
+            </CardContent>
+        </Card>
+    );
   }
 
   return (

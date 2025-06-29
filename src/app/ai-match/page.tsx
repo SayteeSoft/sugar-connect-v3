@@ -1,4 +1,6 @@
 
+'use client';
+
 import { Header } from '@/components/layout/header';
 import { MatchesTabs } from './ai-match-form';
 

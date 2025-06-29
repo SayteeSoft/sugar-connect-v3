@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const ProfileListItem = ({ profile, onRemove }: { profile: Profile; onRemove: (profileId: number) => void; }) => {
   const router = useRouter();
@@ -48,7 +49,7 @@ const ProfileListItem = ({ profile, onRemove }: { profile: Profile; onRemove: (p
             <MessageSquare className="mr-2 h-4 w-4" />
             Chat
           </Button>
-          <Button variant="ghost" size="icon" onClick={handleRemoveClick} className="text-foreground/60 hover:bg-transparent hover:text-destructive active:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0">
+          <Button variant="ghost" size="icon" onClick={handleRemoveClick} className="text-foreground/60 hover:text-destructive active:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0">
             <Trash2 className="h-4 w-4" />
             <span className="sr-only">Remove</span>
           </Button>
@@ -82,6 +83,7 @@ export function MatchesTabs() {
   const [favorites, setFavorites] = useState<Profile[]>([]);
   const [visitors, setVisitors] = useState<Profile[]>([]);
   const [viewed, setViewed] = useState<Profile[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // In a real app, this data would be fetched based on the logged-in user
@@ -90,6 +92,7 @@ export function MatchesTabs() {
     setFavorites(allProfiles.slice(0, 4));
     setVisitors(allProfiles.slice(4, 8));
     setViewed(allProfiles.slice(8, 12));
+    setIsLoading(false);
   }, []);
   
   const handleRemove = (profileId: number, listType: 'favorites' | 'visitors' | 'viewed') => {
@@ -111,6 +114,23 @@ export function MatchesTabs() {
       description: `${profileName} has been removed from your ${listType} list.`,
     });
   };
+  
+  if (isLoading) {
+    return (
+        <div className="w-full">
+            <div className="grid w-full lg:w-1/3 grid-cols-3 mx-auto gap-1">
+                <Skeleton className="h-10" />
+                <Skeleton className="h-10" />
+                <Skeleton className="h-10" />
+            </div>
+            <div className="space-y-3 max-w-3xl mx-auto mt-6">
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-24 w-full" />
+            </div>
+        </div>
+    );
+  }
 
   return (
     <Tabs defaultValue="favorites" className="w-full">

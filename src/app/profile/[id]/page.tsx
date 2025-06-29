@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter, useParams } from 'next/navigation';
-import { getProfile, updateProfile, type Profile } from '@/lib/data';
+import { getProfile, updateProfile, type Profile, wantsOptions, interestsOptions } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -23,6 +23,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from "@/hooks/use-toast";
+import { MultiSelect, type MultiSelectOption } from '@/components/ui/multi-select';
 
 
 const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit }: { profile: Profile; onEdit: () => void; isOwnProfile: boolean; canEdit: boolean; }) => (
@@ -133,9 +134,12 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
     const profileImageInputRef = useRef<HTMLInputElement>(null);
     const galleryImageInputRef = useRef<HTMLInputElement>(null);
     
+    const wantsSelectOptions: MultiSelectOption[] = wantsOptions.map(o => ({ value: o, label: o }));
+    const interestsSelectOptions: MultiSelectOption[] = interestsOptions.map(o => ({ value: o, label: o }));
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setEditedProfile(prev => ({...prev, [name]: value}));
+        setEditedProfile(prev => ({...prev, [name]: name === 'age' ? parseInt(value) : value}));
     };
 
     const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -238,28 +242,29 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                         </CardContent>
                     </Card>
                     
-                    <Card>
+                     <Card>
                         <CardHeader>
                             <CardTitle>Wants & Interests</CardTitle>
-                            <CardDescription>Separate tags with a comma.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div>
                                 <Label htmlFor="wants">Wants</Label>
-                                <Input 
-                                    id="wants"
-                                    name="wants"
-                                    value={editedProfile.wants?.join(', ')} 
-                                    onChange={(e) => setEditedProfile(prev => ({...prev, wants: e.target.value.split(',').map(s => s.trim())}))}
+                                <MultiSelect
+                                    options={wantsSelectOptions}
+                                    selected={editedProfile.wants || []}
+                                    onChange={(selected) => setEditedProfile(prev => ({...prev, wants: selected}))}
+                                    placeholder="Select what you want..."
+                                    className="mt-2"
                                 />
                             </div>
                             <div>
                                 <Label htmlFor="interests">Interests</Label>
-                                <Input 
-                                    id="interests"
-                                    name="interests"
-                                    value={editedProfile.interests?.join(', ')} 
-                                    onChange={(e) => setEditedProfile(prev => ({...prev, interests: e.target.value.split(',').map(s => s.trim())}))}
+                                <MultiSelect
+                                    options={interestsSelectOptions}
+                                    selected={editedProfile.interests || []}
+                                    onChange={(selected) => setEditedProfile(prev => ({...prev, interests: selected}))}
+                                    placeholder="Select your interests..."
+                                    className="mt-2"
                                 />
                             </div>
                         </CardContent>

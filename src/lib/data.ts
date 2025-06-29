@@ -32,6 +32,16 @@ export type Conversation = {
   unreadCount: number;
 };
 
+export const wantsOptions = [
+  'Mentorship', 'Discreet', 'Long-term', 'Travel Partner', 
+  'Casual', 'No Strings Attached', 'Friendship', 'Networking'
+];
+
+export const interestsOptions = [
+  'Art', 'Travel', 'Fine Dining', 'Theatre', 'Wine Tasting',
+  'Sports', 'Music', 'Movies', 'Reading', 'Cooking', 'Fitness'
+];
+
 
 export const featuredProfiles: Profile[] = [
   {

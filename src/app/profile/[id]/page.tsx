@@ -39,11 +39,12 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage }: { pr
       <Card className="overflow-hidden shadow-lg">
         <div className="relative group">
           <Image
-            src={profile.imageUrl}
+            src={profile.imageUrl ?? 'https://placehold.co/600x750'}
             alt={`Profile of ${profile.name}`}
             width={600}
             height={750}
             className="w-full object-cover aspect-[4/5]"
+            data-ai-hint={profile.hint}
           />
           {profile.verified && (
             <Badge className="absolute top-4 left-4 border-2 border-white/50 bg-primary text-primary-foreground">
@@ -253,11 +254,12 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                     <Card className="overflow-hidden shadow-lg">
                         <div className="relative">
                             <Image
-                                src={editedProfile.imageUrl}
+                                src={editedProfile.imageUrl ?? 'https://placehold.co/600x750'}
                                 alt={`Profile of ${editedProfile.name}`}
                                 width={600}
                                 height={750}
                                 className="w-full object-cover aspect-[4/5]"
+                                data-ai-hint={editedProfile.hint}
                             />
                             <Button variant="secondary" size="icon" className="absolute bottom-4 right-4 rounded-full" onClick={() => profileImageInputRef.current?.click()}>
                                 <Camera className="h-4 w-4" />

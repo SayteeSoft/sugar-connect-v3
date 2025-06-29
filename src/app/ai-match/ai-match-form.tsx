@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -28,7 +29,7 @@ const ProfileListItem = ({ profile, onRemove }: { profile: Profile; onRemove: (p
     <Card className="w-full hover:bg-muted/50 transition-colors">
       <CardContent className="flex items-center p-4 gap-4">
         <Avatar className="h-16 w-16 border">
-          <AvatarImage src={profile.imageUrl} alt={profile.name} data-ai-hint={profile.hint} />
+          <AvatarImage src={profile.imageUrl ?? 'https://placehold.co/100x100'} alt={profile.name} data-ai-hint={profile.hint} />
           <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
         </Avatar>
         <div className="flex-grow">

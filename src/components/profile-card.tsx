@@ -38,11 +38,11 @@ export function ProfileCard({ profile, onRemove }: ProfileCardProps) {
       <Card className="group overflow-hidden rounded-lg shadow-lg transition-transform duration-300 ease-in-out hover:-translate-y-2">
         <div className="relative aspect-[4/5] w-full">
           <Image
-            src={profile.imageUrl}
+            src={profile.imageUrl ?? 'https://placehold.co/600x750'}
             alt={`Profile of ${profile.name}`}
             data-ai-hint={profile.hint}
             width={600}
-            height={400}
+            height={750}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />

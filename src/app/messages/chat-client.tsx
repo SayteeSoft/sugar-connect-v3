@@ -120,7 +120,7 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
               onClick={() => setSelectedConversationId(convo.id)}
             >
               <Avatar className="h-12 w-12 mr-3 relative">
-                <AvatarImage src={convo.participant.imageUrl} alt={convo.participant.name} data-ai-hint={convo.participant.hint} />
+                <AvatarImage src={convo.participant.imageUrl ?? 'https://placehold.co/100x100'} alt={convo.participant.name} data-ai-hint={convo.participant.hint} />
                 <AvatarFallback>{convo.participant.name.charAt(0)}</AvatarFallback>
                 {convo.participant.online && (
                   <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-background" />
@@ -156,7 +156,7 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
             <header className="flex items-center p-3 border-b shadow-sm">
               <Avatar className="h-10 w-10 mr-3 relative">
                 <AvatarImage
-                  src={selectedConversation.participant.imageUrl}
+                  src={selectedConversation.participant.imageUrl ?? 'https://placehold.co/100x100'}
                   alt={selectedConversation.participant.name}
                   data-ai-hint={selectedConversation.participant.hint}
                 />
@@ -203,7 +203,7 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
                         >
                             {message.senderId !== currentUser.id && (
                                 <Avatar className="h-8 w-8">
-                                    <AvatarImage src={selectedConversation.participant.imageUrl} alt={selectedConversation.participant.name} />
+                                    <AvatarImage src={selectedConversation.participant.imageUrl ?? 'https://placehold.co/100x100'} alt={selectedConversation.participant.name} data-ai-hint={selectedConversation.participant.hint}/>
                                     <AvatarFallback>{selectedConversation.participant.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
                             )}

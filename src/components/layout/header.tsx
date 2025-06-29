@@ -70,9 +70,14 @@ export function Header() {
         <div className="flex flex-1 items-center justify-start">
           <Link href="/" className="flex items-center gap-2">
             <Heart className="h-5 w-5 text-primary" />
-            <span className="font-headline text-lg font-bold text-primary">
-              SugarConnect
-            </span>
+            <div>
+              <span className="font-headline text-lg font-bold text-primary">
+                SugarConnect
+              </span>
+              <p className="text-xs text-muted-foreground whitespace-nowrap hidden md:block">
+                An exclusive platform for ambitious and attractive individuals.
+              </p>
+            </div>
           </Link>
         </div>
         <nav className="hidden items-center justify-center space-x-6 text-lg font-medium md:flex">

@@ -1,9 +1,9 @@
+
 'use client';
 
 import Link from 'next/link';
 import { Heart } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { useState, useEffect } from 'react';
 
 const CookiePolicyModal = dynamic(() => import('../cookie-policy-modal').then(mod => mod.CookiePolicyModal), { ssr: false });
 const PrivacyPolicyModal = dynamic(() => import('../privacy-policy-modal').then(mod => mod.PrivacyPolicyModal), { ssr: false });
@@ -11,12 +11,6 @@ const TermsOfUseModal = dynamic(() => import('../terms-of-use-modal').then(mod =
 
 
 export function Footer() {
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-
-  useEffect(() => {
-    setCurrentYear(new Date().getFullYear());
-  }, []);
-
   return (
     <footer className="w-full border-t bg-card text-card-foreground">
       <div className="container mx-auto px-4 md:px-6 py-8 text-center">
@@ -64,7 +58,7 @@ export function Footer() {
         
         <div className="border-t pt-6 space-y-2">
             <p className="text-sm text-muted-foreground">
-              &copy; {currentYear} SugarConnect. All rights reserved.
+              &copy; 2024 SugarConnect. All rights reserved.
             </p>
         </div>
       </div>

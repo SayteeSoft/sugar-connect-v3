@@ -389,20 +389,16 @@ export const featuredProfiles: Profile[] = [
 
 const PROFILES_STORAGE_KEY = 'sugarconnect_profiles';
 
-const now = new Date();
-const getTimestamp = (minutesAgo: number) => new Date(now.getTime() - minutesAgo * 60 * 1000).toISOString();
-
-
 const rawConversationsData = [
     {
         id: 1,
         participantId: 2,
         unreadCount: 2,
         messages: [
-            { id: 1, senderId: 2, text: 'Hey there! Loved your profile, especially your taste in art.', timestamp: getTimestamp(120) },
-            { id: 2, senderId: 1, text: 'Thank you, Darianna. I appreciate that. You have a wonderful smile.', timestamp: getTimestamp(115) },
-            { id: 3, senderId: 2, text: 'Aww, thanks! You seem like a really interesting person. What are you up to this weekend?', timestamp: getTimestamp(10) },
-            { id: 4, senderId: 2, text: 'Let me know if you might be free for a drink.', timestamp: getTimestamp(9) },
+            { id: 1, senderId: 2, text: 'Hey there! Loved your profile, especially your taste in art.', timestamp: '2024-07-01T08:00:00.000Z' },
+            { id: 2, senderId: 1, text: 'Thank you, Darianna. I appreciate that. You have a wonderful smile.', timestamp: '2024-07-01T08:05:00.000Z' },
+            { id: 3, senderId: 2, text: 'Aww, thanks! You seem like a really interesting person. What are you up to this weekend?', timestamp: '2024-07-01T09:50:00.000Z' },
+            { id: 4, senderId: 2, text: 'Let me know if you might be free for a drink.', timestamp: '2024-07-01T09:51:00.000Z' },
         ]
     },
     {
@@ -410,10 +406,10 @@ const rawConversationsData = [
         participantId: 3,
         unreadCount: 0,
         messages: [
-            { id: 1, senderId: 1, text: 'Good morning, Kateryna. I hope you have a great day.', timestamp: getTimestamp(1440) },
-            { id: 2, senderId: 3, text: 'Morning! You too. Thanks for the message :)', timestamp: getTimestamp(1430) },
-            { id: 3, senderId: 1, text: 'Any plans for the upcoming week?', timestamp: getTimestamp(900) },
-            { id: 4, senderId: 3, text: 'Not yet! Still trying to figure things out. You?', timestamp: getTimestamp(895) },
+            { id: 1, senderId: 1, text: 'Good morning, Kateryna. I hope you have a great day.', timestamp: '2024-06-30T10:00:00.000Z' },
+            { id: 2, senderId: 3, text: 'Morning! You too. Thanks for the message :)', timestamp: '2024-06-30T10:10:00.000Z' },
+            { id: 3, senderId: 1, text: 'Any plans for the upcoming week?', timestamp: '2024-06-30T19:00:00.000Z' },
+            { id: 4, senderId: 3, text: 'Not yet! Still trying to figure things out. You?', timestamp: '2024-06-30T19:05:00.000Z' },
         ]
     },
      {
@@ -421,8 +417,8 @@ const rawConversationsData = [
         participantId: 5,
         unreadCount: 0,
         messages: [
-            { id: 1, senderId: 5, text: 'Your profile mentioned you enjoy fine dining. Any favorite spots?', timestamp: getTimestamp(2880) },
-            { id: 2, senderId: 1, text: 'Absolutely. There\'s a fantastic French place downtown I could recommend. Perhaps I could take you sometime.', timestamp: getTimestamp(2870) },
+            { id: 1, senderId: 5, text: 'Your profile mentioned you enjoy fine dining. Any favorite spots?', timestamp: '2024-06-29T10:00:00.000Z' },
+            { id: 2, senderId: 1, text: 'Absolutely. There\'s a fantastic French place downtown I could recommend. Perhaps I could take you sometime.', timestamp: '2024-06-29T10:10:00.000Z' },
         ]
     },
     {
@@ -430,7 +426,7 @@ const rawConversationsData = [
         participantId: 7,
         unreadCount: 1,
         messages: [
-            { id: 1, senderId: 7, text: 'Hi! I saw you\'re a travel partner. What\'s the most amazing place you\'ve visited?', timestamp: getTimestamp(5) },
+            { id: 1, senderId: 7, text: 'Hi! I saw you\'re a travel partner. What\'s the most amazing place you\'ve visited?', timestamp: '2024-07-01T09:55:00.000Z' },
         ]
     },
 ];

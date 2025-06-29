@@ -24,9 +24,12 @@ export function FeaturedProfiles() {
 
   const displayedProfiles = profiles
     .filter(profile => {
+      // Don't show the admin account on the homepage
+      if (profile.id === 1) return false;
+      
       if (!loggedInUser) {
-        // If not logged in, show a mix of profiles (excluding the admin)
-        return profile.id !== 1;
+        // If not logged in, show a mix of profiles
+        return true;
       }
       // Don't show the user their own profile on the homepage
       if (profile.id === loggedInUser.id) {
@@ -41,7 +44,7 @@ export function FeaturedProfiles() {
     .slice(0, 4);
 
   return (
-    <section className="bg-background py-12 md:pt-0 md:pb-20">
+    <section className="bg-background py-12 md:pt-12 md:pb-20">
       <div className="container mx-auto px-4 md:px-6">
         <h2 className="mb-8 text-center font-headline text-3xl font-bold text-primary md:text-4xl">
           Featured Profiles

@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export function WhatIsDefinitions() {
   return (
-    <section className="bg-secondary py-12 md:pt-0 md:pb-20">
+    <section className="bg-secondary py-12 md:pt-12 md:pb-20">
       <div className="container mx-auto px-4 md:px-6">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="mb-8 font-headline text-3xl font-bold text-primary md:text-4xl">

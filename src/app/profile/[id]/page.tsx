@@ -13,17 +13,24 @@ import { Footer } from '@/components/layout/footer';
 import {
   BadgeCheck,
   Pencil,
-  MoreHorizontal,
   Flag,
   Mail,
   Camera,
   Loader2,
+  Heart,
+  Ban,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from "@/hooks/use-toast";
 import { MultiSelect, type MultiSelectOption } from '@/components/ui/multi-select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 
 const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit }: { profile: Profile; onEdit: () => void; isOwnProfile: boolean; canEdit: boolean; }) => (
@@ -67,10 +74,56 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit }: { profile: Prof
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>About {profile.name}</CardTitle>
-          {!isOwnProfile && <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon"><MoreHorizontal className="h-5 w-5 text-muted-foreground" /></Button>
-            <Button variant="ghost" size="icon"><Flag className="h-5 w-5 text-muted-foreground" /></Button>
-          </div>}
+          {!isOwnProfile && (
+            <TooltipProvider>
+              <div className="flex items-center gap-1">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Heart className="h-5 w-5 text-muted-foreground" />
+                      <span className="sr-only">Add to Favorites</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Add to Favorites</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Mail className="h-5 w-5 text-muted-foreground" />
+                      <span className="sr-only">Send Message</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Send Message</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Flag className="h-5 w-5 text-muted-foreground" />
+                      <span className="sr-only">Report Profile</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Report Profile</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Ban className="h-5 w-5 text-muted-foreground" />
+                      <span className="sr-only">Block User</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Block User</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
+          )}
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">{profile.bio}</p>

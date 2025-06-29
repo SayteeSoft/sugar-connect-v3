@@ -25,7 +25,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from "@/hooks/use-toast";
 
 
-const ProfileView = ({ profile, onEdit, isOwnProfile }: { profile: Profile; onEdit: () => void; isOwnProfile: boolean; }) => (
+const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit }: { profile: Profile; onEdit: () => void; isOwnProfile: boolean; canEdit: boolean; }) => (
   <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
     {/* Left Column */}
     <div className="w-full lg:w-1/3 space-y-6">
@@ -44,7 +44,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile }: { profile: Profile; onEd
               Verified
             </Badge>
           )}
-           {isOwnProfile && <Button variant="secondary" size="icon" className="absolute bottom-4 right-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" onClick={onEdit}>
+           {canEdit && <Button variant="secondary" size="icon" className="absolute bottom-4 right-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" onClick={onEdit}>
             <Pencil className="h-4 w-4" />
           </Button>}
         </div>
@@ -55,7 +55,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile }: { profile: Profile; onEd
           </div>
           <div className="flex flex-col space-y-2">
             {!isOwnProfile && <Button size="lg"><Mail className="mr-2" /> Message</Button>}
-            {isOwnProfile && <Button variant="secondary" onClick={onEdit}><Pencil className="mr-2" /> Edit Profile</Button>}
+            {canEdit && <Button variant="secondary" onClick={onEdit}><Pencil className="mr-2" /> Edit Profile</Button>}
           </div>
         </CardContent>
       </Card>
@@ -318,6 +318,8 @@ export default function ProfilePage() {
 
   const profileId = parseInt(params.id, 10);
   const isOwnProfile = profileId === loggedInUserId;
+  const isAdmin = loggedInUserId === 1;
+  const canEdit = isOwnProfile || isAdmin;
 
   useEffect(() => {
     const loggedInStatus = typeof window !== 'undefined' && localStorage.getItem('isLoggedIn') === 'true';
@@ -379,7 +381,7 @@ export default function ProfilePage() {
     <div className="flex flex-col min-h-screen bg-secondary">
       <Header />
       <main className="flex-grow container mx-auto p-4 md:p-6">
-        {isEditMode && isOwnProfile ? (
+        {isEditMode && canEdit ? (
           <ProfileEdit 
             profile={profileData} 
             onSave={handleSaveProfile} 
@@ -390,6 +392,7 @@ export default function ProfilePage() {
             profile={profileData} 
             onEdit={() => setIsEditMode(true)}
             isOwnProfile={isOwnProfile}
+            canEdit={canEdit}
           />
         )}
       </main>

@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onRoleChange }: { profile: Profile; onEdit: () => void; isOwnProfile: boolean; canEdit: boolean; onMessage: (profileId: number) => void; onRoleChange: (role: 'baby' | 'daddy') => void; }) => (
+const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage }: { profile: Profile; onEdit: () => void; isOwnProfile: boolean; canEdit: boolean; onMessage: (profileId: number) => void; }) => (
   <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
     {/* Left Column */}
     <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-24">
@@ -58,25 +58,16 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onRole
           </Button>}
         </div>
         <CardContent className="p-6 space-y-4">
-          <div>
-            <h1 className="text-3xl font-bold font-headline">{profile.name}</h1>
+           <div>
+            <div className="flex items-baseline gap-2 mb-1">
+                <h1 className="text-3xl font-bold font-headline">{profile.name}</h1>
+                <Badge variant={profile.role === 'daddy' ? 'secondary' : 'outline'}>
+                    {profile.role === 'daddy' ? 'Sugar Daddy' : 'Sugar Baby'}
+                </Badge>
+            </div>
             <p className="text-muted-foreground text-lg">{profile.age}, {profile.location}</p>
           </div>
           <div className="flex flex-col space-y-2">
-            {canEdit && (
-              <div className="space-y-2">
-                <Label>Role</Label>
-                <Select onValueChange={(value: 'baby' | 'daddy') => onRoleChange(value)} defaultValue={profile.role}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="baby">Sugar Baby</SelectItem>
-                    <SelectItem value="daddy">Sugar Daddy</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
             {!isOwnProfile && <Button size="lg" onClick={() => onMessage(profile.id)}><Mail className="mr-2" /> Message</Button>}
             {canEdit && <Button variant="secondary" onClick={onEdit}><Pencil className="mr-2" /> Edit Profile</Button>}
           </div>
@@ -308,7 +299,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                 <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-24">
                     <Card className="overflow-hidden shadow-lg">
                         <div className="relative">
-                            <img
+                            <Image
                                 key={editedProfile.imageUrl}
                                 src={editedProfile.imageUrl ?? 'https://placehold.co/600x600'}
                                 alt={`Profile of ${editedProfile.name}`}
@@ -521,27 +512,6 @@ export default function ProfilePage() {
     }
   };
 
-  const handleRoleChange = (newRole: 'baby' | 'daddy') => {
-    if (!profileData) return;
-    const updatedProfile = { ...profileData, role: newRole };
-    const success = updateProfile(updatedProfile);
-    if (success) {
-      // After saving, we get the fresh data from storage.
-      setProfileData(getProfile(profileId));
-      window.dispatchEvent(new Event('profileUpdated'));
-      toast({
-        title: "Role Updated",
-        description: `Profile role has been changed to ${newRole === 'baby' ? 'Sugar Baby' : 'Sugar Daddy'}.`,
-      });
-    } else {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update the role.",
-      });
-    }
-  };
-
   return (
     <>
       <Header />
@@ -559,7 +529,6 @@ export default function ProfilePage() {
             isOwnProfile={isOwnProfile}
             canEdit={canEdit}
             onMessage={handleMessage}
-            onRoleChange={handleRoleChange}
           />
         )}
       </main>

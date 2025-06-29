@@ -16,6 +16,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     // Check login status from localStorage on component mount
@@ -33,6 +34,7 @@ export function Footer() {
         setIsAdmin(false);
       }
     }
+    setMounted(true);
   }, []);
 
   return (
@@ -75,7 +77,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li><Link href="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact Us</Link></li>
               <li><Link href="/sitemap" className="text-sm text-muted-foreground hover:text-primary transition-colors">Sitemap</Link></li>
-              {isAdmin && (
+              {mounted && isAdmin && (
                 <li><Link href="/admin" className="text-sm text-muted-foreground hover:text-primary transition-colors">Admin</Link></li>
               )}
             </ul>

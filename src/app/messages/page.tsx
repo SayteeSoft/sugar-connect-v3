@@ -1,4 +1,3 @@
-
 import { Header } from '@/components/layout/header';
 import { ChatClient } from './chat-client';
 import { getConversations, getProfile } from '@/lib/data';
@@ -6,7 +5,6 @@ import { getConversations, getProfile } from '@/lib/data';
 export default function MessagesPage({
   searchParams,
 }: {
-  params: { [key: string]: string | string[] | undefined };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const allConversations = getConversations();

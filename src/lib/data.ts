@@ -111,7 +111,7 @@ export const featuredProfiles: Profile[] = [
   },
   {
     id: 3,
-    name: 'Sophie',
+    name: 'Kateryna',
     age: 22,
     location: 'Birmingham, UK',
     imageUrl: 'https://placehold.co/600x750',
@@ -404,7 +404,7 @@ const rawConversationsData = [
         participantId: 3,
         unreadCount: 0,
         messages: [
-            { id: 1, senderId: 1, text: 'Good morning, Sophie. I hope you have a great day.', timestamp: getTimestamp(1440) },
+            { id: 1, senderId: 1, text: 'Good morning, Kateryna. I hope you have a great day.', timestamp: getTimestamp(1440) },
             { id: 2, senderId: 3, text: 'Morning! You too. Thanks for the message :)', timestamp: getTimestamp(1430) },
             { id: 3, senderId: 1, text: 'Any plans for the upcoming week?', timestamp: getTimestamp(900) },
             { id: 4, senderId: 3, text: 'Not yet! Still trying to figure things out. You?', timestamp: getTimestamp(895) },

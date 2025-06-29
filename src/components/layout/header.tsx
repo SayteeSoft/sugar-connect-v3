@@ -77,6 +77,10 @@ export function Header() {
     router.push("/profile");
   };
 
+  const handleSettings = () => {
+    router.push("/settings");
+  };
+
   const navLinks = [
     { href: "/profile", label: "Profile" },
     { href: "/messages", label: "Messages" },
@@ -151,7 +155,7 @@ export function Header() {
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onSelect={handleSettings}>
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
                   </DropdownMenuItem>

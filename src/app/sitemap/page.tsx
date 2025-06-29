@@ -16,6 +16,7 @@ const sitemapLinks = {
     { href: "/login", title: "Login", description: "Access your account." },
     { href: "/signup", title: "Sign Up", description: "Create a new account for free." },
     { href: "/purchase-credits", title: "Purchase Credits", description: "Buy credits to connect with others." },
+    { href: "/settings", title: "Settings", description: "Manage your account settings." },
   ],
   "Information & Legal": [
     { href: "/about", title: "About Us", description: "Learn more about our mission and community." },
@@ -59,7 +60,7 @@ export default function SitemapPage() {
       <main className="flex-grow container mx-auto p-4 md:p-6">
         <Card>
           <CardHeader>
-            <CardTitle className="font-headline text-4xl text-primary">Sitemap</CardTitle>
+            <CardTitle className="font-headline text-4xl text-primary">Sitemap</Title>
             <p className="text-muted-foreground pt-2">Navigate through all the pages available on SugarConnect.</p>
           </CardHeader>
           <CardContent>

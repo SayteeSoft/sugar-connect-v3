@@ -5,34 +5,31 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { AdminClient } from './admin-client';
-import { getProfiles, getProfile, type Profile } from '@/lib/data';
+import { getProfiles, type Profile } from '@/lib/data';
 import { Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function AdminPage() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
+  const { user, isLoggedIn, isLoading } = useAuth();
+  const isAdmin = user?.id === 1;
 
   useEffect(() => {
-    const loggedInStatus = typeof window !== 'undefined' && localStorage.getItem('isLoggedIn') === 'true';
-    if (!loggedInStatus) {
+    if (!isLoading && !isLoggedIn) {
       router.replace('/login');
-      return;
     }
+  }, [isLoading, isLoggedIn, router]);
 
-    // For demo, hardcoding admin user ID as 1
-    const adminProfile = getProfile(1);
-    if (adminProfile && adminProfile.id === 1) {
-      setIsAdmin(true);
+  useEffect(() => {
+    if (isAdmin) {
       setProfiles(getProfiles());
     }
-    setIsLoading(false);
-  }, [router]);
+  }, [isAdmin]);
 
-  if (isLoading) {
+  if (isLoading || !isLoggedIn) {
     return (
       <>
         <Header />

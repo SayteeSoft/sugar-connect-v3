@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Header } from "@/components/layout/header";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 
 export default function LoginPage() {
@@ -24,20 +25,38 @@ export default function LoginPage() {
   const [password, setPassword] = useState("admin");
   const [error, setError] = useState("");
   const router = useRouter();
+  const { login, isLoggedIn, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.replace('/profile');
+    }
+  }, [isLoggedIn, router]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (email === "saytee.software@gmail.com" && password === "admin") {
-      // In a real app, you'd get a token from your API
-      // For this demo, we'll use localStorage to simulate a session
-      localStorage.setItem("isLoggedIn", "true");
+    const success = login(email, password);
+
+    if (success) {
       router.push("/profile");
     } else {
       setError("Invalid email or password.");
     }
   };
+
+  if (isLoading || isLoggedIn) {
+    return (
+       <>
+         <Header />
+         <main className="flex-grow container mx-auto p-4 md:p-6 flex flex-col justify-center items-center gap-4">
+           <Loader2 className="h-8 w-8 animate-spin text-primary" />
+           <p className="text-muted-foreground">Loading...</p>
+         </main>
+       </>
+    );
+  }
 
   return (
     <>

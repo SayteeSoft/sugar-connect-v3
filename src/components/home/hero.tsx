@@ -1,21 +1,14 @@
+
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
+import { useAuth } from '@/hooks/use-auth';
 import { Heart } from "lucide-react";
 
 export function Hero() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn } = useAuth();
   const router = useRouter();
-
-  useEffect(() => {
-    // Check login status from localStorage on component mount
-    if (typeof window !== 'undefined') {
-      const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
-      setIsLoggedIn(loggedInStatus);
-    }
-  }, []);
 
   const handleButtonClick = () => {
     if (isLoggedIn) {

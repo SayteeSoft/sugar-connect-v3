@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -15,7 +16,7 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, User, KeyRound, ShieldAlert } from 'lucide-react';
 import type { Profile } from '@/lib/data';
-import { getProfile, updateProfile } from '@/lib/data';
+import { updateProfile } from '@/lib/data';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,6 +28,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useAuth } from '@/hooks/use-auth';
 
 // Schema for updating profile information
 const profileFormSchema = z.object({
@@ -51,7 +53,7 @@ type PasswordFormValues = z.infer<typeof passwordFormSchema>;
 export default function SettingsPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const { user: profile, isLoading, isLoggedIn, logout } = useAuth();
   const [isSubmittingProfile, setIsSubmittingProfile] = useState(false);
   const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
 
@@ -66,18 +68,13 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
-    const loggedInStatus = typeof window !== 'undefined' && localStorage.getItem('isLoggedIn') === 'true';
-    if (!loggedInStatus) {
+    if (!isLoading && !isLoggedIn) {
       router.replace('/login');
-      return;
     }
-    // For demo, hardcoding user ID to 1
-    const userProfile = getProfile(1);
-    if (userProfile) {
-      setProfile(userProfile);
-      profileForm.reset({ name: userProfile.name, email: 'saytee.software@gmail.com' });
+    if (profile) {
+      profileForm.reset({ name: profile.name, email: 'saytee.software@gmail.com' });
     }
-  }, [router, profileForm]);
+  }, [router, profile, profileForm, isLoading, isLoggedIn]);
 
   const onProfileSubmit = async (data: ProfileFormValues) => {
     if (!profile) return;
@@ -90,12 +87,11 @@ export default function SettingsPage() {
     const success = updateProfile(updatedProfileData);
 
     if (success) {
-      // The email is display-only in this demo.
+      window.dispatchEvent(new Event('authChanged'));
       toast({
         title: 'Profile Updated',
         description: 'Your username has been updated successfully.',
       });
-      window.dispatchEvent(new Event('profileUpdated')); // Notify header to update
     } else {
         toast({
             variant: "destructive",
@@ -109,11 +105,7 @@ export default function SettingsPage() {
 
   const onPasswordSubmit = async (data: PasswordFormValues) => {
     setIsSubmittingPassword(true);
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // In a real app, you'd verify the currentPassword here.
-    // For this demo, we'll just "succeed".
     console.log('Password change data:', data);
 
     toast({
@@ -126,8 +118,7 @@ export default function SettingsPage() {
   };
   
   const handleDeleteAccount = () => {
-    // In a real app, this would be a more involved process.
-    localStorage.removeItem("isLoggedIn");
+    logout();
     toast({
         title: 'Account Deleted',
         description: 'Your account has been permanently deleted.',
@@ -136,7 +127,7 @@ export default function SettingsPage() {
     router.push('/');
   }
 
-  if (!profile) {
+  if (isLoading || !isLoggedIn) {
     return (
       <>
         <Header />

@@ -14,62 +14,32 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, LogOut, Settings, LogIn, Coins, Heart } from "lucide-react";
 import { ThemeSwitcher } from "../theme-switcher";
-import { useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import type { Profile } from "@/lib/data";
-import { getProfile } from "@/lib/data";
+import { useRouter, usePathname } from "next/navigation";
+import { useAuth } from "@/hooks/use-auth";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [profile, setProfile] = useState<Profile | undefined>();
+  const { isLoggedIn, user, isLoading, logout } = useAuth();
   const [credits, setCredits] = useState(0);
-  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    const updateProfileData = () => {
-      if (typeof window !== 'undefined') {
-        const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
-        setIsLoggedIn(loggedInStatus);
-
-        if (loggedInStatus) {
-          const userProfile = getProfile(1);
-          setProfile(userProfile);
-          if (userProfile) {
-            if (userProfile.role === 'baby' || userProfile.id === 1) {
-              setCredits(Infinity);
-            } else {
-              setCredits(15);
-            }
+      if (isLoggedIn && user) {
+          if (user.role === 'baby' || user.id === 1) {
+            setCredits(Infinity);
+          } else {
+            setCredits(15);
           }
-        } else {
-          setIsLoggedIn(false);
-          setProfile(undefined);
-          setCredits(0);
-        }
+      } else {
+        setCredits(0);
       }
-    };
-    
-    updateProfileData();
-    setMounted(true);
-
-    window.addEventListener('profileUpdated', updateProfileData);
-
-    return () => {
-      window.removeEventListener('profileUpdated', updateProfileData);
-    };
-  }, []);
-
+  }, [isLoggedIn, user]);
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    setIsLoggedIn(false);
-    setProfile(undefined);
-    setCredits(0);
+    logout();
     router.push("/login");
   };
 
@@ -116,9 +86,14 @@ export function Header() {
           ))}
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
-          {mounted ? (
+          {isLoading ? (
+            <div className="flex items-center space-x-2 md:space-x-4">
+              <Skeleton className="h-9 w-24" />
+              <Skeleton className="h-8 w-8 rounded-full" />
+            </div>
+          ) : (
             <>
-              {isLoggedIn && profile && (profile.role === 'daddy' && profile.id !== 1) && (
+              {isLoggedIn && user && (user.role === 'daddy' && user.id !== 1) && (
                 <Button asChild size="sm">
                   <Link href="/purchase-credits">
                     Buy Credits
@@ -126,7 +101,7 @@ export function Header() {
                   </Link>
                 </Button>
               )}
-              {isLoggedIn && profile && (profile.role === 'baby' || profile.id === 1) && (
+              {isLoggedIn && user && (user.role === 'baby' || user.id === 1) && (
                  <div className="flex items-center gap-2 h-10 px-3 text-sm font-medium whitespace-nowrap">
                     <Coins className="h-4 w-4 text-primary" />
                     <span className="text-foreground">Unlimited Credits</span>
@@ -137,20 +112,20 @@ export function Header() {
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
                       <AvatarImage
-                        src={profile?.imageUrl ?? "https://placehold.co/100x100"}
-                        data-ai-hint={profile?.hint ?? "person"}
-                        alt={profile?.name ?? "@user"}
+                        src={user?.imageUrl ?? "https://placehold.co/100x100"}
+                        data-ai-hint={user?.hint ?? "person"}
+                        alt={user?.name ?? "@user"}
                       />
-                      <AvatarFallback>{profile?.name?.charAt(0).toUpperCase() ?? "U"}</AvatarFallback>
+                      <AvatarFallback>{user?.name?.charAt(0).toUpperCase() ?? "U"}</AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end" forceMount>
-                  {isLoggedIn ? (
+                  {isLoggedIn && user ? (
                     <>
                       <DropdownMenuLabel className="font-normal">
                         <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-medium leading-none">{profile?.name ?? 'saytee.software'}</p>
+                          <p className="text-sm font-medium leading-none">{user?.name}</p>
                           <p className="text-xs leading-none text-muted-foreground">
                             saytee.software@gmail.com
                           </p>
@@ -180,11 +155,6 @@ export function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
-          ) : (
-            <div className="flex items-center space-x-2 md:space-x-4">
-              <Skeleton className="h-9 w-24" />
-              <Skeleton className="h-8 w-8 rounded-full" />
-            </div>
           )}
           <ThemeSwitcher />
         </div>

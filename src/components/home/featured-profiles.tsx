@@ -3,26 +3,17 @@
 
 import { useState, useEffect } from "react";
 import type { Profile } from "@/lib/data";
-import { getProfiles, getProfile } from "@/lib/data";
+import { getProfiles } from "@/lib/data";
 import { ProfileCard } from "@/components/profile-card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/hooks/use-auth";
 
 export function FeaturedProfiles() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>();
-  const [isLoading, setIsLoading] = useState(true);
+  const { user: loggedInUser, isLoading } = useAuth();
 
   useEffect(() => {
-    // This logic now runs only on the client, preventing server/client mismatch
-    const allProfiles = getProfiles();
-    setProfiles(allProfiles);
-
-    const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
-    if (loggedInStatus) {
-      // In a real app, you'd get the actual user ID. For demo, we use user 1.
-      setLoggedInUser(getProfile(1));
-    }
-    setIsLoading(false);
+    setProfiles(getProfiles());
   }, []);
 
   const displayedProfiles = isLoading ? [] : profiles
@@ -40,8 +31,6 @@ export function FeaturedProfiles() {
           return false;
         }
       }
-      // If not logged in, all non-admin profiles are shown (up to the slice limit)
-      // If logged in, only profiles that passed the above checks are shown
       return true;
     })
     .slice(0, 4);

@@ -1,4 +1,8 @@
 
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,8 +10,31 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Header } from "@/components/layout/header";
+import { useAuth } from '@/hooks/use-auth';
+import { Loader2 } from 'lucide-react';
 
 export default function SignupPage() {
+  const router = useRouter();
+  const { isLoggedIn, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.replace('/profile');
+    }
+  }, [isLoggedIn, router]);
+
+  if (isLoading || isLoggedIn) {
+    return (
+       <>
+         <Header />
+         <main className="flex-grow container mx-auto p-4 md:p-6 flex flex-col justify-center items-center gap-4">
+           <Loader2 className="h-8 w-8 animate-spin text-primary" />
+           <p className="text-muted-foreground">Loading...</p>
+         </main>
+       </>
+    );
+  }
+
   return (
     <>
       <Header />

@@ -35,6 +35,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import imageCompression from 'browser-image-compression';
 import dynamic from 'next/dynamic';
+import { useAuth } from '@/hooks/use-auth';
 
 const GalleryModal = dynamic(() => import('@/components/gallery-modal').then(mod => mod.GalleryModal), {
   ssr: false,
@@ -569,55 +570,46 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
 export default function ProfilePage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [profileData, setProfileData] = useState<Profile | undefined>();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
-  const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>();
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { toast } = useToast();
   const router = useRouter();
   const params = useParams<{ id: string }>();
+  const { user: loggedInUser, isLoggedIn, isLoading: isAuthLoading } = useAuth();
 
   const profileId = parseInt(params.id, 10);
-  const isOwnProfile = profileId === loggedInUserId;
-  const isAdmin = loggedInUserId === 1;
+  const isOwnProfile = profileId === loggedInUser?.id;
+  const isAdmin = loggedInUser?.id === 1;
   const canEdit = isOwnProfile || isAdmin;
 
   const allImages = [profileData?.imageUrl, ...(profileData?.gallery || [])].filter((url): url is string => !!url);
 
   useEffect(() => {
-    const loggedInStatus = typeof window !== 'undefined' && localStorage.getItem('isLoggedIn') === 'true';
-    setIsLoggedIn(loggedInStatus);
+    if (isAuthLoading) return;
 
-    if (!loggedInStatus) {
+    if (!isLoggedIn) {
       router.replace('/login');
-    } else {
-      // For demo, hardcoding logged in user ID
-      const currentUserId = 1;
-      setLoggedInUserId(currentUserId); 
-      const currentUser = getProfile(currentUserId);
-      setLoggedInUser(currentUser);
-      const targetProfile = getProfile(profileId);
-
-      // Check if user is allowed to view this profile
-      const isViewingOwnProfile = targetProfile?.id === currentUser?.id;
-      
-      if (
-        !isViewingOwnProfile &&
-        currentUser &&
-        targetProfile &&
-        currentUser.role === targetProfile.role
-      ) {
-        // Block view by setting profile data to undefined
-        setProfileData(undefined);
-      } else {
-        setProfileData(targetProfile);
-      }
-      
-      setIsLoading(false);
+      return;
     }
-  }, [router, profileId]);
+    
+    const targetProfile = getProfile(profileId);
+
+    // Check if user is allowed to view this profile
+    const isViewingOwnProfile = targetProfile?.id === loggedInUser?.id;
+    
+    if (
+      !isViewingOwnProfile &&
+      loggedInUser &&
+      targetProfile &&
+      loggedInUser.role === targetProfile.role &&
+      !isAdmin
+    ) {
+      setProfileData(undefined);
+    } else {
+      setProfileData(targetProfile);
+    }
+      
+  }, [router, profileId, isAuthLoading, isLoggedIn, loggedInUser, isAdmin]);
 
   const openGallery = (index: number) => {
     // If index is -1, it's the profile pic (index 0 in allImages).
@@ -658,7 +650,26 @@ export default function ProfilePage() {
     router.push('/search');
   };
   
-  if (isLoading) {
+  const handleSaveProfile = (updatedProfile: Profile) => {
+    const success = updateProfile(updatedProfile);
+    if (success) {
+      setProfileData(getProfile(profileId));
+      setIsEditMode(false);
+      window.dispatchEvent(new Event('authChanged'));
+      toast({
+        title: "Profile Saved",
+        description: "Your changes have been saved successfully.",
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to save your profile. This might be due to storage limits if images are too large.",
+      });
+    }
+  };
+
+  if (isAuthLoading || (isLoggedIn && !profileData)) {
     return (
      <>
        <Header />
@@ -668,6 +679,17 @@ export default function ProfilePage() {
      </>
    );
  }
+
+  if (!isLoggedIn) {
+     return (
+     <>
+       <Header />
+       <main className="flex-grow container mx-auto p-4 md:p-6 flex justify-center items-center">
+         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+       </main>
+     </>
+   );
+  }
 
   if (!profileData) {
     return (
@@ -687,38 +709,18 @@ export default function ProfilePage() {
       </>
     );
   }
-  
-  const handleSaveProfile = (updatedProfile: Profile) => {
-    const success = updateProfile(updatedProfile);
-    if (success) {
-      // After saving, we get the fresh data from storage.
-      setProfileData(getProfile(profileId));
-      setIsEditMode(false);
-      window.dispatchEvent(new Event('profileUpdated'));
-      toast({
-        title: "Profile Saved",
-        description: "Your changes have been saved successfully.",
-      });
-    } else {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to save your profile. This might be due to storage limits if images are too large.",
-      });
-    }
-  };
 
   return (
     <>
       <Header />
       <main className="flex-grow container mx-auto p-4 md:p-6">
-        {isEditMode && canEdit && profileData ? (
+        {isEditMode && canEdit ? (
           <ProfileEdit 
             profile={profileData} 
             onSave={handleSaveProfile} 
             onCancel={() => setIsEditMode(false)} 
           />
-        ) : profileData ? (
+        ) : (
           <ProfileView 
             profile={profileData} 
             onEdit={() => setIsEditMode(true)}
@@ -732,9 +734,9 @@ export default function ProfilePage() {
             isAdmin={isAdmin}
             onOpenGallery={openGallery}
           />
-        ) : null}
+        )}
       </main>
-      {isGalleryOpen && profileData && allImages.length > 0 && (
+      {isGalleryOpen && allImages.length > 0 && (
         <GalleryModal
             images={allImages}
             startIndex={selectedImageIndex}

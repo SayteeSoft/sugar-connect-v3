@@ -221,7 +221,7 @@ export const featuredProfiles: Profile[] = [
   },
   {
     id: 7,
-    name: 'Amelia',
+    name: 'Vansessa',
     age: 21,
     location: 'Leeds, UK',
     imageUrl: 'https://placehold.co/600x750',

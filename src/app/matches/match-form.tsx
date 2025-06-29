@@ -16,7 +16,7 @@ const ProfileListItem = ({ profile, onRemove }: { profile: Profile; onRemove: (p
 
   const handleChat = (e: React.MouseEvent) => {
     e.stopPropagation();
-    router.push('/messages');
+    router.push(`/messages?chatWith=${profile.id}`);
   };
 
   const handleRemoveClick = (e: React.MouseEvent) => {

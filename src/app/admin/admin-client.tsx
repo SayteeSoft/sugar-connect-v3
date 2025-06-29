@@ -1,8 +1,9 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Profile } from '@/lib/data';
+import { getProfiles } from '@/lib/data';
 import {
   Table,
   TableBody,
@@ -34,6 +35,10 @@ export function AdminClient({ initialProfiles }: { initialProfiles: Profile[] })
   const [profiles, setProfiles] = useState(initialProfiles);
   const router = useRouter();
   const { toast } = useToast();
+
+  useEffect(() => {
+    setProfiles(getProfiles());
+  }, []);
 
   const handleView = (id: number) => {
     router.push(`/profile/${id}`);

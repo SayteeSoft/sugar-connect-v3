@@ -13,8 +13,7 @@ import { Button } from '@/components/ui/button';
 
 const ProfileListItem = ({ profile, onRemove, loggedInUser }: { profile: Profile; onRemove: (profileId: number) => void; loggedInUser?: Profile; }) => {
   const router = useRouter();
-  const isAdmin = loggedInUser?.id === 1;
-  const canChat = loggedInUser && (isAdmin || loggedInUser.role !== profile.role);
+  const canChat = loggedInUser && loggedInUser.role !== profile.role;
 
   const handleChat = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -51,7 +50,7 @@ const ProfileListItem = ({ profile, onRemove, loggedInUser }: { profile: Profile
               Chat
             </Button>
            )}
-          <Button variant="ghost" size="icon" onClick={handleRemoveClick} className="text-foreground/60 hover:bg-transparent hover:text-destructive active:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0">
+          <Button variant="ghost" size="icon" onClick={handleRemoveClick} className="text-foreground/60 hover:text-destructive active:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0">
             <Trash2 className="h-4 w-4" />
             <span className="sr-only">Remove</span>
           </Button>

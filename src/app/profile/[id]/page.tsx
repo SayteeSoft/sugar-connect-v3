@@ -47,7 +47,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
   isAdmin: boolean;
   onOpenGallery: (index: number) => void;
 }) => {
-    const canMessage = !isOwnProfile && loggedInUser && (isAdmin || profile.role !== loggedInUser.role);
+    const canMessage = !isOwnProfile && loggedInUser && profile.role !== loggedInUser.role;
 
     return (
   <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
@@ -538,11 +538,9 @@ export default function ProfilePage() {
 
       // Check if user is allowed to view this profile
       const isViewingOwnProfile = targetProfile?.id === currentUser?.id;
-      const userIsAdmin = currentUser?.id === 1;
       
       if (
         !isViewingOwnProfile &&
-        !userIsAdmin &&
         currentUser &&
         targetProfile &&
         currentUser.role === targetProfile.role

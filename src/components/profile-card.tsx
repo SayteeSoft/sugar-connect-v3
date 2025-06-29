@@ -23,8 +23,7 @@ interface ProfileCardProps {
 
 export function ProfileCard({ profile, onRemove, loggedInUser }: ProfileCardProps) {
   const router = useRouter();
-  const isAdmin = loggedInUser?.id === 1;
-  const canChat = loggedInUser && (isAdmin || loggedInUser.role !== profile.role);
+  const canChat = loggedInUser && loggedInUser.role !== profile.role;
 
   const handleChat = () => {
     router.push(`/messages?chatWith=${profile.id}`);

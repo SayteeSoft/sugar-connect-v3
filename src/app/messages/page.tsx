@@ -1,14 +1,19 @@
 
 import { Header } from '@/components/layout/header';
 import { ChatClient } from './chat-client';
-import { getConversations } from '@/lib/data';
+import { getConversations, getProfile } from '@/lib/data';
 
 export default function MessagesPage({ searchParams }: {
   searchParams?: { chatWith?: string };
 }) {
-  const conversations = getConversations();
+  const allConversations = getConversations();
   // Assume current user is the one with id 1 ('saytee.software')
+  const currentUserProfile = getProfile(1);
   const currentUser = { id: 1, name: 'saytee.software' };
+
+  const conversations = currentUserProfile
+    ? allConversations.filter(convo => convo.participant.role !== currentUserProfile.role)
+    : [];
 
   const initialSelectedProfileId = searchParams?.chatWith
     ? parseInt(searchParams.chatWith, 10)

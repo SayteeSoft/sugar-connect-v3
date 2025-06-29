@@ -6,6 +6,7 @@ import { Alegreya, Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Footer } from '@/components/layout/footer';
+import { MessageSimulator } from '@/components/message-simulator';
 
 export const metadata: Metadata = {
   title: 'SugarConnect',
@@ -48,6 +49,7 @@ export default function RootLayout({
             <Footer />
           </div>
           <Toaster />
+          <MessageSimulator />
         </ThemeProvider>
       </body>
     </html>

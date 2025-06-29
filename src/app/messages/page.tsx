@@ -48,70 +48,65 @@ const ChatSkeleton = () => (
   </div>
 );
 
-// A new wrapper component to safely use useSearchParams
-function MessagesPageContent() {
-  const searchParams = useSearchParams();
-  const { user: currentUserProfile, isLoading: isAuthLoading } = useAuth();
+// We wrap the logic that uses useSearchParams in a component
+// as it must be inside a Suspense boundary.
+function MessagesContent() {
+    const searchParams = useSearchParams();
+    const { user: currentUserProfile, isLoading: isAuthLoading } = useAuth();
+    
+    // Default state for conversations is null until we fetch them on the client.
+    const [conversations, setConversations] = useState<Conversation[] | null>(null);
 
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+    const initialSelectedProfileId = searchParams.get('chatWith')
+        ? parseInt(searchParams.get('chatWith') as string, 10)
+        : undefined;
+    
+    useEffect(() => {
+        // Data fetching only happens on the client, after auth is resolved.
+        if (!isAuthLoading && currentUserProfile) {
+            const allConversations = getConversations();
+            const filteredConversations = allConversations.filter(
+                (convo) => convo.participant.role !== currentUserProfile.role
+            );
+            setConversations(filteredConversations);
+        }
+    }, [isAuthLoading, currentUserProfile]);
 
-  const initialSelectedProfileId = searchParams.get('chatWith')
-    ? parseInt(searchParams.get('chatWith'), 10)
-    : undefined;
-
-  useEffect(() => {
-    if (isAuthLoading) {
-      return;
-    }
-
-    if (currentUserProfile) {
-      const allConversations = getConversations();
-      const filteredConversations = allConversations.filter(
-        (convo) => convo.participant.role !== currentUserProfile.role
-      );
-      setConversations(filteredConversations);
+    // Show skeleton while auth is loading or we haven't fetched conversations yet.
+    if (isAuthLoading || conversations === null) {
+      return <ChatSkeleton />;
     }
     
-    setIsLoading(false);
-  }, [currentUserProfile, isAuthLoading]);
+    if (!currentUserProfile) {
+        return (
+            <div className="flex flex-col flex-grow items-center justify-center h-full">
+                <p className="text-muted-foreground">Please log in to view your messages.</p>
+            </div>
+        );
+    }
 
-  if (isLoading || isAuthLoading) {
-    return <ChatSkeleton />;
-  }
+    const currentUserForChat = { id: currentUserProfile.id, name: currentUserProfile.name };
 
-  if (!currentUserProfile) {
-     return (
-        <div className="flex flex-col flex-grow items-center justify-center h-full">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-muted-foreground mt-2">Authenticating...</p>
-        </div>
-     );
-  }
-
-  const currentUserForChat = { id: currentUserProfile.id, name: currentUserProfile.name };
-
-  return (
-    <ChatClient
-      initialConversations={conversations}
-      currentUser={currentUserForChat}
-      initialSelectedProfileId={initialSelectedProfileId}
-    />
-  );
+    return (
+        <ChatClient
+            initialConversations={conversations}
+            currentUser={currentUserForChat}
+            initialSelectedProfileId={initialSelectedProfileId}
+        />
+    );
 }
 
-
 export default function MessagesPage() {
-  return (
-    <>
-      <Header />
-      <main className="flex-grow container mx-auto px-4 md:px-6 py-6 flex flex-col">
-        <div className="bg-background border rounded-lg overflow-hidden flex-grow flex">
-          <Suspense fallback={<ChatSkeleton />}>
-            <MessagesPageContent />
-          </Suspense>
-        </div>
-      </main>
-    </>
-  );
+    return (
+        <>
+            <Header />
+            <main className="flex-grow container mx-auto px-4 md:px-6 py-6 flex flex-col">
+                <div className="bg-background border rounded-lg overflow-hidden flex-grow flex">
+                    <Suspense fallback={<ChatSkeleton />}>
+                        <MessagesContent />
+                    </Suspense>
+                </div>
+            </main>
+        </>
+    );
 }

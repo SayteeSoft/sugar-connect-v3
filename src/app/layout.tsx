@@ -8,6 +8,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Footer } from '@/components/layout/footer';
 import { MessageSimulator } from '@/components/message-simulator';
 import { SocialActivitySimulator } from '@/components/social-activity-simulator';
+import { ClientOnly } from '@/components/client-only';
 
 export const metadata: Metadata = {
   title: 'SugarConnect',
@@ -56,9 +57,11 @@ export default function RootLayout({
             {children}
             <Footer />
           </div>
-          <Toaster />
-          <MessageSimulator />
-          <SocialActivitySimulator />
+          <ClientOnly>
+            <Toaster />
+            <MessageSimulator />
+            <SocialActivitySimulator />
+          </ClientOnly>
         </ThemeProvider>
       </body>
     </html>

@@ -67,20 +67,13 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
       <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
-        <div className="flex flex-1 items-center justify-start">
-          <Link href="/" className="flex items-center gap-2">
-            <Heart className="h-5 w-5 text-primary" />
-            <div>
-              <span className="font-headline text-lg font-bold text-primary">
-                SugarConnect
-              </span>
-              <p className="text-xs text-muted-foreground whitespace-nowrap hidden md:block">
-                An exclusive platform for ambitious and attractive individuals.
-              </p>
-            </div>
-          </Link>
-        </div>
-        <nav className="hidden items-center justify-center space-x-6 text-lg font-medium md:flex">
+        <Link href="/" className="flex items-center gap-2 mr-6">
+          <Heart className="h-6 w-6 text-primary" />
+          <span className="font-headline text-xl font-bold text-primary">
+            SugarConnect
+          </span>
+        </Link>
+        <nav className="hidden items-center justify-center space-x-6 text-lg font-medium md:flex flex-grow">
           <Link
             href="/profile"
             className="text-foreground/60 transition-colors hover:text-foreground"

@@ -49,7 +49,7 @@ const ProfileListItem = ({ profile, onRemove }: { profile: Profile; onRemove: (p
             Chat
           </Button>
           <Button variant="ghost" size="icon" onClick={handleRemoveClick}>
-            <Trash2 className="h-4 w-4 text-muted-foreground" />
+            <Trash2 className="h-4 w-4 text-red-500" />
             <span className="sr-only">Remove</span>
           </Button>
         </div>

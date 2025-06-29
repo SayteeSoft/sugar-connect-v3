@@ -478,9 +478,29 @@ export default function ProfilePage() {
       router.replace('/login');
     } else {
       // For demo, hardcoding logged in user ID
-      setLoggedInUserId(1); 
-      setLoggedInUser(getProfile(1));
-      setProfileData(getProfile(profileId));
+      const currentUserId = 1;
+      setLoggedInUserId(currentUserId); 
+      const currentUser = getProfile(currentUserId);
+      setLoggedInUser(currentUser);
+      const targetProfile = getProfile(profileId);
+
+      // Check if user is allowed to view this profile
+      const isViewingOwnProfile = targetProfile?.id === currentUser?.id;
+      const userIsAdmin = currentUser?.id === 1;
+      
+      if (
+        !isViewingOwnProfile &&
+        !userIsAdmin &&
+        currentUser &&
+        targetProfile &&
+        currentUser.role === targetProfile.role
+      ) {
+        // Block view by setting profile data to undefined
+        setProfileData(undefined);
+      } else {
+        setProfileData(targetProfile);
+      }
+      
       setIsLoading(false);
     }
   }, [router, profileId]);
@@ -529,7 +549,15 @@ export default function ProfilePage() {
       <>
         <Header />
         <main className="flex-grow container mx-auto p-4 md:p-6 text-center">
-          <p className="text-muted-foreground">Profile not found.</p>
+          <Card className="max-w-md mx-auto">
+            <CardHeader>
+              <CardTitle>Access Denied</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">This profile is not available or you do not have permission to view it.</p>
+              <Button onClick={() => router.push('/search')} className="mt-4">Back to Search</Button>
+            </CardContent>
+          </Card>
         </main>
       </>
     );

@@ -18,7 +18,23 @@ export function FeaturedProfiles() {
     setLoggedInUser(getProfile(1));
   }, []);
 
-  const displayedProfiles = profiles.slice(0, 4);
+  const displayedProfiles = profiles
+    .filter(profile => {
+      if (!loggedInUser) {
+        // If not logged in, show a mix of profiles
+        return true;
+      }
+      // Don't show the user their own profile on the homepage
+      if (profile.id === loggedInUser.id) {
+        return false;
+      }
+      // If logged in, show opposite roles (admin sees all)
+      if (loggedInUser.id !== 1 && profile.role === loggedInUser.role) {
+        return false;
+      }
+      return true;
+    })
+    .slice(0, 4);
 
   return (
     <section className="bg-background py-12 md:py-20">
@@ -27,7 +43,7 @@ export function FeaturedProfiles() {
           Featured Profiles
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {displayedProfiles.length > 0 ? (
+          {profiles.length > 0 ? (
             displayedProfiles.map((profile) => (
               <ProfileCard key={profile.id} profile={profile} loggedInUser={loggedInUser} />
             ))

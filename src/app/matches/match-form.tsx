@@ -92,10 +92,19 @@ export function MatchesTabs() {
     // In a real app, this data would be fetched based on the logged-in user
     // For this demo, we'll use the static data
     const allProfiles = getProfiles();
-    setFavorites(allProfiles.slice(0, 4));
-    setVisitors(allProfiles.slice(4, 8));
-    setViewed(allProfiles.slice(8, 12));
-    setLoggedInUser(getProfile(1));
+    const currentUser = getProfile(1);
+    setLoggedInUser(currentUser);
+    
+    const filterLogic = (profile: Profile) => {
+        if (!currentUser) return true;
+        if (profile.id === currentUser.id) return false;
+        if (currentUser.id !== 1 && profile.role === currentUser.role) return false;
+        return true;
+    }
+
+    setFavorites(allProfiles.slice(0, 4).filter(filterLogic));
+    setVisitors(allProfiles.slice(4, 8).filter(filterLogic));
+    setViewed(allProfiles.slice(8, 12).filter(filterLogic));
   }, []);
   
   const handleRemove = (profileId: number, listType: 'favorites' | 'visitors' | 'viewed') => {

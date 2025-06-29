@@ -67,6 +67,7 @@ export function SearchClient() {
     return profiles.filter(profile => {
       const profileHeightCm = parseHeight(profile.attributes?.Height);
 
+      // Filter by user criteria
       if (appliedFilters.isOnline && !profile.online) return false;
       if (appliedFilters.isNew && profile.id <= 8) return false; // Mocking "new" profiles
       if (appliedFilters.withPhoto && !profile.imageUrl) return false;
@@ -74,9 +75,17 @@ export function SearchClient() {
       if (profileHeightCm > 0 && (profileHeightCm < appliedFilters.heightRange[0] || profileHeightCm > appliedFilters.heightRange[1])) return false;
       if (appliedFilters.location && !profile.location.toLowerCase().includes(appliedFilters.location.toLowerCase())) return false;
       
+      // Filter by platform rules
+      if (loggedInUser) {
+        // Don't show the logged-in user in search results
+        if (profile.id === loggedInUser.id) return false;
+        // Apply role-based viewing rules (daddy sees baby, baby sees daddy), admin sees all
+        if (loggedInUser.id !== 1 && profile.role === loggedInUser.role) return false;
+      }
+
       return true;
     });
-  }, [profiles, appliedFilters]);
+  }, [profiles, appliedFilters, loggedInUser]);
 
   return (
     <div className="grid lg:grid-cols-4 gap-8 items-start">

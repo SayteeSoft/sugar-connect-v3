@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import type { Conversation, Message, Profile } from '@/lib/data';
+import { saveMessage } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
@@ -97,17 +98,27 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
       timestamp: new Date().toISOString(),
     };
 
-    setConversations(prev =>
-      prev.map(convo =>
-        convo.id === selectedConversationId
-          ? {
-              ...convo,
-              messages: [...convo.messages, message],
-            }
-          : convo
-      )
-    );
-    setNewMessage('');
+    const success = saveMessage(selectedConversationId, message);
+
+    if (success) {
+      setConversations(prev =>
+        prev.map(convo =>
+          convo.id === selectedConversationId
+            ? {
+                ...convo,
+                messages: [...convo.messages, message],
+              }
+            : convo
+        )
+      );
+      setNewMessage('');
+    } else {
+        toast({
+            variant: "destructive",
+            title: "Message Not Sent",
+            description: "There was an error sending your message. Please try again.",
+        });
+    }
   };
 
   const handleFavorite = () => {

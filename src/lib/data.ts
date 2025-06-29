@@ -431,6 +431,8 @@ const rawConversationsData = [
   },
 ];
 
+const CONVERSATIONS_STORAGE_KEY = 'sugarconnect_conversations';
+
 
 /**
  * Retrieves profiles from localStorage. If not present, seeds localStorage with initial data.
@@ -530,6 +532,59 @@ export const deleteProfile = (profileId: number): boolean => {
 
 
 /**
+ * Retrieves raw conversations data from localStorage. If not present, seeds localStorage with initial data.
+ * This function should only be called on the client side.
+ * @returns {any[]} An array of raw conversation data.
+ */
+const getRawConversationsData = (): any[] => {
+    if (typeof window === 'undefined') {
+        return [];
+    }
+    try {
+        const storedConversations = window.localStorage.getItem(CONVERSATIONS_STORAGE_KEY);
+        if (storedConversations) {
+            return JSON.parse(storedConversations);
+        } else {
+            window.localStorage.setItem(CONVERSATIONS_STORAGE_KEY, JSON.stringify(rawConversationsData));
+            return rawConversationsData;
+        }
+    } catch (error) {
+        console.error('Failed to access localStorage for conversations:', error);
+        return [];
+    }
+};
+
+/**
+ * Saves a new message to a conversation in localStorage.
+ * This function should only be called on the client side.
+ * @param {number} conversationId - The ID of the conversation to update.
+ * @param {Message} message - The new message object to add.
+ * @returns {boolean} True if the save was successful, false otherwise.
+ */
+export const saveMessage = (conversationId: number, message: Message): boolean => {
+    if (typeof window === 'undefined') {
+        return false;
+    }
+    try {
+        const conversations = getRawConversationsData();
+        const convoIndex = conversations.findIndex(c => c.id === conversationId);
+
+        if (convoIndex === -1) {
+            console.error(`Conversation with id ${conversationId} not found.`);
+            return false;
+        }
+
+        conversations[convoIndex].messages.push(message);
+        window.localStorage.setItem(CONVERSATIONS_STORAGE_KEY, JSON.stringify(conversations));
+        return true;
+    } catch (error) {
+        console.error('Failed to save message to localStorage:', error);
+        return false;
+    }
+};
+
+
+/**
  * Retrieves all conversations. In a real app, this would be for the logged-in user.
  * This function is client-side only.
  * @returns {Conversation[]} An array of conversation objects.
@@ -539,8 +594,9 @@ export const getConversations = (): Conversation[] => {
       return [];
     }
     const profiles = getProfiles();
+    const currentConversationsData = getRawConversationsData();
 
-    const conversations: Conversation[] = rawConversationsData.map(convo => {
+    const conversations: Conversation[] = currentConversationsData.map(convo => {
         const participant = profiles.find(p => p.id === convo.participantId);
         // If a participant profile is deleted, we'll filter out the conversation.
         // In a real app, you might want to handle this differently.

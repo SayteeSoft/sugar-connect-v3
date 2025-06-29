@@ -27,7 +27,7 @@ const ProfileListItem = ({ profile, onRemove, loggedInUser }: { profile: Profile
   };
   
   return (
-    <Card className="w-full bg-red-100 dark:bg-red-900">
+    <Card className="w-full hover:bg-muted/50 transition-colors">
       <CardContent className="flex items-center p-4 gap-4">
         <Avatar className="h-16 w-16 border">
           <AvatarImage src={profile.imageUrl ?? 'https://placehold.co/100x100'} alt={profile.name} data-ai-hint={profile.hint} />

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 
 const creditPackages = [
   { id: 'pkg-1', credits: 100, price: 20 },
@@ -15,7 +15,7 @@ const creditPackages = [
   { id: 'pkg-3', credits: 1000, price: 150 },
 ];
 
-export default function StripePaymentPage() {
+function StripePaymentContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -98,4 +98,21 @@ export default function StripePaymentPage() {
       </main>
     </>
   );
+}
+
+const PageLoader = () => (
+    <>
+        <Header />
+        <main className="flex-grow container mx-auto p-4 md:p-6 flex justify-center items-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+    </>
+);
+
+export default function StripePaymentPage() {
+    return (
+        <Suspense fallback={<PageLoader />}>
+            <StripePaymentContent />
+        </Suspense>
+    )
 }

@@ -451,7 +451,7 @@ export const getProfiles = (): Profile[] => {
     }
   } catch (error) {
     console.error('Failed to access localStorage:', error);
-    return featuredProfiles;
+    return [];
   }
 };
 

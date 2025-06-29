@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, CreditCard } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 
 const creditPackages = [
   { id: 'pkg-1', credits: 100, price: 20 },
@@ -29,7 +29,7 @@ const paymentFormSchema = z.object({
 
 type PaymentFormValues = z.infer<typeof paymentFormSchema>;
 
-export default function CreditCardPaymentPage() {
+function CreditCardPaymentContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -127,4 +127,21 @@ export default function CreditCardPaymentPage() {
       </main>
     </>
   );
+}
+
+const PageLoader = () => (
+    <>
+        <Header />
+        <main className="flex-grow container mx-auto p-4 md:p-6 flex justify-center items-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+    </>
+);
+
+export default function CreditCardPaymentPage() {
+    return (
+        <Suspense fallback={<PageLoader />}>
+            <CreditCardPaymentContent />
+        </Suspense>
+    )
 }

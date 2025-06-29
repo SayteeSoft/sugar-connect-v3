@@ -3,12 +3,12 @@ import { Header } from '@/components/layout/header';
 import { ChatClient } from './chat-client';
 import { getConversations, getProfile } from '@/lib/data';
 
-type PageProps = {
+export default function MessagesPage({
+  searchParams,
+}: {
   params: { [key: string]: string | string[] | undefined };
   searchParams: { [key: string]: string | string[] | undefined };
-};
-
-export default function MessagesPage({ searchParams }: PageProps) {
+}) {
   const allConversations = getConversations();
   // Assume current user is the one with id 1 ('saytee.software')
   const currentUserProfile = getProfile(1);

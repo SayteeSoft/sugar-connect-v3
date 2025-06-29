@@ -41,7 +41,7 @@ export function FeaturedProfiles() {
     .slice(0, 4);
 
   return (
-    <section className="bg-background py-12 md:py-20">
+    <section className="bg-background py-12 md:pt-0 md:pb-20">
       <div className="container mx-auto px-4 md:px-6">
         <h2 className="mb-8 text-center font-headline text-3xl font-bold text-primary md:text-4xl">
           Featured Profiles

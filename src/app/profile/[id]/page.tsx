@@ -472,39 +472,24 @@ export default function ProfilePage() {
   }
   
   const handleSaveProfile = (updatedProfile: Profile) => {
-    // Create a copy to modify before saving, to avoid altering the preview state
-    const profileToSave: Profile = JSON.parse(JSON.stringify(updatedProfile));
-
-    // Replace data URIs with placeholders to avoid localStorage quota issues.
-    // This simulates a real backend upload where you'd save the URL.
-    if (profileToSave.imageUrl && profileToSave.imageUrl.startsWith('data:')) {
-        profileToSave.imageUrl = 'https://placehold.co/600x600';
-    }
-    if (profileToSave.gallery) {
-        profileToSave.gallery = profileToSave.gallery.map((img: string) =>
-            img.startsWith('data:') ? 'https://placehold.co/600x400' : img
-        );
-    }
-
-    const success = updateProfile(profileToSave);
+    const success = updateProfile(updatedProfile);
     if (success) {
-      // After saving, we set the profile data to what's now in storage.
-      // This will show the placeholders instead of the temporary blob URLs.
+      // After saving, we get the fresh data from storage.
       setProfileData(getProfile(profileId));
       setIsEditMode(false);
       window.dispatchEvent(new Event('profileUpdated'));
       toast({
         title: "Profile Saved",
-        description: "Your changes have been saved successfully. For this demo, images are stored as placeholders.",
-      })
+        description: "Your changes have been saved successfully.",
+      });
     } else {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to save your profile. Please try again.",
-      })
+        description: "Failed to save your profile. This might be due to storage limits if images are too large.",
+      });
     }
-  }
+  };
 
   return (
     <>

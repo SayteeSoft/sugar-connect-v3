@@ -4,10 +4,13 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
-import { CookiePolicyModal } from '../cookie-policy-modal';
-import { PrivacyPolicyModal } from '../privacy-policy-modal';
-import { TermsOfUseModal } from '../terms-of-use-modal';
 import { getProfile } from '@/lib/data';
+import dynamic from 'next/dynamic';
+
+const CookiePolicyModal = dynamic(() => import('../cookie-policy-modal').then(mod => mod.CookiePolicyModal), { ssr: false });
+const PrivacyPolicyModal = dynamic(() => import('../privacy-policy-modal').then(mod => mod.PrivacyPolicyModal), { ssr: false });
+const TermsOfUseModal = dynamic(() => import('../terms-of-use-modal').then(mod => mod.TermsOfUseModal), { ssr: false });
+
 
 export function Footer() {
   const currentYear = new Date().getFullYear();

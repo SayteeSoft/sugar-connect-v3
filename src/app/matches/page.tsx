@@ -1,8 +1,12 @@
 
 import { Header } from '@/components/layout/header';
 import { MatchesTabs } from './match-form';
+import { getProfiles, getProfile } from '@/lib/data';
 
-export default function MatchesPage() {
+export default async function MatchesPage() {
+  const allProfiles = getProfiles();
+  const currentUser = getProfile(1);
+
   return (
     <>
       <Header />
@@ -13,7 +17,7 @@ export default function MatchesPage() {
             Browse your favorites, see who visited your profile, and who you have viewed.
           </p>
         </div>
-        <MatchesTabs />
+        <MatchesTabs initialProfiles={allProfiles} initialCurrentUser={currentUser} />
       </main>
     </>
   );

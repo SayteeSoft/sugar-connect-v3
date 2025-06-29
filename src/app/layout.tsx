@@ -32,6 +32,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link
+          rel="preload"
+          href="https://web-developer.one/imgs/sugar-daddy-002.jpg"
+          as="image"
+        />
+      </head>
       <body
         className={cn(
           'font-body antialiased',

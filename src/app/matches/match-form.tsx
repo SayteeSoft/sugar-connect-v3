@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import type { Profile } from '@/lib/data';
-import { getProfiles, getProfile } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Heart, Eye, Footprints, MessageSquare, Trash2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -79,34 +78,28 @@ const ProfilesList = ({ profiles, onRemove, loggedInUser }: { profiles: Profile[
   );
 };
 
-export function MatchesTabs() {
+export function MatchesTabs({ initialProfiles, initialCurrentUser }: { initialProfiles: Profile[], initialCurrentUser?: Profile }) {
   const { toast } = useToast();
   const [favorites, setFavorites] = useState<Profile[]>([]);
   const [visitors, setVisitors] = useState<Profile[]>([]);
   const [viewed, setViewed] = useState<Profile[]>([]);
-  const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>();
+  const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>(initialCurrentUser);
 
   useEffect(() => {
-    // In a real app, this data would be fetched based on the logged-in user
-    // For this demo, we'll use the static data
-    const allProfiles = getProfiles();
-    const currentUser = getProfile(1);
-    setLoggedInUser(currentUser);
-    
     const filterLogic = (profile: Profile) => {
-        if (!currentUser) return true;
-        if (profile.id === currentUser.id) return false;
+        if (!initialCurrentUser) return true;
+        if (profile.id === initialCurrentUser.id) return false;
         
         // Always show opposite roles, regardless of admin status.
-        if (profile.role === currentUser.role) return false;
+        if (profile.role === initialCurrentUser.role) return false;
 
         return true;
     }
 
-    setFavorites(allProfiles.slice(0, 4).filter(filterLogic));
-    setVisitors(allProfiles.slice(4, 8).filter(filterLogic));
-    setViewed(allProfiles.slice(8, 12).filter(filterLogic));
-  }, []);
+    setFavorites(initialProfiles.slice(0, 4).filter(filterLogic));
+    setVisitors(initialProfiles.slice(4, 8).filter(filterLogic));
+    setViewed(initialProfiles.slice(8, 12).filter(filterLogic));
+  }, [initialProfiles, initialCurrentUser]);
   
   const handleRemove = (profileId: number, listType: 'favorites' | 'visitors' | 'viewed') => {
     let profileName = '';

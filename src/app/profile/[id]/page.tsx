@@ -32,8 +32,18 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { GalleryModal } from '@/components/gallery-modal';
 import imageCompression from 'browser-image-compression';
+import dynamic from 'next/dynamic';
+
+const GalleryModal = dynamic(() => import('@/components/gallery-modal').then(mod => mod.GalleryModal), {
+  ssr: false,
+  loading: () => (
+    <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
+      <Loader2 className="h-8 w-8 animate-spin text-white" />
+    </div>
+  ),
+});
+
 
 const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavorite, onReport, onBlock, loggedInUser, isAdmin, onOpenGallery }: { 
   profile: Profile; 
@@ -723,7 +733,7 @@ export default function ProfilePage() {
           />
         ) : null}
       </main>
-      {profileData && allImages.length > 0 && (
+      {isGalleryOpen && profileData && allImages.length > 0 && (
         <GalleryModal
             images={allImages}
             startIndex={selectedImageIndex}

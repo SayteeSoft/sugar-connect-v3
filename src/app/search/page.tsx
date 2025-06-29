@@ -1,8 +1,12 @@
 
 import { Header } from '@/components/layout/header';
 import { SearchClient } from './search-client';
+import { getProfiles, getProfile } from '@/lib/data';
 
-export default function SearchPage() {
+export default async function SearchPage() {
+  const profiles = getProfiles();
+  const loggedInUser = getProfile(1);
+
   return (
     <>
       <Header />
@@ -13,7 +17,7 @@ export default function SearchPage() {
                 Use our advanced search to find exactly who you're looking for.
             </p>
         </div>
-        <SearchClient />
+        <SearchClient initialProfiles={profiles} initialLoggedInUser={loggedInUser} />
       </main>
     </>
   );

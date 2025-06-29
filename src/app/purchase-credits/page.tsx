@@ -3,7 +3,6 @@
 
 import { useState } from 'react';
 import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -28,7 +27,7 @@ export default function PurchaseCreditsPage() {
   const [selectedPayment, setSelectedPayment] = useState(paymentMethods[0].id);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
       <Header />
       <main className="flex-grow container mx-auto p-4 md:p-6">
         <div className="max-w-4xl mx-auto">
@@ -104,7 +103,6 @@ export default function PurchaseCreditsPage() {
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
+    </>
   );
 }

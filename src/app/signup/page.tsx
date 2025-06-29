@@ -6,11 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
 
 export default function SignupPage() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
       <Header />
       <main className="flex-grow flex items-center justify-center p-4 relative bg-hero-bg bg-cover bg-center">
         <div className="absolute inset-0 bg-black/50" />
@@ -53,7 +52,6 @@ export default function SignupPage() {
           </CardContent>
         </Card>
       </main>
-      <Footer />
-    </div>
+    </>
   );
 }

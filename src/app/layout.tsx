@@ -5,6 +5,7 @@ import './globals.css';
 import { Alegreya, Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
+import { Footer } from '@/components/layout/footer';
 
 export const metadata: Metadata = {
   title: 'SugarConnect',
@@ -42,7 +43,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="flex flex-col min-h-screen bg-background">
+            {children}
+            <Footer />
+          </div>
           <Toaster />
         </ThemeProvider>
       </body>

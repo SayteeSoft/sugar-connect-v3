@@ -1,11 +1,10 @@
 
 import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
 import { SearchClient } from './search-client';
 
 export default function SearchPage() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
       <Header />
       <main className="flex-grow container mx-auto p-4 md:p-6">
         <div className="text-center mb-8">
@@ -16,7 +15,6 @@ export default function SearchPage() {
         </div>
         <SearchClient />
       </main>
-      <Footer />
-    </div>
+    </>
   );
 }

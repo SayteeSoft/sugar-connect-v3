@@ -2,7 +2,6 @@
 'use client';
 
 import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
@@ -19,7 +18,7 @@ export default function CookiePolicyPage() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
       <Header />
       <main className="flex-grow container mx-auto p-4 md:p-6">
         <Card>
@@ -103,7 +102,6 @@ export default function CookiePolicyPage() {
           </CardContent>
         </Card>
       </main>
-      <Footer />
-    </div>
+    </>
   );
 }

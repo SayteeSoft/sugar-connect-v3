@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
 import {
   BadgeCheck,
   Pencil,
@@ -409,25 +408,23 @@ export default function ProfilePage() {
   
   if (isLoading) {
     return (
-     <div className="flex flex-col min-h-screen">
+     <>
        <Header />
        <main className="flex-grow container mx-auto p-4 md:p-6 flex justify-center items-center">
          <Loader2 className="h-8 w-8 animate-spin text-primary" />
        </main>
-       <Footer />
-     </div>
+     </>
    );
  }
 
   if (!profileData) {
     return (
-      <div className="flex flex-col min-h-screen">
+      <>
         <Header />
         <main className="flex-grow container mx-auto p-4 md:p-6 text-center">
           <p className="text-muted-foreground">Profile not found.</p>
         </main>
-        <Footer />
-      </div>
+      </>
     );
   }
   
@@ -451,7 +448,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
       <Header />
       <main className="flex-grow container mx-auto p-4 md:p-6">
         {isEditMode && canEdit ? (
@@ -470,7 +467,6 @@ export default function ProfilePage() {
           />
         )}
       </main>
-      <Footer />
-    </div>
+    </>
   );
 }

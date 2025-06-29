@@ -97,7 +97,10 @@ export function MatchesTabs() {
     const filterLogic = (profile: Profile) => {
         if (!currentUser) return true;
         if (profile.id === currentUser.id) return false;
-        if (currentUser.id !== 1 && profile.role === currentUser.role) return false;
+        
+        // Always show opposite roles, regardless of admin status.
+        if (profile.role === currentUser.role) return false;
+
         return true;
     }
 

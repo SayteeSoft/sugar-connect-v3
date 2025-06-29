@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter, useParams } from 'next/navigation';
-import { getProfile, updateProfile, type Profile, wantsOptions, interestsOptions } from '@/lib/data';
+import { getProfile, updateProfile, type Profile, wantsOptions, interestsOptions, attributeKeys } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -33,9 +33,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const attributeKeys = ['Height', 'Body Type', 'Ethnicity', 'Hair Color', 'Eye Color', 'Piercings', 'Tattoos'];
-
-const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit }: { profile: Profile; onEdit: () => void; isOwnProfile: boolean; canEdit: boolean; }) => (
+const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage }: { profile: Profile; onEdit: () => void; isOwnProfile: boolean; canEdit: boolean; onMessage: (profileId: number) => void; }) => (
   <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
     {/* Left Column */}
     <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-24">
@@ -64,7 +62,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit }: { profile: Prof
             <p className="text-muted-foreground text-lg">{profile.age}, {profile.location}</p>
           </div>
           <div className="flex flex-col space-y-2">
-            {!isOwnProfile && <Button size="lg"><Mail className="mr-2" /> Message</Button>}
+            {!isOwnProfile && <Button size="lg" onClick={() => onMessage(profile.id)}><Mail className="mr-2" /> Message</Button>}
             {canEdit && <Button variant="secondary" onClick={onEdit}><Pencil className="mr-2" /> Edit Profile</Button>}
           </div>
         </CardContent>
@@ -92,7 +90,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit }: { profile: Prof
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" onClick={() => onMessage(profile.id)}>
                       <MessageSquare className="h-5 w-5 text-muted-foreground" />
                       <span className="sr-only">Send Message</span>
                     </Button>
@@ -335,7 +333,8 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                         <CardHeader>
                             <CardTitle>Gallery</CardTitle>
                         </CardHeader>
-                        <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <CardContent>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                             {editedProfile.gallery?.map((img, i) => (
                                 <div key={i} className="relative aspect-square group">
                                     <Image src={img} alt={`Gallery image ${i + 1}`} fill className="rounded-md object-cover" />
@@ -346,9 +345,10 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                             ))}
                             {(editedProfile.gallery || []).length < 5 && (
                               <div className="relative aspect-square border-2 border-dashed rounded-md flex items-center justify-center text-muted-foreground hover:bg-accent hover:border-primary transition">
-                                  <Button variant="ghost" onClick={() => galleryImageInputRef.current?.click()}><Camera className="mr-2 h-4 w-4" />Add Photo</Button>
+                                  <Button variant="ghost" className="w-full h-full" onClick={() => galleryImageInputRef.current?.click()}><Camera className="mr-2 h-4 w-4" />Add Photo</Button>
                               </div>
                             )}
+                          </div>
                         </CardContent>
                     </Card>
 
@@ -403,6 +403,10 @@ export default function ProfilePage() {
     }
   }, [router, profileId]);
 
+  const handleMessage = (profileId: number) => {
+    router.push(`/messages?chatWith=${profileId}`);
+  };
+  
   if (isLoading) {
     return (
      <div className="flex flex-col min-h-screen">
@@ -462,6 +466,7 @@ export default function ProfilePage() {
             onEdit={() => setIsEditMode(true)}
             isOwnProfile={isOwnProfile}
             canEdit={canEdit}
+            onMessage={handleMessage}
           />
         )}
       </main>

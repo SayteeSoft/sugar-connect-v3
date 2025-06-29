@@ -38,12 +38,21 @@ const formatTimestamp = (timestamp: string) => {
 interface ChatClientProps {
   initialConversations: Conversation[];
   currentUser: { id: number; name: string };
+  initialSelectedProfileId?: number;
 }
 
-export function ChatClient({ initialConversations, currentUser }: ChatClientProps) {
+export function ChatClient({ initialConversations, currentUser, initialSelectedProfileId }: ChatClientProps) {
+  const findConversationIdByProfileId = (profileId?: number): number | null => {
+    if (!profileId) return null;
+    const conversation = initialConversations.find(
+      (c) => c.participant.id === profileId
+    );
+    return conversation?.id || null;
+  };
+  
   const [conversations, setConversations] = useState(initialConversations);
   const [selectedConversationId, setSelectedConversationId] = useState<number | null>(
-    initialConversations[0]?.id || null
+    findConversationIdByProfileId(initialSelectedProfileId) || initialConversations[0]?.id || null
   );
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);

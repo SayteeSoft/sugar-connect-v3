@@ -31,8 +31,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage }: { profile: Profile; onEdit: () => void; isOwnProfile: boolean; canEdit: boolean; onMessage: (profileId: number) => void; }) => (
+const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onRoleChange }: { profile: Profile; onEdit: () => void; isOwnProfile: boolean; canEdit: boolean; onMessage: (profileId: number) => void; onRoleChange: (role: 'baby' | 'daddy') => void; }) => (
   <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
     {/* Left Column */}
     <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-24">
@@ -62,6 +63,20 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage }: { pr
             <p className="text-muted-foreground text-lg">{profile.age}, {profile.location}</p>
           </div>
           <div className="flex flex-col space-y-2">
+            {canEdit && (
+              <div className="space-y-2">
+                <Label>Role</Label>
+                <Select onValueChange={(value: 'baby' | 'daddy') => onRoleChange(value)} defaultValue={profile.role}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="baby">Sugar Baby</SelectItem>
+                    <SelectItem value="daddy">Sugar Daddy</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             {!isOwnProfile && <Button size="lg" onClick={() => onMessage(profile.id)}><Mail className="mr-2" /> Message</Button>}
             {canEdit && <Button variant="secondary" onClick={onEdit}><Pencil className="mr-2" /> Edit Profile</Button>}
           </div>
@@ -319,6 +334,21 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                                 <Label htmlFor="location">Location</Label>
                                 <Input id="location" name="location" value={editedProfile.location} onChange={handleChange} />
                             </div>
+                            <div className="space-y-2">
+                              <Label>Role</Label>
+                              <Select 
+                                onValueChange={(value: 'baby' | 'daddy') => setEditedProfile(prev => ({...prev, role: value}))} 
+                                defaultValue={editedProfile.role}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select a role" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="baby">Sugar Baby</SelectItem>
+                                  <SelectItem value="daddy">Sugar Daddy</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
                             <div className="flex space-x-2 pt-4">
                                 <Button size="lg" className="flex-1" onClick={handleSave}>Save Profile</Button>
                                 <Button size="lg" variant="outline" className="flex-1" onClick={onCancel}>Cancel</Button>
@@ -491,6 +521,27 @@ export default function ProfilePage() {
     }
   };
 
+  const handleRoleChange = (newRole: 'baby' | 'daddy') => {
+    if (!profileData) return;
+    const updatedProfile = { ...profileData, role: newRole };
+    const success = updateProfile(updatedProfile);
+    if (success) {
+      // After saving, we get the fresh data from storage.
+      setProfileData(getProfile(profileId));
+      window.dispatchEvent(new Event('profileUpdated'));
+      toast({
+        title: "Role Updated",
+        description: `Profile role has been changed to ${newRole === 'baby' ? 'Sugar Baby' : 'Sugar Daddy'}.`,
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update the role.",
+      });
+    }
+  };
+
   return (
     <>
       <Header />
@@ -508,6 +559,7 @@ export default function ProfilePage() {
             isOwnProfile={isOwnProfile}
             canEdit={canEdit}
             onMessage={handleMessage}
+            onRoleChange={handleRoleChange}
           />
         )}
       </main>

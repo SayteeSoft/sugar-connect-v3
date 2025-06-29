@@ -2,7 +2,7 @@
 import type {Metadata} from 'next';
 import { Toaster } from "@/components/ui/toaster";
 import './globals.css';
-import { Inter } from 'next/font/google';
+import { Alegreya, Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 
@@ -16,6 +16,12 @@ const fontInter = Inter({
   variable: '--font-inter',
 });
 
+const fontAlegreya = Alegreya({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-alegreya',
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,7 +32,8 @@ export default function RootLayout({
       <body
         className={cn(
           'font-body antialiased',
-          fontInter.variable
+          fontInter.variable,
+          fontAlegreya.variable
         )}
       >
         <ThemeProvider

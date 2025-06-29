@@ -28,7 +28,7 @@ export default function PurchaseCreditsPage() {
   const [selectedPayment, setSelectedPayment] = useState(paymentMethods[0].id);
 
   return (
-    <div className="flex flex-col min-h-screen bg-secondary">
+    <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-grow container mx-auto p-4 md:p-6">
         <div className="max-w-4xl mx-auto">

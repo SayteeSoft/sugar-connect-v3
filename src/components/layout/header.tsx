@@ -100,8 +100,8 @@ export function Header() {
               key={link.href}
               href={link.href}
               className={cn(
-                "text-foreground/60 transition-colors",
-                pathname.startsWith(link.href) ? "text-[#800080]" : "hover:text-[#800080]"
+                "text-foreground/60 transition-colors hover:text-primary",
+                pathname.startsWith(link.href) && "text-primary"
               )}
             >
               {link.label}

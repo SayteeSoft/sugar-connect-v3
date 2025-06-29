@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { GalleryModal } from '@/components/gallery-modal';
+import imageCompression from 'browser-image-compression';
 
 const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavorite, onReport, onBlock, loggedInUser, isAdmin, onOpenGallery }: { 
   profile: Profile; 
@@ -229,23 +230,42 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
         setEditedProfile(prev => ({...prev, [name]: name === 'age' ? parseInt(value) : value}));
     };
 
-    const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const dataUrl = reader.result as string;
-                setEditedProfile(prev => ({ ...prev, imageUrl: dataUrl }));
+            toast({
+                title: "Compressing Image...",
+                description: "Please wait while we optimize your photo.",
+            });
+            const options = {
+                maxSizeMB: 0.5,
+                maxWidthOrHeight: 1024,
+                useWebWorker: true,
+            }
+            try {
+                const compressedFile = await imageCompression(file, options);
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const dataUrl = reader.result as string;
+                    setEditedProfile(prev => ({ ...prev, imageUrl: dataUrl }));
+                    toast({
+                        title: "Image Preview Updated",
+                        description: "Your compressed profile picture is ready. Remember to save your profile.",
+                    });
+                };
+                reader.readAsDataURL(compressedFile);
+            } catch (error) {
                 toast({
-                    title: "Image Preview Updated",
-                    description: "Your profile picture preview has been updated. Remember to save your profile.",
+                    variant: 'destructive',
+                    title: 'Compression Failed',
+                    description: 'Could not compress the image. Please try a different one.',
                 });
-            };
-            reader.readAsDataURL(file);
+                console.error(error);
+            }
         }
     };
 
-    const handleGalleryImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleGalleryImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (!files || files.length === 0) return;
 
@@ -269,18 +289,42 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                 description: `You can only add ${spaceAvailable} more photo(s). The first ${spaceAvailable} have been added.`,
             });
         }
-        
-        const newImagePromises = filesToProcess.map(file => {
-            return new Promise<string>((resolve) => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    resolve(reader.result as string);
-                };
-                reader.readAsDataURL(file);
-            });
-        });
 
-        Promise.all(newImagePromises).then(newImageUrls => {
+        toast({
+            title: `Compressing ${filesToProcess.length} Image(s)...`,
+            description: 'Please wait while we optimize your photos.',
+        });
+        
+        const options = {
+            maxSizeMB: 0.5,
+            maxWidthOrHeight: 1024,
+            useWebWorker: true,
+        }
+
+        const newImagePromises = filesToProcess.map(async (file) => {
+            try {
+                const compressedFile = await imageCompression(file, options);
+                return new Promise<string>((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        resolve(reader.result as string);
+                    };
+                    reader.readAsDataURL(compressedFile);
+                });
+            } catch (error) {
+                console.error(error);
+                toast({
+                    variant: 'destructive',
+                    title: 'Compression Failed',
+                    description: `Could not compress ${file.name}. Please try a different one.`,
+                });
+                return null;
+            }
+        });
+        
+        const newImageUrls = (await Promise.all(newImagePromises)).filter((url): url is string => url !== null);
+        
+        if (newImageUrls.length > 0) {
             setEditedProfile(prev => ({
                 ...prev,
                 gallery: [...(prev.gallery || []), ...newImageUrls]
@@ -288,9 +332,9 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
             
             toast({
                 title: "Gallery Preview Updated",
-                description: `${newImageUrls.length} photo(s) were added to your gallery preview. Remember to save your profile.`,
+                description: `${newImageUrls.length} photo(s) were added to your gallery preview. Remember to save.`,
             });
-        });
+        }
     };
 
     const handleRemoveGalleryImage = (indexToRemove: number) => {

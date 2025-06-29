@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from "react";
@@ -15,21 +14,26 @@ export function FeaturedProfiles() {
     // Get profiles from client-side storage to reflect any updates
     const allProfiles = getProfiles();
     setProfiles(allProfiles);
-    setLoggedInUser(getProfile(1));
+
+    const loggedInStatus = typeof window !== 'undefined' && localStorage.getItem('isLoggedIn') === 'true';
+    if (loggedInStatus) {
+      // In a real app, you'd get the actual user ID. For demo, we use user 1.
+      setLoggedInUser(getProfile(1));
+    }
   }, []);
 
   const displayedProfiles = profiles
     .filter(profile => {
       if (!loggedInUser) {
-        // If not logged in, show a mix of profiles
-        return true;
+        // If not logged in, show a mix of profiles (excluding the admin)
+        return profile.id !== 1;
       }
       // Don't show the user their own profile on the homepage
       if (profile.id === loggedInUser.id) {
         return false;
       }
-      // If logged in, show opposite roles (admin sees all)
-      if (loggedInUser.id !== 1 && profile.role === loggedInUser.role) {
+      // If logged in, show opposite roles.
+      if (profile.role === loggedInUser.role) {
         return false;
       }
       return true;

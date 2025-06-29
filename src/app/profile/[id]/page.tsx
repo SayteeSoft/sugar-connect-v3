@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -32,8 +31,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { GalleryModal } from '@/components/gallery-modal';
 
-const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavorite, onReport, onBlock, loggedInUser, isAdmin }: { 
+const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavorite, onReport, onBlock, loggedInUser, isAdmin, onOpenGallery }: { 
   profile: Profile; 
   onEdit: () => void; 
   isOwnProfile: boolean; 
@@ -44,6 +44,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
   onBlock: (profileId: number, profileName: string) => void;
   loggedInUser?: Profile;
   isAdmin: boolean;
+  onOpenGallery: (index: number) => void;
 }) => {
     const canMessage = !isOwnProfile && loggedInUser && (isAdmin || profile.role !== loggedInUser.role);
 
@@ -52,23 +53,25 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
     {/* Left Column */}
     <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-24">
       <Card className="overflow-hidden shadow-lg">
-        <div className="relative group">
+        <div className="relative group cursor-pointer" onClick={() => onOpenGallery(-1)}>
           <Image
             key={profile.imageUrl}
             src={profile.imageUrl ?? 'https://placehold.co/600x600'}
             alt={`Profile of ${profile.name}`}
             width={600}
             height={600}
-            className="w-full object-cover aspect-square"
+            className="w-full object-cover aspect-square transition-transform duration-300 group-hover:scale-105"
             data-ai-hint={profile.hint}
+            priority
           />
+           <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
           {profile.verified && (
             <Badge className="absolute top-4 left-4 border-2 border-white/50 bg-primary text-primary-foreground">
               <BadgeCheck className="mr-1 h-4 w-4" />
               Verified
             </Badge>
           )}
-           {canEdit && <Button variant="secondary" size="icon" className="absolute bottom-4 right-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" onClick={onEdit}>
+           {canEdit && <Button variant="secondary" size="icon" className="absolute bottom-4 right-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => { e.stopPropagation(); onEdit(); }}>
             <Pencil className="h-4 w-4" />
           </Button>}
         </div>
@@ -181,8 +184,9 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
           {profile.gallery && profile.gallery.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {profile.gallery.map((img, i) => (
-                <div key={i} className="relative aspect-square">
-                  <Image src={img} alt={`Gallery image ${i + 1}`} fill className="rounded-md object-cover" />
+                <div key={i} className="relative aspect-square cursor-pointer group" onClick={() => onOpenGallery(i)}>
+                  <Image src={img} alt={`Gallery image ${i + 1}`} fill className="rounded-md object-cover transition-transform duration-300 group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
               ))}
             </div>
@@ -461,6 +465,8 @@ export default function ProfilePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
   const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>();
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { toast } = useToast();
   const router = useRouter();
   const params = useParams<{ id: string }>();
@@ -469,6 +475,8 @@ export default function ProfilePage() {
   const isOwnProfile = profileId === loggedInUserId;
   const isAdmin = loggedInUserId === 1;
   const canEdit = isOwnProfile || isAdmin;
+
+  const allImages = [profileData?.imageUrl, ...(profileData?.gallery || [])].filter((url): url is string => !!url);
 
   useEffect(() => {
     const loggedInStatus = typeof window !== 'undefined' && localStorage.getItem('isLoggedIn') === 'true';
@@ -504,6 +512,17 @@ export default function ProfilePage() {
       setIsLoading(false);
     }
   }, [router, profileId]);
+
+  const openGallery = (index: number) => {
+    // If index is -1, it's the profile pic (index 0 in allImages).
+    // Otherwise, it's a gallery pic, so its index in allImages is index + 1.
+    setSelectedImageIndex(index < 0 ? 0 : index + 1);
+    setIsGalleryOpen(true);
+  };
+  
+  const closeGallery = () => {
+      setIsGalleryOpen(false);
+  };
 
   const handleMessage = (profileId: number) => {
     router.push(`/messages?chatWith=${profileId}`);
@@ -587,13 +606,13 @@ export default function ProfilePage() {
     <>
       <Header />
       <main className="flex-grow container mx-auto p-4 md:p-6">
-        {isEditMode && canEdit ? (
+        {isEditMode && canEdit && profileData ? (
           <ProfileEdit 
             profile={profileData} 
             onSave={handleSaveProfile} 
             onCancel={() => setIsEditMode(false)} 
           />
-        ) : (
+        ) : profileData ? (
           <ProfileView 
             profile={profileData} 
             onEdit={() => setIsEditMode(true)}
@@ -605,9 +624,18 @@ export default function ProfilePage() {
             onBlock={handleBlock}
             loggedInUser={loggedInUser}
             isAdmin={isAdmin}
+            onOpenGallery={openGallery}
           />
-        )}
+        ) : null}
       </main>
+      {profileData && allImages.length > 0 && (
+        <GalleryModal
+            images={allImages}
+            startIndex={selectedImageIndex}
+            isOpen={isGalleryOpen}
+            onClose={closeGallery}
+        />
+      )}
     </>
   );
 }

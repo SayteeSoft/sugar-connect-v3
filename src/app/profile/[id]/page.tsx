@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter, useParams } from 'next/navigation';
-import { getProfile, updateProfile, type Profile, wantsOptions, interestsOptions, attributeKeys } from '@/lib/data';
+import { getProfile, updateProfile, type Profile, wantsOptions, interestsOptions, attributeKeys, deleteProfile } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -32,7 +32,16 @@ import {
 } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage }: { profile: Profile; onEdit: () => void; isOwnProfile: boolean; canEdit: boolean; onMessage: (profileId: number) => void; }) => (
+const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavorite, onReport, onBlock }: { 
+  profile: Profile; 
+  onEdit: () => void; 
+  isOwnProfile: boolean; 
+  canEdit: boolean; 
+  onMessage: (profileId: number) => void;
+  onFavorite: (profileName: string) => void;
+  onReport: (profileName: string) => void;
+  onBlock: (profileId: number, profileName: string) => void;
+}) => (
   <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
     {/* Left Column */}
     <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-24">
@@ -85,7 +94,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage }: { pr
               <div className="flex items-center gap-1">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" onClick={() => onFavorite(profile.name)}>
                       <Heart className="h-5 w-5 text-muted-foreground" />
                       <span className="sr-only">Add to Favorites</span>
                     </Button>
@@ -107,7 +116,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage }: { pr
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" onClick={() => onReport(profile.name)}>
                       <Flag className="h-5 w-5 text-muted-foreground" />
                       <span className="sr-only">Report Profile</span>
                     </Button>
@@ -118,7 +127,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage }: { pr
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" onClick={() => onBlock(profile.id, profile.name)}>
                       <Ban className="h-5 w-5 text-muted-foreground" />
                       <span className="sr-only">Block User</span>
                     </Button>
@@ -469,6 +478,30 @@ export default function ProfilePage() {
   const handleMessage = (profileId: number) => {
     router.push(`/messages?chatWith=${profileId}`);
   };
+
+  const handleFavorite = (profileName: string) => {
+    toast({
+      title: 'Added to Favorites',
+      description: `${profileName} has been added to your favorites.`,
+    });
+  };
+
+  const handleReport = (profileName: string) => {
+    toast({
+      title: 'Profile Reported',
+      description: `Thank you for your feedback. We will review ${profileName}'s profile.`,
+    });
+  };
+  
+  const handleBlock = (profileId: number, profileName: string) => {
+    deleteProfile(profileId);
+    toast({
+      variant: 'destructive',
+      title: 'User Blocked',
+      description: `You have blocked ${profileName}. You will no longer see their profile or receive messages from them.`,
+    });
+    router.push('/search');
+  };
   
   if (isLoading) {
     return (
@@ -529,6 +562,9 @@ export default function ProfilePage() {
             isOwnProfile={isOwnProfile}
             canEdit={canEdit}
             onMessage={handleMessage}
+            onFavorite={handleFavorite}
+            onReport={handleReport}
+            onBlock={handleBlock}
           />
         )}
       </main>

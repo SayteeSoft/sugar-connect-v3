@@ -1,8 +1,9 @@
 
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import type { Profile } from '@/lib/data';
+import { getProfiles } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -12,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ProfileCard } from '@/components/profile-card';
 import { Filter, Sparkles, Wifi, Image as ImageIcon } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const formatHeight = (cm: number) => {
   if (cm === 0) return "N/A";
@@ -32,16 +34,23 @@ const parseHeight = (heightStr: string | undefined): number => {
 
 const defaultFilters = {
     isNew: false,
-    isOnline: true,
+    isOnline: false,
     withPhoto: true,
     ageRange: [18, 65] as [number, number],
     heightRange: [150, 200] as [number, number],
     location: '',
 };
 
-export function SearchClient({ initialProfiles }: { initialProfiles: Profile[] }) {
+export function SearchClient() {
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [uiFilters, setUiFilters] = useState(defaultFilters);
   const [appliedFilters, setAppliedFilters] = useState(defaultFilters);
+
+  useEffect(() => {
+    setProfiles(getProfiles());
+    setIsLoading(false);
+  }, []);
   
   const handleClearFilters = () => {
     setUiFilters(defaultFilters);
@@ -53,7 +62,7 @@ export function SearchClient({ initialProfiles }: { initialProfiles: Profile[] }
   };
 
   const filteredProfiles = useMemo(() => {
-    return initialProfiles.filter(profile => {
+    return profiles.filter(profile => {
       const profileHeightCm = parseHeight(profile.attributes?.Height);
 
       if (appliedFilters.isOnline && !profile.online) return false;
@@ -65,7 +74,7 @@ export function SearchClient({ initialProfiles }: { initialProfiles: Profile[] }
       
       return true;
     });
-  }, [initialProfiles, appliedFilters]);
+  }, [profiles, appliedFilters]);
 
   return (
     <div className="grid lg:grid-cols-4 gap-8 items-start">
@@ -143,20 +152,30 @@ export function SearchClient({ initialProfiles }: { initialProfiles: Profile[] }
 
       {/* Right Content */}
       <section className="lg:col-span-3">
-        <div className="mb-4">
-            <h2 className="text-xl font-semibold">{filteredProfiles.length} Profiles found</h2>
-        </div>
-        {filteredProfiles.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredProfiles.map(profile => (
-                <ProfileCard key={profile.id} profile={profile} />
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, index) => (
+              <Skeleton key={index} className="rounded-lg aspect-[4/5] w-full" />
               ))}
-            </div>
+          </div>
         ) : (
-            <div className="flex flex-col items-center justify-center text-center bg-card p-10 rounded-lg border">
-                <h3 className="text-xl font-semibold">No Profiles Found</h3>
-                <p className="text-muted-foreground mt-2">Try adjusting your filters to find more results.</p>
+          <>
+            <div className="mb-4">
+                <h2 className="text-xl font-semibold">{filteredProfiles.length} Profiles found</h2>
             </div>
+            {filteredProfiles.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {filteredProfiles.map(profile => (
+                    <ProfileCard key={profile.id} profile={profile} />
+                  ))}
+                </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center text-center bg-card p-10 rounded-lg border">
+                    <h3 className="text-xl font-semibold">No Profiles Found</h3>
+                    <p className="text-muted-foreground mt-2">Try adjusting your filters to find more results.</p>
+                </div>
+            )}
+          </>
         )}
       </section>
     </div>

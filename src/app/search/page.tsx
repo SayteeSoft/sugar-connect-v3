@@ -2,10 +2,8 @@
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { SearchClient } from './search-client';
-import { getProfiles } from '@/lib/data';
 
 export default function SearchPage() {
-  const profiles = getProfiles();
   return (
     <div className="flex flex-col min-h-screen bg-secondary">
       <Header />
@@ -16,7 +14,7 @@ export default function SearchPage() {
                 Use our advanced search to find exactly who you're looking for.
             </p>
         </div>
-        <SearchClient initialProfiles={profiles} />
+        <SearchClient />
       </main>
       <Footer />
     </div>

@@ -3,7 +3,7 @@ import { Header } from '@/components/layout/header';
 import { ChatClient } from './chat-client';
 import { getConversations, getProfile } from '@/lib/data';
 
-export default function MessagesPage({
+export default async function MessagesPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };

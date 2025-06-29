@@ -79,8 +79,11 @@ export function SearchClient() {
       if (loggedInUser) {
         // Don't show the logged-in user in search results
         if (profile.id === loggedInUser.id) return false;
-        // Apply role-based viewing rules (daddy sees baby, baby sees daddy), admin sees all
-        if (loggedInUser.id !== 1 && profile.role === loggedInUser.role) return false;
+        
+        // Apply role-based viewing rules (daddy sees baby, baby sees daddy).
+        // This will apply to all users, including the admin, based on their profile's role.
+        if (loggedInUser.role === 'daddy' && profile.role !== 'baby') return false;
+        if (loggedInUser.role === 'baby' && profile.role !== 'daddy') return false;
       }
 
       return true;

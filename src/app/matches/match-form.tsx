@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -53,8 +52,8 @@ const ProfileListItem = ({ profile, onRemove, loggedInUser }: { profile: Profile
               Chat
             </Button>
            )}
-          <Button variant="ghost" size="icon" onClick={handleRemoveClick} className="text-muted-foreground hover:text-destructive">
-            <Trash2 className="h-4 w-4" />
+          <Button variant="ghost" size="icon" onClick={handleRemoveClick}>
+            <Trash2 className="h-4 w-4 text-muted-foreground" />
             <span className="sr-only">Remove</span>
           </Button>
         </div>

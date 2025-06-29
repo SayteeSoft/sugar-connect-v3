@@ -36,9 +36,9 @@ import {
 const attributeKeys = ['Height', 'Body Type', 'Ethnicity', 'Hair Color', 'Eye Color', 'Piercings', 'Tattoos'];
 
 const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit }: { profile: Profile; onEdit: () => void; isOwnProfile: boolean; canEdit: boolean; }) => (
-  <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+  <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
     {/* Left Column */}
-    <div className="w-full lg:w-1/3 space-y-6">
+    <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-24">
       <Card className="overflow-hidden shadow-lg">
         <div className="relative group">
           <Image
@@ -245,8 +245,8 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
         <>
             <input type="file" ref={profileImageInputRef} onChange={handleProfileImageChange} accept="image/*" className="hidden" />
             <input type="file" ref={galleryImageInputRef} onChange={handleGalleryImageChange} accept="image/*" className="hidden" />
-            <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
-                <div className="w-full lg:w-1/3 space-y-6">
+            <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+                <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-24">
                     <Card className="overflow-hidden shadow-lg">
                         <div className="relative">
                             <Image

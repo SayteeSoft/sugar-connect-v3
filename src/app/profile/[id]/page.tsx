@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -39,11 +38,11 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage }: { pr
       <Card className="overflow-hidden shadow-lg">
         <div className="relative group">
           <Image
-            src={profile.imageUrl ?? 'https://placehold.co/600x750'}
+            src={profile.imageUrl ?? 'https://placehold.co/600x600'}
             alt={`Profile of ${profile.name}`}
             width={600}
-            height={750}
-            className="w-full object-cover aspect-[4/5]"
+            height={600}
+            className="w-full object-cover aspect-square"
             data-ai-hint={profile.hint}
           />
           {profile.verified && (
@@ -294,9 +293,9 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                     <Card className="overflow-hidden shadow-lg">
                         <div className="relative">
                             <img
-                                src={editedProfile.imageUrl ?? 'https://placehold.co/600x750'}
+                                src={editedProfile.imageUrl ?? 'https://placehold.co/600x600'}
                                 alt={`Profile of ${editedProfile.name}`}
-                                className="w-full object-cover aspect-[4/5]"
+                                className="w-full object-cover aspect-square"
                                 data-ai-hint={editedProfile.hint}
                             />
                             <Button variant="secondary" size="icon" className="absolute bottom-4 right-4 rounded-full" onClick={() => profileImageInputRef.current?.click()}>
@@ -475,7 +474,7 @@ export default function ProfilePage() {
     // Replace data URIs with placeholders to avoid localStorage quota issues.
     // This simulates a real backend upload where you'd save the URL.
     if (profileToSave.imageUrl && profileToSave.imageUrl.startsWith('data:')) {
-        profileToSave.imageUrl = 'https://placehold.co/600x750';
+        profileToSave.imageUrl = 'https://placehold.co/600x600';
     }
     if (profileToSave.gallery) {
         profileToSave.gallery = profileToSave.gallery.map((img: string) =>

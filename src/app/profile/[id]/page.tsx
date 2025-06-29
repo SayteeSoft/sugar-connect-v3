@@ -151,7 +151,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
 
     const handleGalleryImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
+        if (file && (editedProfile.gallery || []).length < 5) {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setEditedProfile(prev => ({
@@ -278,9 +278,11 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                                     </div>
                                 </div>
                             ))}
-                            <div className="relative aspect-video border-2 border-dashed rounded-md flex items-center justify-center text-muted-foreground hover:bg-accent hover:border-primary transition">
-                                <Button variant="ghost" onClick={() => galleryImageInputRef.current?.click()}><Camera className="mr-2 h-4 w-4" />Add Photo</Button>
-                            </div>
+                            {(editedProfile.gallery || []).length < 5 && (
+                              <div className="relative aspect-video border-2 border-dashed rounded-md flex items-center justify-center text-muted-foreground hover:bg-accent hover:border-primary transition">
+                                  <Button variant="ghost" onClick={() => galleryImageInputRef.current?.click()}><Camera className="mr-2 h-4 w-4" />Add Photo</Button>
+                              </div>
+                            )}
                         </CardContent>
                     </Card>
 

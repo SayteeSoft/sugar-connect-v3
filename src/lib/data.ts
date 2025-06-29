@@ -53,7 +53,6 @@ export const featuredProfiles: Profile[] = [
       'https://placehold.co/600x400',
       'https://placehold.co/600x400',
       'https://placehold.co/600x400',
-      'https://placehold.co/600x400',
     ],
     attributes: {
       'Age': "49",

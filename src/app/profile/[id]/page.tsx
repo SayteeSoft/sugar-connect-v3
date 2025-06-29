@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavorite, onReport, onBlock, loggedInUser }: { 
+const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavorite, onReport, onBlock, loggedInUser, isAdmin }: { 
   profile: Profile; 
   onEdit: () => void; 
   isOwnProfile: boolean; 
@@ -43,8 +43,9 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
   onReport: (profileName: string) => void;
   onBlock: (profileId: number, profileName: string) => void;
   loggedInUser?: Profile;
+  isAdmin: boolean;
 }) => {
-    const canMessage = !isOwnProfile && loggedInUser && profile.role !== loggedInUser.role;
+    const canMessage = !isOwnProfile && loggedInUser && (isAdmin || profile.role !== loggedInUser.role);
 
     return (
   <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
@@ -575,6 +576,7 @@ export default function ProfilePage() {
             onReport={handleReport}
             onBlock={handleBlock}
             loggedInUser={loggedInUser}
+            isAdmin={isAdmin}
           />
         )}
       </main>

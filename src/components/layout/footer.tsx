@@ -7,16 +7,28 @@ import { Heart } from 'lucide-react';
 import { CookiePolicyModal } from '../cookie-policy-modal';
 import { PrivacyPolicyModal } from '../privacy-policy-modal';
 import { TermsOfUseModal } from '../terms-of-use-modal';
+import { getProfile } from '@/lib/data';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // Check login status from localStorage on component mount
     if (typeof window !== 'undefined') {
       const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
       setIsLoggedIn(loggedInStatus);
+
+      if (loggedInStatus) {
+        // For demo, hardcoding logged in user ID as 1
+        const profile = getProfile(1);
+        if (profile && profile.id === 1) {
+          setIsAdmin(true);
+        }
+      } else {
+        setIsAdmin(false);
+      }
     }
   }, []);
 
@@ -60,7 +72,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li><Link href="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact Us</Link></li>
               <li><Link href="/sitemap" className="text-sm text-muted-foreground hover:text-primary transition-colors">Sitemap</Link></li>
-              {isLoggedIn && (
+              {isAdmin && (
                 <li><Link href="/admin" className="text-sm text-muted-foreground hover:text-primary transition-colors">Admin</Link></li>
               )}
             </ul>

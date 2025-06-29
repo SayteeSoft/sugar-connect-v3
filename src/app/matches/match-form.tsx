@@ -14,7 +14,8 @@ import { Button } from '@/components/ui/button';
 
 const ProfileListItem = ({ profile, onRemove, loggedInUser }: { profile: Profile; onRemove: (profileId: number) => void; loggedInUser?: Profile; }) => {
   const router = useRouter();
-  const canChat = loggedInUser && loggedInUser.role !== profile.role;
+  const isAdmin = loggedInUser?.id === 1;
+  const canChat = loggedInUser && (isAdmin || loggedInUser.role !== profile.role);
 
   const handleChat = (e: React.MouseEvent) => {
     e.stopPropagation();

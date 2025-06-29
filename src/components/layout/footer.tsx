@@ -1,10 +1,7 @@
-
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
-import { getProfile } from '@/lib/data';
 import dynamic from 'next/dynamic';
 
 const CookiePolicyModal = dynamic(() => import('../cookie-policy-modal').then(mod => mod.CookiePolicyModal), { ssr: false });
@@ -13,30 +10,7 @@ const TermsOfUseModal = dynamic(() => import('../terms-of-use-modal').then(mod =
 
 
 export function Footer() {
-  const [currentYear, setCurrentYear] = useState<number | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setCurrentYear(new Date().getFullYear());
-    // Check login status from localStorage on component mount
-    if (typeof window !== 'undefined') {
-      const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
-      setIsLoggedIn(loggedInStatus);
-
-      if (loggedInStatus) {
-        // For demo, hardcoding logged in user ID as 1
-        const profile = getProfile(1);
-        if (profile && profile.id === 1) {
-          setIsAdmin(true);
-        }
-      } else {
-        setIsAdmin(false);
-      }
-    }
-    setMounted(true);
-  }, []);
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="w-full border-t bg-card text-card-foreground">
@@ -78,9 +52,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li><Link href="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact Us</Link></li>
               <li><Link href="/sitemap" className="text-sm text-muted-foreground hover:text-primary transition-colors">Sitemap</Link></li>
-              {mounted && isAdmin && (
-                <li><Link href="/admin" className="text-sm text-muted-foreground hover:text-primary transition-colors">Admin</Link></li>
-              )}
+              <li><Link href="/admin" className="text-sm text-muted-foreground hover:text-primary transition-colors">Admin</Link></li>
             </ul>
           </div>
         </div>

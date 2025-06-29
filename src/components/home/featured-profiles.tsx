@@ -10,20 +10,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 export function FeaturedProfiles() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Get profiles from client-side storage to reflect any updates
+    // This logic now runs only on the client, preventing server/client mismatch
     const allProfiles = getProfiles();
     setProfiles(allProfiles);
 
-    const loggedInStatus = typeof window !== 'undefined' && localStorage.getItem('isLoggedIn') === 'true';
+    const loggedInStatus = localStorage.getItem("isLoggedIn") === "true";
     if (loggedInStatus) {
       // In a real app, you'd get the actual user ID. For demo, we use user 1.
       setLoggedInUser(getProfile(1));
     }
+    setIsLoading(false);
   }, []);
 
-  const displayedProfiles = profiles
+  const displayedProfiles = isLoading ? [] : profiles
     .filter(profile => {
       // Don't show the admin account on the homepage
       if (profile.id === 1) return false;
@@ -51,13 +53,13 @@ export function FeaturedProfiles() {
           Featured Profiles
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {profiles.length > 0 ? (
-            displayedProfiles.map((profile) => (
-              <ProfileCard key={profile.id} profile={profile} loggedInUser={loggedInUser} />
-            ))
-          ) : (
+          {isLoading ? (
             Array.from({ length: 4 }).map((_, index) => (
                 <Skeleton key={index} className="rounded-lg aspect-[4/5] w-full" />
+            ))
+          ) : (
+            displayedProfiles.map((profile) => (
+              <ProfileCard key={profile.id} profile={profile} loggedInUser={loggedInUser} />
             ))
           )}
         </div>

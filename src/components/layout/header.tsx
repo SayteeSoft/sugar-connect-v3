@@ -90,7 +90,7 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
         <Link href="/" className="flex items-center gap-2 mr-6">
           <Heart className="h-6 w-6 text-primary" />
-          <span className="font-headline text-xl font-bold text-primary">
+          <span className="font-headline text-2xl font-bold text-primary">
             SugarConnect
           </span>
         </Link>

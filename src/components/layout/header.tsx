@@ -109,7 +109,7 @@ export function Header() {
             </Button>
           )}
           {isLoggedIn && profile && (profile.role === 'baby' || profile.id === 1) && (
-             <div className="flex items-center gap-2 h-10 px-3 text-sm font-medium">
+             <div className="flex items-center gap-2 h-10 px-3 text-sm font-medium whitespace-nowrap">
                 <Coins className="h-4 w-4 text-primary" />
                 <span className="text-foreground">Unlimited Credits</span>
             </div>

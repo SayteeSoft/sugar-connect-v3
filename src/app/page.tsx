@@ -6,6 +6,7 @@ import { Testimonials } from '@/components/home/testimonials';
 import { SecurityPrivacy } from '@/components/home/security-privacy';
 import { ByTheNumbers } from '@/components/home/by-the-numbers';
 import { WhatIsSugarRelationship } from '@/components/home/what-is-sugar-relationship';
+import { WhatIsDefinitions } from '@/components/home/what-is-definitions';
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
         <SecurityPrivacy />
         <ByTheNumbers />
         <WhatIsSugarRelationship />
+        <WhatIsDefinitions />
       </main>
       <Footer />
     </div>

@@ -19,6 +19,7 @@ import {
   Loader2,
   Heart,
   Ban,
+  MessageSquare,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -43,8 +44,8 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit }: { profile: Prof
             src={profile.imageUrl}
             alt={`Profile of ${profile.name}`}
             width={600}
-            height={400}
-            className="w-full object-cover aspect-[3/2]"
+            height={750}
+            className="w-full object-cover aspect-[4/5]"
           />
           {profile.verified && (
             <Badge className="absolute top-4 left-4 border-2 border-white/50 bg-primary text-primary-foreground">
@@ -91,7 +92,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit }: { profile: Prof
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="icon">
-                      <Mail className="h-5 w-5 text-muted-foreground" />
+                      <MessageSquare className="h-5 w-5 text-muted-foreground" />
                       <span className="sr-only">Send Message</span>
                     </Button>
                   </TooltipTrigger>
@@ -251,8 +252,8 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                                 src={editedProfile.imageUrl}
                                 alt={`Profile of ${editedProfile.name}`}
                                 width={600}
-                                height={400}
-                                className="w-full object-cover aspect-[3/2]"
+                                height={750}
+                                className="w-full object-cover aspect-[4/5]"
                             />
                             <Button variant="secondary" size="icon" className="absolute bottom-4 right-4 rounded-full" onClick={() => profileImageInputRef.current?.click()}>
                                 <Camera className="h-4 w-4" />

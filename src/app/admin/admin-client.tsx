@@ -146,7 +146,7 @@ export function AdminClient() {
                     <TableRow key={profile.id}>
                       <TableCell>
                         <Avatar>
-                          <AvatarImage src={profile.imageUrl ?? 'https://placehold.co/100x100'} alt={profile.name} data-ai-hint={profile.hint}/>
+                          <AvatarImage src={profile.imageUrl ?? 'https://placehold.co/100x100.png'} alt={profile.name} data-ai-hint={profile.hint}/>
                           <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
                         </Avatar>
                       </TableCell>

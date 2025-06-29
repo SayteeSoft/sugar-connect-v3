@@ -69,7 +69,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
         <div className="relative group cursor-pointer" onClick={() => onOpenGallery(-1)}>
           <Image
             key={profile.imageUrl}
-            src={profile.imageUrl ?? 'https://placehold.co/600x600'}
+            src={profile.imageUrl ?? 'https://placehold.co/600x600.png'}
             alt={`Profile of ${profile.name}`}
             width={600}
             height={600}
@@ -378,7 +378,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                         <div className="relative">
                             <Image
                                 key={editedProfile.imageUrl}
-                                src={editedProfile.imageUrl ?? 'https://placehold.co/600x600'}
+                                src={editedProfile.imageUrl ?? 'https://placehold.co/600x600.png'}
                                 alt={`Profile of ${editedProfile.name}`}
                                 width={600}
                                 height={600}

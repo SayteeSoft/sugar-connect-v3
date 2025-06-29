@@ -40,7 +40,7 @@ export function ProfileCard({ profile, onRemove, loggedInUser }: ProfileCardProp
       <Card className="group overflow-hidden rounded-lg shadow-lg transition-transform duration-300 ease-in-out hover:-translate-y-2">
         <div className="relative aspect-[4/5] w-full">
           <Image
-            src={profile.imageUrl ?? 'https://placehold.co/600x750'}
+            src={profile.imageUrl ?? 'https://placehold.co/600x750.png'}
             alt={`Profile of ${profile.name}`}
             data-ai-hint={profile.hint}
             width={600}

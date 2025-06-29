@@ -5,14 +5,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { AdminClient } from './admin-client';
-import { getProfiles, type Profile } from '@/lib/data';
 import { Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
 
 export default function AdminPage() {
-  const [profiles, setProfiles] = useState<Profile[]>([]);
   const router = useRouter();
   const { user, isLoggedIn, isLoading } = useAuth();
   const isAdmin = user?.id === 1;
@@ -22,12 +20,6 @@ export default function AdminPage() {
       router.replace('/login');
     }
   }, [isLoading, isLoggedIn, router]);
-
-  useEffect(() => {
-    if (isAdmin) {
-      setProfiles(getProfiles());
-    }
-  }, [isAdmin]);
 
   if (isLoading || !isLoggedIn) {
     return (
@@ -69,7 +61,7 @@ export default function AdminPage() {
                 Manage user profiles and site settings.
             </p>
         </div>
-        <AdminClient initialProfiles={profiles} />
+        <AdminClient />
       </main>
     </>
   );

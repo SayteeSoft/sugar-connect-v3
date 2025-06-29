@@ -31,8 +31,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from '@/components/ui/card';
 
-export function AdminClient({ initialProfiles }: { initialProfiles: Profile[] }) {
-  const [profiles, setProfiles] = useState(initialProfiles);
+export function AdminClient() {
+  const [profiles, setProfiles] = useState<Profile[]>([]);
   const router = useRouter();
   const { toast } = useToast();
 

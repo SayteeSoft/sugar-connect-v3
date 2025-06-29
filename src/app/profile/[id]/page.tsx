@@ -570,22 +570,19 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
 export default function ProfilePage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [profileData, setProfileData] = useState<Profile | undefined>();
+  const [isLoadingData, setIsLoadingData] = useState(true);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { toast } = useToast();
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const { user: loggedInUser, isLoggedIn, isLoading: isAuthLoading } = useAuth();
-
+  
   const profileId = parseInt(params.id, 10);
-  const isOwnProfile = profileId === loggedInUser?.id;
-  const isAdmin = loggedInUser?.id === 1;
-  const canEdit = isOwnProfile || isAdmin;
-
   const allImages = [profileData?.imageUrl, ...(profileData?.gallery || [])].filter((url): url is string => !!url);
 
   useEffect(() => {
-    if (isAuthLoading) return;
+    if (isAuthLoading) return; // Wait for auth to be resolved
 
     if (!isLoggedIn) {
       router.replace('/login');
@@ -594,22 +591,20 @@ export default function ProfilePage() {
     
     const targetProfile = getProfile(profileId);
 
-    // Check if user is allowed to view this profile
-    const isViewingOwnProfile = targetProfile?.id === loggedInUser?.id;
-    
-    if (
-      !isViewingOwnProfile &&
-      loggedInUser &&
-      targetProfile &&
-      loggedInUser.role === targetProfile.role &&
-      !isAdmin
-    ) {
-      setProfileData(undefined);
-    } else {
+    // Permission check
+    const isOwnProfile = targetProfile?.id === loggedInUser?.id;
+    const isAdmin = loggedInUser?.id === 1;
+    const canView = isOwnProfile || isAdmin || (loggedInUser && targetProfile && loggedInUser.role !== targetProfile.role);
+
+    if (canView) {
       setProfileData(targetProfile);
+    } else {
+      setProfileData(undefined);
     }
+    
+    setIsLoadingData(false); // Data loading is complete
       
-  }, [router, profileId, isAuthLoading, isLoggedIn, loggedInUser, isAdmin]);
+  }, [profileId, isAuthLoading, isLoggedIn, loggedInUser, router]);
 
   const openGallery = (index: number) => {
     // If index is -1, it's the profile pic (index 0 in allImages).
@@ -655,7 +650,6 @@ export default function ProfilePage() {
     if (success) {
       setProfileData(getProfile(profileId));
       setIsEditMode(false);
-      window.dispatchEvent(new Event('authChanged'));
       toast({
         title: "Profile Saved",
         description: "Your changes have been saved successfully.",
@@ -669,7 +663,9 @@ export default function ProfilePage() {
     }
   };
 
-  if (isAuthLoading || (isLoggedIn && !profileData)) {
+  const isLoading = isAuthLoading || isLoadingData;
+  
+  if (isLoading) {
     return (
      <>
        <Header />
@@ -680,17 +676,6 @@ export default function ProfilePage() {
    );
  }
 
-  if (!isLoggedIn) {
-     return (
-     <>
-       <Header />
-       <main className="flex-grow container mx-auto p-4 md:p-6 flex justify-center items-center">
-         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-       </main>
-     </>
-   );
-  }
-
   if (!profileData) {
     return (
       <>
@@ -698,7 +683,7 @@ export default function ProfilePage() {
         <main className="flex-grow container mx-auto p-4 md:p-6 text-center">
           <Card className="max-w-md mx-auto">
             <CardHeader>
-              <CardTitle>Access Denied</CardTitle>
+              <CardTitle>Profile Not Found</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">This profile is not available or you do not have permission to view it.</p>
@@ -709,6 +694,10 @@ export default function ProfilePage() {
       </>
     );
   }
+  
+  const isOwnProfile = profileData.id === loggedInUser?.id;
+  const isAdmin = loggedInUser?.id === 1;
+  const canEdit = isOwnProfile || isAdmin;
 
   return (
     <>

@@ -3,6 +3,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import type { Profile } from '@/lib/data';
+import { getProfiles } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -13,6 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import { ProfileCard } from '@/components/profile-card';
 import { Filter, Sparkles, Wifi, Image as ImageIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useAuth } from '@/hooks/use-auth';
 
 const formatHeight = (cm: number) => {
   if (cm === 0) return "N/A";
@@ -40,16 +42,20 @@ const defaultFilters = {
     location: '',
 };
 
-export function SearchClient({ initialProfiles, initialLoggedInUser, isLoading }: { initialProfiles: Profile[], initialLoggedInUser?: Profile, isLoading: boolean }) {
-  const [profiles, setProfiles] = useState<Profile[]>(initialProfiles);
+export function SearchClient() {
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const { user: loggedInUser, isLoading: isAuthLoading } = useAuth();
+  const [isDataLoading, setIsDataLoading] = useState(true);
+  
   const [uiFilters, setUiFilters] = useState(defaultFilters);
   const [appliedFilters, setAppliedFilters] = useState(defaultFilters);
-  const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>(initialLoggedInUser);
   
   useEffect(() => {
-    setProfiles(initialProfiles);
-    setLoggedInUser(initialLoggedInUser);
-  }, [initialProfiles, initialLoggedInUser]);
+    if (!isAuthLoading) {
+      setProfiles(getProfiles());
+      setIsDataLoading(false);
+    }
+  }, [isAuthLoading]);
   
   const handleClearFilters = () => {
     setUiFilters(defaultFilters);
@@ -86,6 +92,8 @@ export function SearchClient({ initialProfiles, initialLoggedInUser, isLoading }
       return true;
     });
   }, [profiles, appliedFilters, loggedInUser]);
+
+  const isLoading = isAuthLoading || isDataLoading;
 
   return (
     <div className="grid lg:grid-cols-4 gap-8 items-start">

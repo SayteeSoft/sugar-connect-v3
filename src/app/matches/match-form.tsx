@@ -1,7 +1,9 @@
+
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Profile } from '@/lib/data';
+import { getProfiles } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Heart, Eye, Footprints, MessageSquare, Trash2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -9,6 +11,8 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/use-auth';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const ProfileListItem = ({ profile, onRemove, loggedInUser }: { profile: Profile; onRemove: (profileId: number) => void; loggedInUser?: Profile; }) => {
   const router = useRouter();
@@ -78,28 +82,33 @@ const ProfilesList = ({ profiles, onRemove, loggedInUser }: { profiles: Profile[
   );
 };
 
-export function MatchesTabs({ initialProfiles, initialCurrentUser }: { initialProfiles: Profile[], initialCurrentUser?: Profile }) {
+export function MatchesTabs() {
   const { toast } = useToast();
   const [favorites, setFavorites] = useState<Profile[]>([]);
   const [visitors, setVisitors] = useState<Profile[]>([]);
   const [viewed, setViewed] = useState<Profile[]>([]);
-  const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>(initialCurrentUser);
+  const { user: loggedInUser, isLoading: isAuthLoading } = useAuth();
+  const [isDataLoading, setIsDataLoading] = useState(true);
 
   useEffect(() => {
-    const filterLogic = (profile: Profile) => {
-        if (!initialCurrentUser) return true;
-        if (profile.id === initialCurrentUser.id) return false;
-        
-        // Always show opposite roles, regardless of admin status.
-        if (profile.role === initialCurrentUser.role) return false;
+    if (!isAuthLoading) {
+        const allProfiles = getProfiles();
+        const filterLogic = (profile: Profile) => {
+            if (!loggedInUser) return true;
+            if (profile.id === loggedInUser.id) return false;
+            
+            // Always show opposite roles, regardless of admin status.
+            if (profile.role === loggedInUser.role) return false;
 
-        return true;
+            return true;
+        }
+
+        setFavorites(allProfiles.slice(0, 4).filter(filterLogic));
+        setVisitors(allProfiles.slice(4, 8).filter(filterLogic));
+        setViewed(allProfiles.slice(8, 12).filter(filterLogic));
+        setIsDataLoading(false);
     }
-
-    setFavorites(initialProfiles.slice(0, 4).filter(filterLogic));
-    setVisitors(initialProfiles.slice(4, 8).filter(filterLogic));
-    setViewed(initialProfiles.slice(8, 12).filter(filterLogic));
-  }, [initialProfiles, initialCurrentUser]);
+  }, [isAuthLoading, loggedInUser]);
   
   const handleRemove = (profileId: number, listType: 'favorites' | 'visitors' | 'viewed') => {
     let profileName = '';
@@ -120,6 +129,23 @@ export function MatchesTabs({ initialProfiles, initialCurrentUser }: { initialPr
       description: `${profileName} has been removed from your ${listType} list.`,
     });
   };
+
+  if (isAuthLoading || isDataLoading) {
+    return (
+        <div className="w-full">
+            <div className="grid w-full lg:w-1/3 grid-cols-3 mx-auto gap-1">
+                <Skeleton className="h-10" />
+                <Skeleton className="h-10" />
+                <Skeleton className="h-10" />
+            </div>
+            <div className="space-y-3 max-w-3xl mx-auto mt-6">
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-24 w-full" />
+            </div>
+        </div>
+    );
+  }
 
   return (
     <Tabs defaultValue="favorites" className="w-full">

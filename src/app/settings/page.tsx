@@ -87,7 +87,6 @@ export default function SettingsPage() {
     const success = updateProfile(updatedProfileData);
 
     if (success) {
-      window.dispatchEvent(new Event('authChanged'));
       toast({
         title: 'Profile Updated',
         description: 'Your username has been updated successfully.',

@@ -491,6 +491,8 @@ export const updateProfile = (updatedProfile: Profile): boolean => {
 
     profiles[profileIndex] = updatedProfile;
     window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
+    // Notify components that user data might have changed
+    window.dispatchEvent(new Event('authChanged')); 
     return true;
   } catch (error) {
     console.error('Failed to update profile in localStorage:', error);

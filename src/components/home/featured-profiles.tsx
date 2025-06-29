@@ -28,18 +28,18 @@ export function FeaturedProfiles() {
       // Don't show the admin account on the homepage
       if (profile.id === 1) return false;
       
-      if (!loggedInUser) {
-        // If not logged in, show a mix of profiles
-        return true;
+      if (loggedInUser) {
+        // Don't show the user their own profile on the homepage
+        if (profile.id === loggedInUser.id) {
+          return false;
+        }
+        // If logged in, show opposite roles. This now applies to the admin as well.
+        if (profile.role === loggedInUser.role) {
+          return false;
+        }
       }
-      // Don't show the user their own profile on the homepage
-      if (profile.id === loggedInUser.id) {
-        return false;
-      }
-      // If logged in, show opposite roles, unless user is admin
-      if (loggedInUser.id !== 1 && profile.role === loggedInUser.role) {
-        return false;
-      }
+      // If not logged in, all non-admin profiles are shown (up to the slice limit)
+      // If logged in, only profiles that passed the above checks are shown
       return true;
     })
     .slice(0, 4);

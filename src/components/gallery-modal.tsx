@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 interface GalleryModalProps {
@@ -56,6 +56,7 @@ export function GalleryModal({ images, startIndex, isOpen, onClose }: GalleryMod
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-none w-screen h-screen p-0 bg-black/90 border-0 shadow-none text-white flex flex-col items-center justify-center">
+        <DialogTitle className="sr-only">Image Gallery</DialogTitle>
         <div className="relative w-full h-full flex items-center justify-center">
           <Image
             key={images[currentIndex]}

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Heart } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { useState, useEffect } from 'react';
 
 const CookiePolicyModal = dynamic(() => import('../cookie-policy-modal').then(mod => mod.CookiePolicyModal), { ssr: false });
 const PrivacyPolicyModal = dynamic(() => import('../privacy-policy-modal').then(mod => mod.PrivacyPolicyModal), { ssr: false });
@@ -10,7 +11,11 @@ const TermsOfUseModal = dynamic(() => import('../terms-of-use-modal').then(mod =
 
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
 
   return (
     <footer className="w-full border-t bg-card text-card-foreground">

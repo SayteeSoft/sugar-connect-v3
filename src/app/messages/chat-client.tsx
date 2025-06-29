@@ -15,6 +15,9 @@ import {
   MoreVertical,
   Phone,
   Video,
+  Heart,
+  Ban,
+  Trash2,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -23,6 +26,14 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { format, isToday, isYesterday } from 'date-fns';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { useToast } from "@/hooks/use-toast";
 
 const formatTimestamp = (timestamp: string) => {
   const date = new Date(timestamp);
@@ -57,6 +68,7 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     setIsClient(true);
@@ -96,6 +108,48 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
       )
     );
     setNewMessage('');
+  };
+
+  const handleFavorite = () => {
+    if (!selectedConversation) return;
+    toast({
+      title: 'Favorited',
+      description: `You have favorited ${selectedConversation.participant.name}.`,
+    });
+    // In a real app, you would add this to the user's favorites list.
+  };
+
+  const handleDeleteChat = () => {
+    if (!selectedConversationId) return;
+    const convoToDelete = conversations.find(c => c.id === selectedConversationId);
+    if (!convoToDelete) return;
+    
+    const remainingConversations = conversations.filter(c => c.id !== selectedConversationId);
+    setConversations(remainingConversations);
+    setSelectedConversationId(remainingConversations[0]?.id || null);
+    
+    toast({
+      title: 'Chat Deleted',
+      description: `Your conversation with ${convoToDelete.participant.name} has been deleted.`,
+      variant: 'destructive',
+    });
+  };
+
+  const handleBlockUser = () => {
+    if (!selectedConversationId) return;
+    const convoToBlock = conversations.find(c => c.id === selectedConversationId);
+    if (!convoToBlock) return;
+    
+    // In a real app, this would also block the user from contacting you.
+    const remainingConversations = conversations.filter(c => c.id !== selectedConversationId);
+    setConversations(remainingConversations);
+    setSelectedConversationId(remainingConversations[0]?.id || null);
+    
+    toast({
+      title: 'User Blocked',
+      description: `You have blocked ${convoToBlock.participant.name}. You will no longer see their messages.`,
+      variant: 'destructive',
+    });
   };
 
 
@@ -183,10 +237,28 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
                     <TooltipTrigger asChild><Button variant="ghost" size="icon"><Video /></Button></TooltipTrigger>
                     <TooltipContent><p>Video Call</p></TooltipContent>
                   </Tooltip>
-                   <Tooltip>
-                    <TooltipTrigger asChild><Button variant="ghost" size="icon"><MoreVertical /></Button></TooltipTrigger>
-                    <TooltipContent><p>More Options</p></TooltipContent>
-                  </Tooltip>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoreVertical />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onSelect={handleFavorite}>
+                        <Heart className="mr-2 h-4 w-4" />
+                        <span>Favorite</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={handleDeleteChat}>
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        <span>Delete Chat</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onSelect={handleBlockUser} className="text-destructive focus:text-destructive focus:bg-destructive/10">
+                        <Ban className="mr-2 h-4 w-4" />
+                        <span>Block User</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TooltipProvider>
               </div>
             </header>

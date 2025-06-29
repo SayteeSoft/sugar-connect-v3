@@ -1,4 +1,6 @@
 
+'use client';
+
 import { Header } from '@/components/layout/header';
 import { Hero } from '@/components/home/hero';
 import { FeaturedProfiles } from '@/components/home/featured-profiles';

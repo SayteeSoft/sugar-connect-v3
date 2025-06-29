@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -192,6 +191,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
     const [editedProfile, setEditedProfile] = useState(profile);
     const profileImageInputRef = useRef<HTMLInputElement>(null);
     const galleryImageInputRef = useRef<HTMLInputElement>(null);
+    const { toast } = useToast();
     
     const wantsSelectOptions: MultiSelectOption[] = wantsOptions.map(o => ({ value: o, label: o }));
     const interestsSelectOptions: MultiSelectOption[] = interestsOptions.map(o => ({ value: o, label: o }));
@@ -213,17 +213,52 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
     };
 
     const handleGalleryImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file && (editedProfile.gallery || []).length < 5) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setEditedProfile(prev => ({
-                    ...prev,
-                    gallery: [...(prev.gallery || []), reader.result as string]
-                }));
-            };
-            reader.readAsDataURL(file);
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+
+        const currentGallery = editedProfile.gallery || [];
+        const spaceAvailable = 5 - currentGallery.length;
+
+        if (spaceAvailable <= 0) {
+            toast({
+                variant: 'destructive',
+                title: 'Gallery Full',
+                description: 'You have already uploaded the maximum of 5 photos.',
+            });
+            return;
         }
+        
+        const filesToProcess = Array.from(files).slice(0, spaceAvailable);
+
+        if (files.length > spaceAvailable) {
+            toast({
+                title: 'Upload Limit Reached',
+                description: `You can only add ${spaceAvailable} more photo(s). The first ${spaceAvailable} have been added.`,
+            });
+        }
+        
+        const filePromises = filesToProcess.map(file => {
+            return new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result as string);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        });
+
+        Promise.all(filePromises).then(newImages => {
+            setEditedProfile(prev => ({
+                ...prev,
+                gallery: [...(prev.gallery || []), ...newImages]
+            }));
+        }).catch(error => {
+            console.error("Error reading files:", error);
+            toast({
+                variant: 'destructive',
+                title: 'Upload Failed',
+                description: 'There was an error uploading your photos. Please try again.',
+            });
+        });
     };
 
     const handleRemoveGalleryImage = (indexToRemove: number) => {
@@ -248,7 +283,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
     return (
         <>
             <input type="file" ref={profileImageInputRef} onChange={handleProfileImageChange} accept="image/*" className="hidden" />
-            <input type="file" ref={galleryImageInputRef} onChange={handleGalleryImageChange} accept="image/*" className="hidden" />
+            <input type="file" ref={galleryImageInputRef} onChange={handleGalleryImageChange} accept="image/*" className="hidden" multiple />
             <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
                 <div className="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-24">
                     <Card className="overflow-hidden shadow-lg">

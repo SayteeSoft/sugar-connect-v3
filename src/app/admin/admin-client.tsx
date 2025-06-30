@@ -58,7 +58,7 @@ export function AdminClient() {
   };
 
   const handleEdit = (id: number) => {
-    router.push(`/profile/${id}`); // The profile page has an edit mode
+    router.push(`/profile/${id}?edit=true`);
   };
 
   const handleDelete = (id: number) => {
@@ -169,17 +169,17 @@ export function AdminClient() {
                       <TableCell className="hidden lg:table-cell">{profile.location}</TableCell>
                       <TableCell>
                         <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="icon" onClick={() => handleView(profile.id)} className="hover:bg-transparent hover:text-foreground dark:hover:bg-transparent dark:hover:text-foreground">
+                          <Button variant="ghost" size="icon" onClick={() => handleView(profile.id)} className="hover:bg-transparent hover:text-foreground">
                             <Eye className="h-4 w-4" />
                             <span className="sr-only">View</span>
                           </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleEdit(profile.id)} className="hover:bg-transparent hover:text-foreground dark:hover:bg-transparent dark:hover:text-foreground">
+                          <Button variant="ghost" size="icon" onClick={() => handleEdit(profile.id)} className="hover:bg-transparent hover:text-foreground">
                             <Pencil className="h-4 w-4" />
                             <span className="sr-only">Edit</span>
                           </Button>
                           <AlertDialog>
                               <AlertDialogTrigger asChild>
-                                  <Button variant="ghost" size="icon" className="text-destructive hover:bg-transparent hover:text-destructive dark:hover:bg-transparent dark:hover:text-destructive" disabled={profile.id === 1}>
+                                  <Button variant="ghost" size="icon" className="text-destructive hover:bg-transparent hover:text-destructive" disabled={profile.id === 1}>
                                     <Trash2 className="h-4 w-4" />
                                     <span className="sr-only">Delete</span>
                                   </Button>

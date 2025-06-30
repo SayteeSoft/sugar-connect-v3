@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { getProfile, updateProfile, type Profile, wantsOptions, interestsOptions, attributeKeys, deleteProfile, bodyTypeOptions, ethnicityOptions, hairColorOptions, eyeColorOptions } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -567,6 +567,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
 
 
 export default function ProfilePage() {
+  const searchParams = useSearchParams();
   const [isEditMode, setIsEditMode] = useState(false);
   const [profileData, setProfileData] = useState<Profile | undefined>();
   const [isLoadingData, setIsLoadingData] = useState(true);
@@ -593,17 +594,21 @@ export default function ProfilePage() {
     // Permission check
     const isOwnProfile = targetProfile?.id === loggedInUser?.id;
     const isAdmin = loggedInUser?.id === 1;
+    const canEdit = isOwnProfile || isAdmin;
     const canView = isOwnProfile || isAdmin || (loggedInUser && targetProfile && loggedInUser.role !== targetProfile.role);
 
     if (canView) {
       setProfileData(targetProfile);
+      if (searchParams.get('edit') === 'true' && canEdit) {
+        setIsEditMode(true);
+      }
     } else {
       setProfileData(undefined);
     }
     
     setIsLoadingData(false); // Data loading is complete
       
-  }, [profileId, isAuthLoading, isLoggedIn, loggedInUser, router]);
+  }, [profileId, isAuthLoading, isLoggedIn, loggedInUser, router, searchParams]);
 
   const openGallery = (index: number) => {
     // If index is -1, it's the profile pic (index 0 in allImages).
@@ -653,12 +658,22 @@ export default function ProfilePage() {
         title: "Profile Saved",
         description: "Your changes have been saved successfully.",
       });
+      if (searchParams.get('edit')) {
+        router.replace(`/profile/${profileId}`, { scroll: false });
+      }
     } else {
       toast({
         variant: "destructive",
         title: "Error",
         description: "Failed to save your profile. This might be due to storage limits if images are too large.",
       });
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditMode(false);
+    if (searchParams.get('edit')) {
+      router.replace(`/profile/${profileId}`, { scroll: false });
     }
   };
 
@@ -706,7 +721,7 @@ export default function ProfilePage() {
           <ProfileEdit 
             profile={profileData} 
             onSave={handleSaveProfile} 
-            onCancel={() => setIsEditMode(false)} 
+            onCancel={handleCancelEdit} 
           />
         ) : (
           <ProfileView 

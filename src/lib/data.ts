@@ -2,6 +2,8 @@
 export type Profile = {
   id: number;
   name: string;
+  email: string;
+  password?: string;
   age: number;
   location: string;
   imageUrl: string;
@@ -62,6 +64,8 @@ export const featuredProfiles: Profile[] = [
   {
     id: 1,
     name: 'saytee.software',
+    email: 'saytee.software@gmail.com',
+    password: 'admin',
     age: 49,
     location: 'London, UK',
     imageUrl: 'https://placehold.co/600x750.png',
@@ -89,6 +93,8 @@ export const featuredProfiles: Profile[] = [
   {
     id: 2,
     name: 'Darianna',
+    email: 'darianna@example.com',
+    password: 'password123',
     age: 24,
     location: 'London, UK',
     imageUrl: 'https://placehold.co/600x750.png',
@@ -118,6 +124,8 @@ export const featuredProfiles: Profile[] = [
   {
     id: 3,
     name: 'Kateryna',
+    email: 'kateryna@example.com',
+    password: 'password123',
     age: 22,
     location: 'Birmingham, UK',
     imageUrl: 'https://placehold.co/600x750.png',
@@ -146,6 +154,8 @@ export const featuredProfiles: Profile[] = [
   {
     id: 4,
     name: 'Mark',
+    email: 'mark@example.com',
+    password: 'password123',
     age: 52,
     location: 'Glasgow, UK',
     imageUrl: 'https://placehold.co/600x750.png',
@@ -175,6 +185,8 @@ export const featuredProfiles: Profile[] = [
   {
     id: 5,
     name: 'Sofia',
+    email: 'sofia@example.com',
+    password: 'password123',
     age: 26,
     location: 'Liverpool, UK',
     imageUrl: 'https://placehold.co/600x750.png',
@@ -202,6 +214,8 @@ export const featuredProfiles: Profile[] = [
   {
     id: 6,
     name: 'James',
+    email: 'james@example.com',
+    password: 'password123',
     age: 38,
     location: 'Bristol, UK',
     imageUrl: 'https://placehold.co/600x750.png',
@@ -228,6 +242,8 @@ export const featuredProfiles: Profile[] = [
   {
     id: 7,
     name: 'Vansessa',
+    email: 'vanessa@example.com',
+    password: 'password123',
     age: 21,
     location: 'Leeds, UK',
     imageUrl: 'https://placehold.co/600x750.png',
@@ -252,6 +268,8 @@ export const featuredProfiles: Profile[] = [
   {
     id: 8,
     name: 'Richard',
+    email: 'richard@example.com',
+    password: 'password123',
     age: 49,
     location: 'Edinburgh, UK',
     imageUrl: 'https://placehold.co/600x750.png',
@@ -280,6 +298,8 @@ export const featuredProfiles: Profile[] = [
   {
     id: 9,
     name: 'Olivia',
+    email: 'olivia@example.com',
+    password: 'password123',
     age: 23,
     location: 'Sheffield, UK',
     imageUrl: 'https://placehold.co/600x750.png',
@@ -307,6 +327,8 @@ export const featuredProfiles: Profile[] = [
   {
     id: 10,
     name: 'William',
+    email: 'william@example.com',
+    password: 'password123',
     age: 45,
     location: 'Cardiff, UK',
     imageUrl: 'https://placehold.co/600x750.png',
@@ -333,6 +355,8 @@ export const featuredProfiles: Profile[] = [
   {
     id: 11,
     name: 'Isla',
+    email: 'isla@example.com',
+    password: 'password123',
     age: 25,
     location: 'Belfast, UK',
     imageUrl: 'https://placehold.co/600x750.png',
@@ -361,6 +385,8 @@ export const featuredProfiles: Profile[] = [
   {
     id: 12,
     name: 'George',
+    email: 'george@example.com',
+    password: 'password123',
     age: 55,
     location: 'Southampton, UK',
     imageUrl: 'https://placehold.co/600x750.png',
@@ -454,6 +480,59 @@ export const getProfiles = (): Profile[] => {
   } catch (error) {
     console.error('Failed to access localStorage:', error);
     return [];
+  }
+};
+
+/**
+ * Creates a new user profile and saves it to localStorage.
+ * This function should only be called on the client side.
+ * @param {string} email - The new user's email.
+ * @param {string} password - The new user's password.
+ * @param {'baby' | 'daddy'} role - The new user's role.
+ * @returns {Profile | { error: string }} The new profile object or an error object.
+ */
+export const createProfile = (email: string, password: string, role: 'baby' | 'daddy'): Profile | { error: string } => {
+  if (typeof window === 'undefined') {
+    return { error: 'This function can only be called on the client.' };
+  }
+  try {
+    const profiles = getProfiles();
+    
+    // Check if email already exists
+    if (profiles.some(p => p.email.toLowerCase() === email.toLowerCase())) {
+      return { error: 'A user with this email address already exists.' };
+    }
+    
+    const newId = profiles.length > 0 ? Math.max(...profiles.map(p => p.id)) + 1 : 1;
+    const name = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    
+    const newProfile: Profile = {
+      id: newId,
+      name: name,
+      email: email,
+      password: password,
+      age: 18,
+      location: '',
+      imageUrl: role === 'baby' ? 'https://placehold.co/600x750.png' : 'https://placehold.co/600x750.png',
+      hint: role === 'baby' ? 'woman smiling' : 'man suit',
+      role: role,
+      online: true, // log them in as online
+      verified: false,
+      bio: '',
+      wants: [],
+      interests: [],
+      gallery: [],
+      attributes: {},
+    };
+
+    const updatedProfiles = [...profiles, newProfile];
+    window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(updatedProfiles));
+    window.dispatchEvent(new Event('profileUpdated'));
+    
+    return newProfile;
+  } catch (error) {
+    console.error('Failed to create profile in localStorage:', error);
+    return { error: 'An unexpected error occurred.' };
   }
 };
 

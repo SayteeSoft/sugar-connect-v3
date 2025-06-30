@@ -35,7 +35,11 @@ export function Header() {
   };
   
   const handleProfile = () => {
-    router.push("/profile");
+    if (user) {
+      router.push(`/profile/${user.id}`);
+    } else {
+      router.push('/profile');
+    }
   };
 
   const handleSettings = () => {
@@ -114,7 +118,7 @@ export function Header() {
                         <div className="flex flex-col space-y-1">
                           <p className="text-sm font-medium leading-none">{user?.name}</p>
                           <p className="text-xs leading-none text-muted-foreground">
-                            saytee.software@gmail.com
+                            {user?.email}
                           </p>
                         </div>
                       </DropdownMenuLabel>
@@ -134,10 +138,16 @@ export function Header() {
                       </DropdownMenuItem>
                     </>
                   ) : (
-                    <DropdownMenuItem onSelect={handleLogin}>
-                      <LogIn className="mr-2 h-4 w-4" />
-                      <span>Log In</span>
-                    </DropdownMenuItem>
+                     <>
+                        <DropdownMenuItem onSelect={handleLogin}>
+                          <LogIn className="mr-2 h-4 w-4" />
+                          <span>Log In</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => router.push('/signup')}>
+                            <User className="mr-2 h-4 w-4" />
+                            <span>Sign Up</span>
+                        </DropdownMenuItem>
+                    </>
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>

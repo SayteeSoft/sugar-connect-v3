@@ -5,16 +5,22 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { Header } from '@/components/layout/header';
+import { useAuth } from '@/hooks/use-auth';
 
 
 export default function ProfileRedirectPage() {
   const router = useRouter();
+  const { user, isLoading } = useAuth();
 
   useEffect(() => {
-    // In a real app, get the user's ID from session. For now, hardcode to 1.
-    const loggedInUserId = 1;
-    router.replace(`/profile/${loggedInUserId}`);
-  }, [router]);
+    if (!isLoading) {
+      if (user) {
+        router.replace(`/profile/${user.id}`);
+      } else {
+        router.replace('/login');
+      }
+    }
+  }, [router, user, isLoading]);
 
   return (
     <>

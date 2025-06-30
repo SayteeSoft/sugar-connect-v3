@@ -37,9 +37,9 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
-    const success = login(email, password);
+    const user = login(email, password);
 
-    if (success) {
+    if (user) {
       router.push("/profile");
     } else {
       setError("Invalid email or password.");

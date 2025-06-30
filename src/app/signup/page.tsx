@@ -1,27 +1,72 @@
 
 'use client';
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Header } from "@/components/layout/header";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircle, Loader2 } from "lucide-react";
 import { useAuth } from '@/hooks/use-auth';
-import { Loader2 } from 'lucide-react';
+
+const signupFormSchema = z.object({
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+  password: z.string().min(8, { message: 'Password must be at least 8 characters.' }),
+  confirmPassword: z.string(),
+  role: z.enum(['baby', 'daddy'], { required_error: 'You must select a role.' }),
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ['confirmPassword'],
+});
+
+type SignupFormValues = z.infer<typeof signupFormSchema>;
 
 export default function SignupPage() {
   const router = useRouter();
-  const { isLoggedIn, isLoading } = useAuth();
+  const { isLoggedIn, isLoading, signup } = useAuth();
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupFormValues>({
+    resolver: zodResolver(signupFormSchema),
+    defaultValues: {
+      role: 'baby'
+    }
+  });
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (!isLoading && isLoggedIn) {
       router.replace('/profile');
     }
-  }, [isLoggedIn, router]);
+  }, [isLoggedIn, isLoading, router]);
+  
+  const onSubmit = async (data: SignupFormValues) => {
+    setError('');
+    setIsSubmitting(true);
+    
+    const result = signup(data.email, data.password, data.role);
+
+    if (result.user) {
+      router.push(`/profile/${result.user.id}?edit=true`);
+    } else {
+      setError(result.error || "An unknown error occurred during signup.");
+    }
+    
+    setIsSubmitting(false);
+  };
 
   if (isLoading || isLoggedIn) {
     return (
@@ -46,29 +91,49 @@ export default function SignupPage() {
             <CardDescription>Join our exclusive community today.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+               {error && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Signup Failed</AlertTitle>
+                  <AlertDescription>
+                    {error}
+                  </AlertDescription>
+                </Alert>
+              )}
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="you@example.com" required />
+                <Label htmlFor="email">Email Address</Label>
+                <Input id="email" type="email" placeholder="you@example.com" {...register('email')} />
+                {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" required />
+                <Input id="password" type="password" {...register('password')} />
+                {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
+              </div>
+               <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input id="confirmPassword" type="password" {...register('confirmPassword')} />
+                {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label>I am a:</Label>
-                <RadioGroup defaultValue="sugar-baby" className="flex space-x-4 pt-2">
+                <RadioGroup defaultValue="baby" className="flex space-x-4 pt-2" {...register('role')}>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="sugar-baby" id="r1" />
+                    <RadioGroupItem value="baby" id="r1" />
                     <Label htmlFor="r1">Sugar Baby</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="sugar-daddy" id="r2" />
+                    <RadioGroupItem value="daddy" id="r2" />
                     <Label htmlFor="r2">Sugar Daddy</Label>
                   </div>
                 </RadioGroup>
+                {errors.role && <p className="text-sm text-destructive">{errors.role.message}</p>}
               </div>
-              <Button type="submit" className="w-full">Create Account</Button>
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Create Account
+              </Button>
             </form>
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}

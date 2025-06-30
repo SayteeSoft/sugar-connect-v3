@@ -72,7 +72,7 @@ export default function SettingsPage() {
       router.replace('/login');
     }
     if (profile) {
-      profileForm.reset({ name: profile.name, email: 'saytee.software@gmail.com' });
+      profileForm.reset({ name: profile.name, email: profile.email });
     }
   }, [router, profile, profileForm, isLoading, isLoggedIn]);
 
@@ -83,7 +83,9 @@ export default function SettingsPage() {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    const updatedProfileData = { ...profile, name: data.name };
+    // Note: In a real app, you would have a backend process for changing email
+    // that includes verification. Here we just update the name.
+    const updatedProfileData: Profile = { ...profile, name: data.name };
     const success = updateProfile(updatedProfileData);
 
     if (success) {
@@ -107,6 +109,24 @@ export default function SettingsPage() {
     await new Promise(resolve => setTimeout(resolve, 1000));
     console.log('Password change data:', data);
 
+    // In a real app, you would verify the currentPassword against the backend
+    // and then update it. For this demo, we'll just show a success message.
+    if (data.currentPassword !== profile?.password) {
+        toast({
+          variant: "destructive",
+          title: 'Incorrect Password',
+          description: 'The current password you entered is incorrect.',
+        });
+        setIsSubmittingPassword(false);
+        return;
+    }
+
+    // Update password in our mock data
+    if (profile) {
+      const updatedProfileData: Profile = { ...profile, password: data.newPassword };
+      updateProfile(updatedProfileData);
+    }
+    
     toast({
       title: 'Password Changed',
       description: 'Your password has been updated successfully.',
@@ -126,7 +146,7 @@ export default function SettingsPage() {
     router.push('/');
   }
 
-  if (isLoading || !isLoggedIn) {
+  if (isLoading || !isLoggedIn || !profile) {
     return (
       <>
         <Header />
@@ -164,8 +184,9 @@ export default function SettingsPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" type="email" {...profileForm.register('email')} />
+                  <Input id="email" type="email" {...profileForm.register('email')} readOnly disabled/>
                    {profileForm.formState.errors.email && <p className="text-sm text-destructive">{profileForm.formState.errors.email.message}</p>}
+                   <p className="text-xs text-muted-foreground">Changing your email address is not supported in this demo.</p>
                 </div>
                 <Button type="submit" disabled={isSubmittingProfile}>
                   {isSubmittingProfile && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -224,7 +245,7 @@ export default function SettingsPage() {
                 </div>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="destructive">Delete Account</Button>
+                    <Button variant="destructive" disabled={profile.id === 1}>Delete Account</Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>

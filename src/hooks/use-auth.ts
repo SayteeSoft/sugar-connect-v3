@@ -3,7 +3,10 @@
 
 import { useState, useEffect } from 'react';
 import type { Profile } from '@/lib/data';
-import { getProfile } from '@/lib/data';
+import { getProfile, getProfiles, createProfile } from '@/lib/data';
+
+type SignupResult = { user?: Profile; error?: string };
+type LoginResult = Profile | null;
 
 // A single source of truth for auth state
 export function useAuth() {
@@ -17,9 +20,12 @@ export function useAuth() {
     const checkAuth = () => {
         try {
             const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
-            setIsLoggedIn(loggedInStatus);
-            if (loggedInStatus) {
-                const loggedInUser = getProfile(1);
+            const loggedInUserId = localStorage.getItem('loggedInUserId');
+            
+            setIsLoggedIn(loggedInStatus && !!loggedInUserId);
+            
+            if (loggedInStatus && loggedInUserId) {
+                const loggedInUser = getProfile(parseInt(loggedInUserId, 10));
                 setUser(loggedInUser);
                 if (loggedInUser?.role === 'baby' || loggedInUser?.id === 1) {
                     setCredits(Infinity);
@@ -49,24 +55,47 @@ export function useAuth() {
     };
   }, []);
 
-  const login = (email: string, pass: string) => {
-    if (email === "saytee.software@gmail.com" && pass === "admin") {
+  const login = (email: string, pass: string): LoginResult => {
+    const profiles = getProfiles();
+    const foundUser = profiles.find(p => p.email.toLowerCase() === email.toLowerCase() && p.password === pass);
+
+    if (foundUser) {
       localStorage.setItem('isLoggedIn', 'true');
-      const user = getProfile(1);
-      // Give daddies (not admin) 1 credit for testing purposes
-      if (user?.role === 'daddy' && user.id !== 1) {
-          localStorage.setItem('user_credits', '1');
+      localStorage.setItem('loggedInUserId', foundUser.id.toString());
+      
+      if (foundUser.role === 'daddy' && foundUser.id !== 1) {
+          const currentCredits = localStorage.getItem('user_credits');
+          if (!currentCredits) {
+             localStorage.setItem('user_credits', '1');
+          }
       }
-      window.dispatchEvent(new Event('authChanged')); // Notify all components
-      return true;
+      window.dispatchEvent(new Event('authChanged'));
+      return foundUser;
     }
-    return false;
+    return null;
   };
 
   const logout = () => {
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('loggedInUserId');
     localStorage.removeItem('user_credits');
     window.dispatchEvent(new Event('authChanged')); // Notify all components
+  };
+
+  const signup = (email: string, password: string, role: 'baby' | 'daddy'): SignupResult => {
+    const result = createProfile(email, password, role);
+
+    if ('error' in result) {
+      return { error: result.error };
+    }
+    
+    // Automatically log in the new user
+    const loggedInUser = login(email, password);
+    if (loggedInUser) {
+      return { user: loggedInUser };
+    }
+    
+    return { error: 'Failed to log in after signing up.' };
   };
 
   const spendCredits = (amount: number) => {
@@ -79,5 +108,5 @@ export function useAuth() {
       return credits;
   };
 
-  return { isLoggedIn, user, isLoading, credits, login, logout, spendCredits };
+  return { isLoggedIn, user, isLoading, credits, login, logout, signup, spendCredits };
 }

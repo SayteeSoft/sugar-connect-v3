@@ -66,7 +66,7 @@ export function useAuth() {
       if (foundUser.role === 'daddy' && foundUser.id !== 1) {
           const currentCredits = localStorage.getItem('user_credits');
           if (!currentCredits) {
-             localStorage.setItem('user_credits', '1');
+             localStorage.setItem('user_credits', '10');
           }
       }
       window.dispatchEvent(new Event('authChanged'));

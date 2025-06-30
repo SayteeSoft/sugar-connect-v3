@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Profile } from "@/lib/data";
 import { Card } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +27,7 @@ interface ProfileCardProps {
 
 export function ProfileCard({ profile, onRemove, loggedInUser, isLoggedIn = true }: ProfileCardProps) {
   const router = useRouter();
-  const { toast } = useToast();
+  const { toast, dismiss } = useToast();
   const canChat = loggedInUser && loggedInUser.role !== profile.role;
 
   const handleChat = () => {
@@ -34,9 +35,39 @@ export function ProfileCard({ profile, onRemove, loggedInUser, isLoggedIn = true
   };
 
   const handleFavorite = () => {
-    toast({
-      title: 'Added to Favorites',
-      description: `${profile.name} has been added to your favorites.`,
+    const { id: toastId } = toast({
+      duration: 10000,
+      className: 'p-4',
+      children: (
+        <div className="flex items-start gap-4 w-full">
+          <Avatar className="h-12 w-12">
+            <AvatarImage src={profile.imageUrl ?? 'https://placehold.co/100x100.png'} alt={profile.name} data-ai-hint={profile.hint} />
+            <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <div className="flex-grow">
+            <p className="font-semibold text-base">Message {profile.name}</p>
+            <p className="text-sm text-muted-foreground mt-1">Introduce yourself and get to know your favorite.</p>
+            <div className="mt-4 flex gap-2">
+              <Button
+                size="sm"
+                onClick={() => {
+                  router.push(`/messages?chatWith=${profile.id}`);
+                  dismiss(toastId);
+                }}
+              >
+                Message
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => dismiss(toastId)}
+              >
+                Not Now
+              </Button>
+            </div>
+          </div>
+        </div>
+      ),
     });
   };
 

@@ -73,7 +73,7 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
-  const { toast } = useToast();
+  const { toast, dismiss } = useToast();
   const router = useRouter();
   const { user: loggedInUser, credits, spendCredits } = useAuth();
 
@@ -178,11 +178,42 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
 
   const handleFavorite = () => {
     if (!selectedConversation) return;
-    toast({
-      title: 'Favorited',
-      description: `You have favorited ${selectedConversation.participant.name}.`,
+    const profile = selectedConversation.participant;
+
+    const { id: toastId } = toast({
+      duration: 10000,
+      className: 'p-4',
+      children: (
+        <div className="flex items-start gap-4 w-full">
+          <Avatar className="h-12 w-12">
+            <AvatarImage src={profile.imageUrl ?? 'https://placehold.co/100x100.png'} alt={profile.name} data-ai-hint={profile.hint} />
+            <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <div className="flex-grow">
+            <p className="font-semibold text-base">Message {profile.name}</p>
+            <p className="text-sm text-muted-foreground mt-1">Introduce yourself and get to know your favorite.</p>
+            <div className="mt-4 flex gap-2">
+              <Button
+                size="sm"
+                onClick={() => {
+                  router.push(`/messages?chatWith=${profile.id}`);
+                  dismiss(toastId);
+                }}
+              >
+                Message
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => dismiss(toastId)}
+              >
+                Not Now
+              </Button>
+            </div>
+          </div>
+        </div>
+      ),
     });
-    // In a real app, you would add this to the user's favorites list.
   };
 
   const handleDeleteChat = () => {

@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Header } from '@/components/layout/header';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   BadgeCheck,
   Pencil,
@@ -53,7 +54,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
   isOwnProfile: boolean; 
   canEdit: boolean; 
   onMessage: (profileId: number) => void;
-  onFavorite: (profileName: string) => void;
+  onFavorite: (profile: Profile) => void;
   onReport: (profileName: string) => void;
   onBlock: (profileId: number, profileName: string) => void;
   loggedInUser?: Profile;
@@ -121,7 +122,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
               <div className="flex items-center gap-1">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" onClick={() => onFavorite(profile.name)}>
+                    <Button variant="ghost" size="icon" onClick={() => onFavorite(profile)}>
                       <Heart className="h-5 w-5 text-muted-foreground" />
                       <span className="sr-only">Add to Favorites</span>
                     </Button>
@@ -612,7 +613,7 @@ export default function ProfilePage() {
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const { toast } = useToast();
+  const { toast, dismiss } = useToast();
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const { user: loggedInUser, isLoading: isAuthLoading, isLoggedIn } = useAuth();
@@ -664,10 +665,40 @@ export default function ProfilePage() {
     router.push(`/messages?chatWith=${profileId}`);
   };
 
-  const handleFavorite = (profileName: string) => {
-    toast({
-      title: 'Added to Favorites',
-      description: `${profileName} has been added to your favorites.`,
+  const handleFavorite = (profile: Profile) => {
+    const { id: toastId } = toast({
+      duration: 10000,
+      className: 'p-4',
+      children: (
+        <div className="flex items-start gap-4 w-full">
+          <Avatar className="h-12 w-12">
+            <AvatarImage src={profile.imageUrl ?? 'https://placehold.co/100x100.png'} alt={profile.name} data-ai-hint={profile.hint} />
+            <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <div className="flex-grow">
+            <p className="font-semibold text-base">Message {profile.name}</p>
+            <p className="text-sm text-muted-foreground mt-1">Introduce yourself and get to know your favorite.</p>
+            <div className="mt-4 flex gap-2">
+              <Button
+                size="sm"
+                onClick={() => {
+                  router.push(`/messages?chatWith=${profile.id}`);
+                  dismiss(toastId);
+                }}
+              >
+                Message
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => dismiss(toastId)}
+              >
+                Not Now
+              </Button>
+            </div>
+          </div>
+        </div>
+      ),
     });
   };
 

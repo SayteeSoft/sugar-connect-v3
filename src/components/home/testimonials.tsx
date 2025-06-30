@@ -1,5 +1,8 @@
 'use client';
 
+import { useState, useEffect } from "react";
+import type { Profile } from "@/lib/data";
+import { getProfiles } from "@/lib/data";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
@@ -10,46 +13,61 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const testimonials = [
-  {
-    quote: "Sugar Connect changed my life. I've met incredible people and experienced things I only dreamed of. It's more than just a site; it's a lifestyle.",
-    name: "Emily",
-    role: "Sugar Baby",
-    avatar: "https://placehold.co/100x100.png",
-    hint: "woman portrait"
-  },
-  {
-    quote: "As a busy professional, I value my time. Sugar Connect is efficient, discreet, and full of genuine, ambitious individuals. Highly recommended.",
-    name: "David",
-    role: "Sugar Daddy",
-    avatar: "https://placehold.co/100x100.png",
-    hint: "man portrait"
-  },
-  {
-    quote: "I was looking for mentorship and a different kind of relationship. I found a wonderful partner here who supports my goals and dreams. So grateful!",
-    name: "Sophia",
-    role: "Sugar Baby",
-    avatar: "https://placehold.co/100x100.png",
-    hint: "woman face"
-  },
-  {
-    quote: "The quality of profiles on this site is unmatched. I've made meaningful connections that have enriched my life in every aspect.",
-    name: "Michael",
-    role: "Sugar Daddy",
-    avatar: "https://placehold.co/100x100.png",
-    hint: "man profile"
-  },
-  {
-    quote: "Finding someone who understands my ambition and lifestyle was easy with Sugar Connect. It's a game-changer for successful dating.",
-    name: "Isabella",
-    role: "Sugar Baby",
-    avatar: "https://placehold.co/100x100.png",
-    hint: "woman smile"
-  },
-];
+
+const formatRole = (role: 'baby' | 'daddy') => {
+  return role === 'baby' ? 'Sugar Baby' : 'Sugar Daddy';
+};
+
+const extractQuoteFromBio = (bio?: string) => {
+  if (!bio) {
+    return "This user has a fantastic profile. I'm excited to connect with them and see where things go!";
+  }
+  const firstSentence = bio.match(/[^.!?]+[.!?]/);
+  return firstSentence ? firstSentence[0] : `"${bio.slice(0, 150)}..."`;
+};
+
 
 export function Testimonials() {
+  const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const allProfiles = getProfiles();
+    const testimonialProfiles = allProfiles.filter(p => p.id !== 1).slice(0, 5);
+    
+    const generatedTestimonials = testimonialProfiles.map(profile => ({
+      quote: extractQuoteFromBio(profile.bio),
+      name: profile.name,
+      role: formatRole(profile.role),
+      avatar: profile.imageUrl,
+      hint: profile.hint,
+    }));
+
+    setTestimonials(generatedTestimonials);
+    setIsLoading(false);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <section className="bg-secondary py-12 md:pt-12 md:pb-20">
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 className="mb-12 text-center font-headline text-3xl font-bold text-primary md:text-4xl">
+            What Our Members Say
+          </h2>
+          <div className="w-full max-w-sm sm:max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto">
+             <div className="flex gap-4">
+              <Skeleton className="h-56 w-full basis-full md:basis-1/2 lg:basis-1/3" />
+              <Skeleton className="h-56 w-full basis-full hidden md:block md:basis-1/2 lg:basis-1/3" />
+              <Skeleton className="h-56 w-full basis-full hidden lg:block lg:basis-1/3" />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+  
   return (
     <section className="bg-secondary py-12 md:pt-12 md:pb-20">
       <div className="container mx-auto px-4 md:px-6">

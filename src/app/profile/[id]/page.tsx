@@ -226,7 +226,7 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
             <dt className="font-medium text-foreground">Height</dt>
             <dd className="text-muted-foreground">{profile.attributes?.['Height'] || 'N/A'}</dd>
             
-            {attributeKeys.filter(key => key !== 'Height').map((key) => (
+            {attributeKeys.filter(key => !['Age', 'Height'].includes(key)).map((key) => (
               <React.Fragment key={key}>
                 <dt className="font-medium text-foreground">{key}</dt>
                 <dd className="text-muted-foreground">{profile.attributes?.[key] || 'N/A'}</dd>
@@ -615,7 +615,7 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const router = useRouter();
   const params = useParams<{ id: string }>();
-  const { user: loggedInUser, isLoading: isAuthLoading } = useAuth();
+  const { user: loggedInUser, isLoading: isAuthLoading, isLoggedIn } = useAuth();
   
   const profileId = parseInt(params.id, 10);
   const allImages = [profileData?.imageUrl, ...(profileData?.gallery || [])].filter((url): url is string => !!url);

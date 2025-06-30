@@ -25,6 +25,7 @@ export function Hero() {
         <h1 className="font-headline text-7xl font-bold tracking-tight md:text-9xl">
           SD Connect
         </h1>
+        <p className="text-md text-gray-300 md:text-lg">SD Connect is Sugar Daddy Connect</p>
         <p className="max-w-2xl text-lg text-gray-200 md:text-xl">
           An exclusive platform for ambitious and attractive individuals
         </p>

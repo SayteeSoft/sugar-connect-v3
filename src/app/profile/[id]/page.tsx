@@ -252,7 +252,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                 description: "Please wait while we optimize your photo.",
             });
             const options = {
-                maxSizeMB: 0.5,
+                maxSizeMB: 0.2,
                 maxWidthOrHeight: 1024,
                 useWebWorker: true,
             }
@@ -310,7 +310,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
         });
         
         const options = {
-            maxSizeMB: 0.5,
+            maxSizeMB: 0.2,
             maxWidthOrHeight: 1024,
             useWebWorker: true,
         }

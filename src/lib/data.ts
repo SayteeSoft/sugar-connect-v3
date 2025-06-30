@@ -63,9 +63,9 @@ export const attributeKeys = [
 export const featuredProfiles: Profile[] = [
   {
     id: 1,
-    name: 'saytee.software',
+    name: 'Admin',
     email: 'saytee.software@gmail.com',
-    password: 'admin',
+    password: '12345',
     age: 49,
     location: 'London, UK',
     imageUrl: 'https://placehold.co/600x750.png',
@@ -499,7 +499,7 @@ export const createProfile = (email: string, password: string, role: 'baby' | 'd
     const profiles = getProfiles();
     
     // Check if email already exists
-    if (profiles.some(p => p.email.toLowerCase() === email.toLowerCase())) {
+    if (profiles.some(p => p.email && p.email.toLowerCase() === email.toLowerCase())) {
       return { error: 'A user with this email address already exists.' };
     }
     

@@ -81,7 +81,7 @@ export function AdminClient() {
   };
 
   const getEmailFromName = (name: string) => {
-      if (name === 'saytee.software') return 'saytee.software@gmail.com';
+      if (name === 'Admin') return 'saytee.software@gmail.com';
       return `${name.toLowerCase().replace(/ /g, '.')}@example.com`;
   }
 
@@ -163,7 +163,7 @@ export function AdminClient() {
                         </div>
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        {getEmailFromName(profile.name)}
+                        {profile.email}
                       </TableCell>
                       <TableCell className="hidden sm:table-cell">{profile.age}</TableCell>
                       <TableCell className="hidden lg:table-cell">{profile.location}</TableCell>

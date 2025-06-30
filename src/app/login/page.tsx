@@ -22,7 +22,7 @@ import { useAuth } from "@/hooks/use-auth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("saytee.software@gmail.com");
-  const [password, setPassword] = useState("admin");
+  const [password, setPassword] = useState("12345");
   const [error, setError] = useState("");
   const router = useRouter();
   const { login, isLoggedIn, isLoading } = useAuth();
@@ -100,7 +100,7 @@ export default function LoginPage() {
                   required 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="admin"
+                  placeholder="12345"
                 />
               </div>
               <Button type="submit" className="w-full">

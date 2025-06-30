@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/use-auth";
 
 export function FeaturedProfiles() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
-  const { user: loggedInUser, isLoading } = useAuth();
+  const { user: loggedInUser, isLoading, isLoggedIn } = useAuth();
 
   useEffect(() => {
     setProfiles(getProfiles());
@@ -48,7 +48,7 @@ export function FeaturedProfiles() {
             ))
           ) : (
             displayedProfiles.map((profile) => (
-              <ProfileCard key={profile.id} profile={profile} loggedInUser={loggedInUser} />
+              <ProfileCard key={profile.id} profile={profile} loggedInUser={loggedInUser} isLoggedIn={isLoggedIn} />
             ))
           )}
         </div>

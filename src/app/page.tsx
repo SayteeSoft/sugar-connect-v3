@@ -18,10 +18,10 @@ export default function Home() {
         <Hero />
         <FeaturedProfiles />
         <Testimonials />
-        <SecurityPrivacy />
-        <ByTheNumbers />
         <WhatIsSugarRelationship />
         <WhatIsDefinitions />
+        <SecurityPrivacy />
+        <ByTheNumbers />
       </main>
     </>
   );

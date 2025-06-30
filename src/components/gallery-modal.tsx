@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogPortal, DialogOverlay, DialogTitle } from '@/components/ui/dialog';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 interface GalleryModalProps {
@@ -55,48 +56,51 @@ export function GalleryModal({ images, startIndex, isOpen, onClose }: GalleryMod
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-none w-screen h-screen p-0 bg-black/90 border-0 shadow-none text-white flex flex-col items-center justify-center">
-        <DialogTitle className="sr-only">Image Gallery</DialogTitle>
-        <div className="relative w-full h-full flex items-center justify-center">
-          <Image
-            key={images[currentIndex]}
-            src={images[currentIndex]}
-            alt={`Gallery image ${currentIndex + 1}`}
-            fill
-            className="object-contain animate-in fade-in"
-          />
-        </div>
+      <DialogPortal>
+        <DialogOverlay />
+        <DialogPrimitive.Content className="fixed inset-0 z-50 flex flex-col items-center justify-center border-0 bg-black/90 p-0 text-white shadow-none outline-none">
+          <DialogTitle className="sr-only">Image Gallery</DialogTitle>
+          <div className="relative flex h-full w-full items-center justify-center">
+            <Image
+              key={images[currentIndex]}
+              src={images[currentIndex]}
+              alt={`Gallery image ${currentIndex + 1}`}
+              fill
+              className="object-contain animate-in fade-in"
+            />
+          </div>
 
-        <button
-          className="absolute top-4 right-4 text-white rounded-full bg-black/50 p-2 hover:bg-white/20 hover:text-white transition-colors z-50"
-          onClick={onClose}
-        >
-          <X className="h-6 w-6" />
-          <span className="sr-only">Close</span>
-        </button>
+          <button
+            className="absolute top-4 right-4 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-white/20"
+            onClick={onClose}
+          >
+            <X className="h-6 w-6" />
+            <span className="sr-only">Close</span>
+          </button>
 
-        {images.length > 1 && (
-          <>
-            <button
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-white rounded-full bg-black/50 p-2 hover:bg-white/20 hover:text-white transition-colors z-50"
-              onClick={goToPrevious}
-            >
-              <ChevronLeft className="h-8 w-8" />
-              <span className="sr-only">Previous Image</span>
-            </button>
-            <button
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white rounded-full bg-black/50 p-2 hover:bg-white/20 hover:text-white transition-colors z-50"
-              onClick={goToNext}
-            >
-              <ChevronRight className="h-8 w-8" />
-               <span className="sr-only">Next Image</span>
-            </button>
-             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white text-sm px-3 py-1 rounded-full z-50">
-              {currentIndex + 1} / {images.length}
-            </div>
-          </>
-        )}
-      </DialogContent>
+          {images.length > 1 && (
+            <>
+              <button
+                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-white/20"
+                onClick={goToPrevious}
+              >
+                <ChevronLeft className="h-8 w-8" />
+                <span className="sr-only">Previous Image</span>
+              </button>
+              <button
+                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-white/20"
+                onClick={goToNext}
+              >
+                <ChevronRight className="h-8 w-8" />
+                <span className="sr-only">Next Image</span>
+              </button>
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-3 py-1 text-sm text-white">
+                {currentIndex + 1} / {images.length}
+              </div>
+            </>
+          )}
+        </DialogPrimitive.Content>
+      </DialogPortal>
     </Dialog>
   );
 }

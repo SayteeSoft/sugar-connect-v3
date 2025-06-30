@@ -35,6 +35,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
+import { generateCreditMessage, type CreditMessageOutput } from '@/ai/flows/credit-message-flow';
 
 const formatTimestamp = (timestamp: string) => {
   const date = new Date(timestamp);
@@ -70,6 +73,9 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
+  const { user: loggedInUser, credits, spendCredits } = useAuth();
+
 
   useEffect(() => {
     setIsClient(true);
@@ -87,9 +93,54 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
     scrollToBottom();
   }, [selectedConversation?.messages]);
   
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim() || !selectedConversationId) return;
+    if (!newMessage.trim() || !selectedConversationId || !loggedInUser) return;
+    
+    const selectedConvo = conversations.find(c => c.id === selectedConversationId);
+    if (!selectedConvo) return;
+
+    // Check for credits if the user is a daddy (and not the admin)
+    if (loggedInUser.role === 'daddy' && loggedInUser.id !== 1 && credits <= 0) {
+        toast({
+            variant: 'destructive',
+            title: 'Out of Credits',
+            description: 'Purchase more credits to continue chatting.',
+            action: <Button variant="secondary" onClick={() => router.push('/purchase-credits')}>Buy Credits</Button>
+        });
+
+        // Trigger AI message from the sugar baby in the background
+        generateCreditMessage({
+            sugarDaddyName: loggedInUser.name,
+            sugarBabyName: selectedConvo.participant.name,
+        }).then((response: CreditMessageOutput) => {
+            const aiMessage: Message = {
+                id: Date.now(),
+                senderId: selectedConvo.participant.id, // From the sugar baby
+                text: response.message,
+                timestamp: new Date().toISOString(),
+            };
+            const success = saveMessage(selectedConversationId, aiMessage);
+            if (success) {
+                setConversations(prev =>
+                    prev.map(convo =>
+                        convo.id === selectedConversationId
+                        ? {
+                            ...convo,
+                            messages: [...convo.messages, aiMessage],
+                          }
+                        : convo
+                    )
+                );
+            }
+        }).catch(err => {
+            console.error("Failed to generate AI credit message:", err);
+        });
+
+        setNewMessage(''); // Clear input regardless
+        return;
+    }
+
 
     const message: Message = {
       id: Date.now(),
@@ -101,6 +152,9 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
     const success = saveMessage(selectedConversationId, message);
 
     if (success) {
+      if (loggedInUser.role === 'daddy' && loggedInUser.id !== 1) {
+          spendCredits(1);
+      }
       setConversations(prev =>
         prev.map(convo =>
           convo.id === selectedConversationId

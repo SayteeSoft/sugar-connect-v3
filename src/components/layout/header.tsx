@@ -19,25 +19,11 @@ import { useAuth } from "@/hooks/use-auth";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useState, useEffect } from "react";
 
 export function Header() {
-  const { isLoggedIn, user, isLoading, logout } = useAuth();
-  const [credits, setCredits] = useState(0);
+  const { isLoggedIn, user, isLoading, logout, credits } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-
-  useEffect(() => {
-      if (isLoggedIn && user) {
-          if (user.role === 'baby' || user.id === 1) {
-            setCredits(Infinity);
-          } else {
-            setCredits(15);
-          }
-      } else {
-        setCredits(0);
-      }
-  }, [isLoggedIn, user]);
 
   const handleLogout = () => {
     logout();

@@ -9,6 +9,7 @@ import { getProfile } from '@/lib/data';
 export function useAuth() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<Profile | undefined>();
+  const [credits, setCredits] = useState(0);
   const [isLoading, setIsLoading] = useState(true); // Key: default to loading
 
   useEffect(() => {
@@ -18,16 +19,23 @@ export function useAuth() {
             const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
             setIsLoggedIn(loggedInStatus);
             if (loggedInStatus) {
-                // In a real app, you'd fetch the user profile here.
-                // For this demo, we get it from our local data source.
-                setUser(getProfile(1));
+                const loggedInUser = getProfile(1);
+                setUser(loggedInUser);
+                if (loggedInUser?.role === 'baby' || loggedInUser?.id === 1) {
+                    setCredits(Infinity);
+                } else {
+                    const storedCredits = localStorage.getItem('user_credits');
+                    setCredits(storedCredits ? parseInt(storedCredits, 10) : 0);
+                }
             } else {
                 setUser(undefined);
+                setCredits(0);
             }
         } catch (e) {
             console.error('Could not access localStorage.', e);
             setIsLoggedIn(false);
             setUser(undefined);
+            setCredits(0);
         } finally {
             setIsLoading(false); // We have the client-side info now
         }
@@ -39,11 +47,16 @@ export function useAuth() {
     return () => {
       window.removeEventListener('authChanged', checkAuth);
     };
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
   const login = (email: string, pass: string) => {
     if (email === "saytee.software@gmail.com" && pass === "admin") {
       localStorage.setItem('isLoggedIn', 'true');
+      const user = getProfile(1);
+      // Give daddies (not admin) 1 credit for testing purposes
+      if (user?.role === 'daddy' && user.id !== 1) {
+          localStorage.setItem('user_credits', '1');
+      }
       window.dispatchEvent(new Event('authChanged')); // Notify all components
       return true;
     }
@@ -52,8 +65,19 @@ export function useAuth() {
 
   const logout = () => {
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('user_credits');
     window.dispatchEvent(new Event('authChanged')); // Notify all components
   };
 
-  return { isLoggedIn, user, isLoading, login, logout };
+  const spendCredits = (amount: number) => {
+      if (user?.role === 'daddy' && user.id !== 1) {
+          const newCredits = Math.max(0, credits - amount);
+          setCredits(newCredits);
+          localStorage.setItem('user_credits', newCredits.toString());
+          return newCredits;
+      }
+      return credits;
+  };
+
+  return { isLoggedIn, user, isLoading, credits, login, logout, spendCredits };
 }

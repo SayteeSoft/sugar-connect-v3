@@ -37,7 +37,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
-import { generateCreditMessage, type CreditMessageOutput } from '@/ai/flows/credit-message-flow';
+import { triggerCreditMessage } from './actions';
+import type { CreditMessageOutput } from '@/ai/flows/credit-message-flow';
 
 const formatTimestamp = (timestamp: string) => {
   const date = new Date(timestamp);
@@ -110,7 +111,7 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
         });
 
         // Trigger AI message from the sugar baby in the background
-        generateCreditMessage({
+        triggerCreditMessage({
             sugarDaddyName: loggedInUser.name,
             sugarBabyName: selectedConvo.participant.name,
         }).then((response: CreditMessageOutput) => {

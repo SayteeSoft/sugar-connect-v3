@@ -29,8 +29,8 @@ export default function CookiePolicyPage() {
             <SectionTitle>1. Introduction</SectionTitle>
             <Paragraph>
               This Cookie Policy explains how SD Connect ("we", "us", and "our") uses cookies and similar
-              technologies to recognize you when you visit our website. It explains what these technologies are and
-              why we use them, as well as your rights to control our use of them.
+              technologies to recognize you when you visit our website. It explains what these technologies are,
+              why we use them to provide a secure and personalized experience, and outlines your rights to control our use of them.
             </Paragraph>
 
             <SectionTitle>2. What are cookies?</SectionTitle>

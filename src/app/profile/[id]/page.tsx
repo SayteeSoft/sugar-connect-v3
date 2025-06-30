@@ -698,8 +698,8 @@ export default function ProfilePage() {
     }
 
     if (success) {
-      // Refetch and display the updated profile data
-      setProfileData(getProfile(profileId));
+      // Use the successfully saved profile data directly to update the state.
+      setProfileData(updatedProfile);
       toast({
         title: "Profile Saved",
         description: "Your changes have been saved successfully.",

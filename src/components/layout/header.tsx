@@ -11,13 +11,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, LogOut, Settings, LogIn, Coins, Heart } from "lucide-react";
+import { User, LogOut, Settings, LogIn, Coins, Heart, Menu } from "lucide-react";
 import { ThemeSwitcher } from "../theme-switcher";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export function Header() {
   const { isLoggedIn, user, isLoading, logout, credits } = useAuth();
@@ -55,27 +56,71 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
       <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
-        <Link href="/" className="flex items-center gap-2 mr-6">
-          <Heart className="h-6 w-6 text-primary" />
-          <span className="font-headline text-3xl font-bold text-primary">
-            SD Connect
-          </span>
-        </Link>
-        <nav className="hidden items-center justify-center space-x-6 text-lg font-medium md:flex flex-grow">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "text-foreground/60 transition-colors hover:text-primary",
-                pathname.startsWith(link.href) && "text-primary"
-              )}
-            >
-              {link.label}
+        
+        {/* Mobile Menu & Logo */}
+        <div className="md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle Menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left">
+              <nav className="grid gap-6 text-lg font-medium">
+                <SheetClose asChild>
+                    <Link href="/" className="flex items-center gap-2 font-semibold">
+                        <Heart className="h-6 w-6 text-primary" />
+                        <span>SD Connect</span>
+                    </Link>
+                </SheetClose>
+                {navLinks.map((link) => (
+                  <SheetClose asChild key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={cn("text-muted-foreground hover:text-foreground", pathname.startsWith(link.href) && "text-foreground")}
+                    >
+                      {link.label}
+                    </Link>
+                  </SheetClose>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
+
+        <div className="md:hidden flex-1 flex justify-center">
+            <Link href="/" className="flex items-center gap-2">
+                <Heart className="h-6 w-6 text-primary" />
             </Link>
-          ))}
-        </nav>
-        <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-4">
+        </div>
+
+        {/* Desktop Logo & Nav */}
+        <div className="hidden md:flex items-center">
+            <Link href="/" className="flex items-center gap-2 mr-6">
+                <Heart className="h-6 w-6 text-primary" />
+                <span className="font-headline text-3xl font-bold text-primary">
+                    SD Connect
+                </span>
+            </Link>
+            <nav className="items-center justify-center space-x-6 text-lg font-medium flex">
+                {navLinks.map((link) => (
+                    <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                        "text-foreground/60 transition-colors hover:text-primary",
+                        pathname.startsWith(link.href) && "text-primary"
+                    )}
+                    >
+                    {link.label}
+                    </Link>
+                ))}
+            </nav>
+        </div>
+        
+        {/* Right side controls */}
+        <div className="flex items-center justify-end space-x-2 md:space-x-4 md:ml-auto">
           {isLoading ? (
             <div className="flex items-center space-x-2 md:space-x-4">
               <Skeleton className="h-9 w-24" />
@@ -84,7 +129,7 @@ export function Header() {
           ) : (
             <>
               {isLoggedIn && user && (user.role === 'daddy' && user.id !== 1) && (
-                <Button asChild size="sm">
+                <Button asChild size="sm" className="hidden sm:inline-flex">
                   <Link href="/purchase-credits">
                     Buy Credits
                     <Badge variant="secondary" className="ml-2 rounded-full px-2">{credits}</Badge>
@@ -92,7 +137,7 @@ export function Header() {
                 </Button>
               )}
               {isLoggedIn && user && (user.role === 'baby' || user.id === 1) && (
-                 <div className="flex items-center gap-2 h-10 px-3 text-sm font-medium whitespace-nowrap">
+                 <div className="hidden sm:flex items-center gap-2 h-10 px-3 text-sm font-medium whitespace-nowrap">
                     <Coins className="h-4 w-4 text-primary" />
                     <span className="text-foreground">Unlimited Credits</span>
                 </div>

@@ -57,7 +57,7 @@ export function useAuth() {
 
   const login = (email: string, pass: string): LoginResult => {
     const profiles = getProfiles();
-    const foundUser = profiles.find(p => p.email.toLowerCase() === email.toLowerCase() && p.password === pass);
+    const foundUser = profiles.find(p => p.email && p.email.toLowerCase() === email.toLowerCase() && p.password === pass);
 
     if (foundUser) {
       localStorage.setItem('isLoggedIn', 'true');

@@ -18,7 +18,7 @@ export function Footer() {
         <div className="mb-8 space-y-4">
           <Link href="/" className="font-headline text-lg font-bold text-primary inline-flex items-center gap-2 justify-center">
             <Heart className="h-5 w-5" />
-            Sugar Connect
+            SD Connect
           </Link>
           <p className="text-sm text-muted-foreground">An exclusive platform for ambitious and attractive individuals.</p>
         </div>
@@ -58,7 +58,7 @@ export function Footer() {
         
         <div className="border-t pt-6 space-y-2">
             <p className="text-sm text-muted-foreground">
-              &copy; 2024 Sugar Connect. All rights reserved.
+              &copy; 2024 SD Connect. All rights reserved.
             </p>
         </div>
       </div>

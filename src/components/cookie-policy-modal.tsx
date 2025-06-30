@@ -34,7 +34,7 @@ export function CookiePolicyModal() {
             <div className="px-6 py-4">
                 <SectionTitle>1. Introduction</SectionTitle>
                 <Paragraph>
-                  This Cookie Policy explains how Sugar Connect ("we", "us", and "our") uses cookies and similar
+                  This Cookie Policy explains how SD Connect ("we", "us", and "our") uses cookies and similar
                   technologies to recognize you when you visit our website. It explains what these technologies are and
                   why we use them, as well as your rights to control our use of them.
                 </Paragraph>
@@ -43,7 +43,7 @@ export function CookiePolicyModal() {
                 <Paragraph>
                   A cookie is a small data file that is placed on your device when you visit a website. Cookies are
                   widely used by website owners in order to make their websites work, or to work more efficiently, as
-                  well as to provide reporting information. Cookies set by the website owner (in this case, Sugar
+                  well as to provide reporting information. Cookies set by the website owner (in this case, SD
                   Connect) are called "first-party cookies". Cookies set by parties other than the website owner are
                   called "third-party cookies".
                 </Paragraph>

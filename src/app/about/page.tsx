@@ -23,7 +23,7 @@ export default function AboutUsPage() {
         <Card>
           <CardHeader className="text-center">
             <CardTitle className="font-headline text-4xl text-primary">
-              Welcome to Sugar Connect
+              Welcome to SD Connect
             </CardTitle>
             <p className="text-xl text-muted-foreground mt-2">
               Where Ambitious Hearts and Discerning Tastes Meet
@@ -31,7 +31,7 @@ export default function AboutUsPage() {
           </CardHeader>
           <CardContent className="max-w-3xl mx-auto">
             <Paragraph>
-              At Sugar Connect, we believe that relationships should be empowering, transparent, and tailored to the modern world. We have created an exclusive platform where successful, established individuals and ambitious, attractive people can connect on their own terms. Our community is built on a foundation of respect, honesty, and the shared desire for a relationship that enhances, rather than complicates, life.
+              At SD Connect, we believe that relationships should be empowering, transparent, and tailored to the modern world. We have created an exclusive platform where successful, established individuals and ambitious, attractive people can connect on their own terms. Our community is built on a foundation of respect, honesty, and the shared desire for a relationship that enhances, rather than complicates, life.
             </Paragraph>
 
             <SectionTitle>Our Mission</SectionTitle>
@@ -39,7 +39,7 @@ export default function AboutUsPage() {
               Our mission is to redefine the landscape of modern dating by providing a high-quality, secure, and intuitive platform for creating mutually beneficial relationships. We strive to eliminate the ambiguity of conventional dating, allowing our members to be upfront about their desires and expectations from the very beginning. We are dedicated to fostering a community where every connection is a meaningful one.
             </Paragraph>
 
-            <SectionTitle>Why Choose Sugar Connect?</SectionTitle>
+            <SectionTitle>Why Choose SD Connect?</SectionTitle>
             
             <h3 className="font-semibold text-lg mt-4 mb-2">Exclusivity & Quality</h3>
             <Paragraph>
@@ -53,7 +53,7 @@ export default function AboutUsPage() {
 
             <h3 className="font-semibold text-lg mt-4 mb-2">Meaningful Connections</h3>
             <Paragraph>
-              We move beyond the superficial. Sugar Connect is for those who seek more than just a date; it's for individuals looking for mentorship, companionship, and a partnership that enriches their lives. Our platform encourages clear communication about expectations, leading to more honest and fulfilling relationships.
+              We move beyond the superficial. SD Connect is for those who seek more than just a date; it's for individuals looking for mentorship, companionship, and a partnership that enriches their lives. Our platform encourages clear communication about expectations, leading to more honest and fulfilling relationships.
             </Paragraph>
             
             <h3 className="font-semibold text-lg mt-4 mb-2">A Modern Approach</h3>

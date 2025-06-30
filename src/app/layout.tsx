@@ -11,7 +11,7 @@ import { SocialActivitySimulator } from '@/components/social-activity-simulator'
 import { ClientOnly } from '@/components/client-only';
 
 export const metadata: Metadata = {
-  title: 'Sugar Connect',
+  title: 'SD Connect',
   description: 'An exclusive platform for ambitious and attractive individuals',
 };
 

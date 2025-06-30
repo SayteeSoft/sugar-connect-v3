@@ -44,7 +44,7 @@ export function TermsOfUseModal() {
 
                 <SectionTitle>3. Intellectual Property</SectionTitle>
                 <Paragraph>
-                    The Service and its original content, features, and functionality are and will remain the exclusive property of Sugar Connect and its licensors. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Sugar Connect.
+                    The Service and its original content, features, and functionality are and will remain the exclusive property of SD Connect and its licensors. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of SD Connect.
                 </Paragraph>
 
                 <SectionTitle>4. Termination</SectionTitle>

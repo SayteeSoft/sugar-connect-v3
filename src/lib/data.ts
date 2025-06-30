@@ -60,6 +60,10 @@ export const attributeKeys = [
   'Tattoos',
 ];
 
+const PROFILES_STORAGE_KEY = 'sugarconnect_profiles';
+const CONVERSATIONS_STORAGE_KEY = 'sugarconnect_conversations';
+
+
 export const featuredProfiles: Profile[] = [
   {
     id: 1,
@@ -455,22 +459,6 @@ const rawConversationsData = [
   },
 ];
 
-const CONVERSATIONS_STORAGE_KEY = 'sugarconnect_conversations';
-const PROFILE_IDS_STORAGE_KEY = 'sugarconnect_profile_ids';
-const getProfileKey = (id: number) => `sugarconnect_profile_${id}`;
-
-
-/**
- * Seeds localStorage with initial data if it's not already populated.
- * This function should only be called on the client side.
- */
-const seedLocalStorage = () => {
-  const profileIds = featuredProfiles.map(p => p.id);
-  window.localStorage.setItem(PROFILE_IDS_STORAGE_KEY, JSON.stringify(profileIds));
-  featuredProfiles.forEach(profile => {
-    window.localStorage.setItem(getProfileKey(profile.id), JSON.stringify(profile));
-  });
-};
 
 /**
  * Retrieves profiles from localStorage. If not present, seeds localStorage with initial data.
@@ -482,32 +470,23 @@ export const getProfiles = (): Profile[] => {
     return []; // Return empty array on server to prevent mismatch.
   }
   try {
-    const storedIdsJSON = window.localStorage.getItem(PROFILE_IDS_STORAGE_KEY);
+    const storedProfiles = window.localStorage.getItem(PROFILES_STORAGE_KEY);
     
-    if (!storedIdsJSON) {
-      seedLocalStorage();
-      const newStoredIdsJSON = window.localStorage.getItem(PROFILE_IDS_STORAGE_KEY);
-      if (!newStoredIdsJSON) return []; // Should not happen
-      const ids: number[] = JSON.parse(newStoredIdsJSON);
-      return ids.map(id => getProfile(id)).filter((p): p is Profile => p !== undefined);
+    if (storedProfiles) {
+      const profiles: Profile[] = JSON.parse(storedProfiles);
+      // Ensure admin password is not overwritten by old stored data
+      const adminSourceData = featuredProfiles.find(p => p.id === 1);
+      const adminStoredIndex = profiles.findIndex(p => p.id === 1);
+      if (adminSourceData && adminStoredIndex !== -1) {
+          profiles[adminStoredIndex] = { ...profiles[adminStoredIndex], ...adminSourceData };
+      } else if (adminSourceData && adminStoredIndex === -1) {
+          profiles.push(adminSourceData);
+      }
+      return profiles;
+    } else {
+      window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(featuredProfiles));
+      return featuredProfiles;
     }
-    
-    const ids: number[] = JSON.parse(storedIdsJSON);
-    const adminSourceData = featuredProfiles.find(p => p.id === 1);
-    
-    const profiles = ids.map(id => {
-      // Always get the admin profile from the source code to ensure its credentials are correct.
-      if (id === 1) return adminSourceData;
-      const profileJSON = window.localStorage.getItem(getProfileKey(id));
-      return profileJSON ? JSON.parse(profileJSON) : null;
-    }).filter((p): p is Profile => p !== null);
-
-    // Ensure admin profile exists if it was somehow removed from IDs list
-    if (adminSourceData && !profiles.some(p => p.id === 1)) {
-      profiles.push(adminSourceData);
-    }
-    
-    return profiles;
   } catch (error) {
     console.error('Failed to access localStorage:', error);
     return featuredProfiles; // Fallback to default data on parsing error
@@ -521,22 +500,7 @@ export const getProfiles = (): Profile[] => {
  * @returns {Profile | undefined} The profile object or undefined if not found.
  */
 export const getProfile = (id: number): Profile | undefined => {
-  if (typeof window === 'undefined') {
-    return undefined;
-  }
-
-  // Always return the hardcoded admin profile to ensure credentials are correct.
-  if (id === 1) {
-    return featuredProfiles.find(p => p.id === 1);
-  }
-
-  try {
-    const profileJSON = window.localStorage.getItem(getProfileKey(id));
-    return profileJSON ? JSON.parse(profileJSON) : undefined;
-  } catch (error) {
-    console.error(`Failed to get profile ${id} from localStorage:`, error);
-    return undefined;
-  }
+  return getProfiles().find(profile => profile.id === id);
 };
 
 /**
@@ -559,8 +523,7 @@ export const createProfile = (email: string, password: string, role: 'baby' | 'd
       return { error: 'A user with this email address already exists.' };
     }
     
-    const ids = profiles.map(p => p.id);
-    const newId = ids.length > 0 ? Math.max(...ids) + 1 : 1;
+    const newId = profiles.length > 0 ? Math.max(...profiles.map(p => p.id)) + 1 : 1;
     const name = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     
     const newProfile: Profile = {
@@ -582,9 +545,8 @@ export const createProfile = (email: string, password: string, role: 'baby' | 'd
       attributes: {},
     };
 
-    window.localStorage.setItem(getProfileKey(newId), JSON.stringify(newProfile));
-    const newIds = [...ids, newId];
-    window.localStorage.setItem(PROFILE_IDS_STORAGE_KEY, JSON.stringify(newIds));
+    const updatedProfiles = [...profiles, newProfile];
+    window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(updatedProfiles));
     
     window.dispatchEvent(new Event('profileUpdated'));
     
@@ -607,14 +569,14 @@ export const updateProfile = (updatedProfile: Profile): boolean => {
     return false;
   }
   try {
-    // Check if the profile exists before updating
-    const profileExists = getProfile(updatedProfile.id);
-    if (!profileExists) {
+    const profiles = getProfiles();
+    const profileIndex = profiles.findIndex(p => p.id === updatedProfile.id);
+    if (profileIndex === -1) {
        console.error(`Profile with id ${updatedProfile.id} not found.`);
        return false;
     }
-
-    window.localStorage.setItem(getProfileKey(updatedProfile.id), JSON.stringify(updatedProfile));
+    profiles[profileIndex] = updatedProfile;
+    window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
     // Notify components that user data might have changed (e.g., in the header)
     window.dispatchEvent(new Event('authChanged')); 
     return true;
@@ -640,20 +602,9 @@ export const deleteProfile = (profileId: number): boolean => {
     return false;
   }
   try {
-    const storedIdsJSON = window.localStorage.getItem(PROFILE_IDS_STORAGE_KEY);
-    if (!storedIdsJSON) return false;
-
-    let ids: number[] = JSON.parse(storedIdsJSON);
-    const initialLength = ids.length;
-    ids = ids.filter(id => id !== profileId);
-    
-    if (ids.length === initialLength) {
-        console.warn(`Profile with id ${profileId} not found for deletion.`);
-        return false;
-    }
-
-    window.localStorage.setItem(PROFILE_IDS_STORAGE_KEY, JSON.stringify(ids));
-    window.localStorage.removeItem(getProfileKey(profileId));
+    let profiles = getProfiles();
+    const updatedProfiles = profiles.filter(p => p.id !== profileId);
+    window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(updatedProfiles));
 
     window.dispatchEvent(new Event('profileUpdated'));
     return true;

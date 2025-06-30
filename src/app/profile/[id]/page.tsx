@@ -252,8 +252,8 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                 description: "Please wait while we optimize your photo.",
             });
             const options = {
-                maxSizeMB: 0.2,
-                maxWidthOrHeight: 1024,
+                maxSizeMB: 0.1,
+                maxWidthOrHeight: 800,
                 useWebWorker: true,
             }
             try {
@@ -284,13 +284,13 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
         if (!files || files.length === 0) return;
 
         const currentGallery = editedProfile.gallery || [];
-        const spaceAvailable = 5 - currentGallery.length;
+        const spaceAvailable = 4 - currentGallery.length;
 
         if (spaceAvailable <= 0) {
             toast({
                 variant: 'destructive',
                 title: 'Gallery Full',
-                description: 'You have already uploaded the maximum of 5 photos.',
+                description: 'You have already uploaded the maximum of 4 photos.',
             });
             return;
         }
@@ -310,8 +310,8 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
         });
         
         const options = {
-            maxSizeMB: 0.2,
-            maxWidthOrHeight: 1024,
+            maxSizeMB: 0.1,
+            maxWidthOrHeight: 800,
             useWebWorker: true,
         }
 
@@ -479,14 +479,14 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                         <CardContent>
                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                             {(editedProfile.gallery || []).map((img, i) => (
-                                <div key={`${i}-${img}`} className="relative aspect-square group">
+                                <div key={`${i}-${img.slice(0, 20)}`} className="relative aspect-square group">
                                     <img src={img} alt={`Gallery image ${i + 1}`} className="w-full h-full rounded-md object-cover" />
                                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                         <Button size="sm" variant="destructive" onClick={() => handleRemoveGalleryImage(i)}>Remove</Button>
                                     </div>
                                 </div>
                             ))}
-                            {(editedProfile.gallery || []).length < 5 && (
+                            {(editedProfile.gallery || []).length < 4 && (
                               <div className="relative aspect-square border-2 border-dashed rounded-md flex items-center justify-center text-muted-foreground hover:bg-accent hover:border-primary transition">
                                   <Button variant="ghost" className="w-full h-full" onClick={() => galleryImageInputRef.current?.click()}><Camera className="mr-2 h-4 w-4" />Add Photo</Button>
                               </div>

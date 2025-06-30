@@ -413,8 +413,6 @@ export const featuredProfiles: Profile[] = [
   },
 ];
 
-const PROFILES_STORAGE_KEY = 'sugarconnect_profiles';
-
 const rawConversationsData = [
   {
       id: 1,
@@ -458,7 +456,21 @@ const rawConversationsData = [
 ];
 
 const CONVERSATIONS_STORAGE_KEY = 'sugarconnect_conversations';
+const PROFILE_IDS_STORAGE_KEY = 'sugarconnect_profile_ids';
+const getProfileKey = (id: number) => `sugarconnect_profile_${id}`;
 
+
+/**
+ * Seeds localStorage with initial data if it's not already populated.
+ * This function should only be called on the client side.
+ */
+const seedLocalStorage = () => {
+  const profileIds = featuredProfiles.map(p => p.id);
+  window.localStorage.setItem(PROFILE_IDS_STORAGE_KEY, JSON.stringify(profileIds));
+  featuredProfiles.forEach(profile => {
+    window.localStorage.setItem(getProfileKey(profile.id), JSON.stringify(profile));
+  });
+};
 
 /**
  * Retrieves profiles from localStorage. If not present, seeds localStorage with initial data.
@@ -470,34 +482,60 @@ export const getProfiles = (): Profile[] => {
     return []; // Return empty array on server to prevent mismatch.
   }
   try {
-    const storedProfilesJSON = window.localStorage.getItem(PROFILES_STORAGE_KEY);
+    const storedIdsJSON = window.localStorage.getItem(PROFILE_IDS_STORAGE_KEY);
     
-    if (storedProfilesJSON) {
-      const profiles: Profile[] = JSON.parse(storedProfilesJSON);
-      const adminSourceData = featuredProfiles.find(p => p.id === 1);
-      const adminStorageIndex = profiles.findIndex(p => p.id === 1);
-
-      // If the admin profile exists in storage, ensure it's up-to-date with the source code credentials.
-      if (adminSourceData && adminStorageIndex !== -1) {
-        // Overwrite the stored admin profile with the one from the source code
-        // This ensures credentials are always fresh from the code.
-        profiles[adminStorageIndex] = adminSourceData;
-        window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
-      } else if (adminSourceData && adminStorageIndex === -1) {
-        // If admin profile somehow got deleted from storage, add it back.
-        profiles.push(adminSourceData);
-        window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
-      }
-      
-      return profiles;
-    } else {
-      // First time load, seed with the default data.
-      window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(featuredProfiles));
-      return featuredProfiles;
+    if (!storedIdsJSON) {
+      seedLocalStorage();
+      const newStoredIdsJSON = window.localStorage.getItem(PROFILE_IDS_STORAGE_KEY);
+      if (!newStoredIdsJSON) return []; // Should not happen
+      const ids: number[] = JSON.parse(newStoredIdsJSON);
+      return ids.map(id => getProfile(id)).filter((p): p is Profile => p !== undefined);
     }
+    
+    const ids: number[] = JSON.parse(storedIdsJSON);
+    const adminSourceData = featuredProfiles.find(p => p.id === 1);
+    
+    const profiles = ids.map(id => {
+      // Always get the admin profile from the source code to ensure its credentials are correct.
+      if (id === 1) return adminSourceData;
+      const profileJSON = window.localStorage.getItem(getProfileKey(id));
+      return profileJSON ? JSON.parse(profileJSON) : null;
+    }).filter((p): p is Profile => p !== null);
+
+    // Ensure admin profile exists if it was somehow removed from IDs list
+    if (adminSourceData && !profiles.some(p => p.id === 1)) {
+      profiles.push(adminSourceData);
+    }
+    
+    return profiles;
   } catch (error) {
     console.error('Failed to access localStorage:', error);
     return featuredProfiles; // Fallback to default data on parsing error
+  }
+};
+
+/**
+ * Retrieves a single profile by ID.
+ * This function is client-side only.
+ * @param {number} id - The ID of the profile to retrieve.
+ * @returns {Profile | undefined} The profile object or undefined if not found.
+ */
+export const getProfile = (id: number): Profile | undefined => {
+  if (typeof window === 'undefined') {
+    return undefined;
+  }
+
+  // Always return the hardcoded admin profile to ensure credentials are correct.
+  if (id === 1) {
+    return featuredProfiles.find(p => p.id === 1);
+  }
+
+  try {
+    const profileJSON = window.localStorage.getItem(getProfileKey(id));
+    return profileJSON ? JSON.parse(profileJSON) : undefined;
+  } catch (error) {
+    console.error(`Failed to get profile ${id} from localStorage:`, error);
+    return undefined;
   }
 };
 
@@ -521,7 +559,8 @@ export const createProfile = (email: string, password: string, role: 'baby' | 'd
       return { error: 'A user with this email address already exists.' };
     }
     
-    const newId = profiles.length > 0 ? Math.max(...profiles.map(p => p.id)) + 1 : 1;
+    const ids = profiles.map(p => p.id);
+    const newId = ids.length > 0 ? Math.max(...ids) + 1 : 1;
     const name = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     
     const newProfile: Profile = {
@@ -543,8 +582,10 @@ export const createProfile = (email: string, password: string, role: 'baby' | 'd
       attributes: {},
     };
 
-    const updatedProfiles = [...profiles, newProfile];
-    window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(updatedProfiles));
+    window.localStorage.setItem(getProfileKey(newId), JSON.stringify(newProfile));
+    const newIds = [...ids, newId];
+    window.localStorage.setItem(PROFILE_IDS_STORAGE_KEY, JSON.stringify(newIds));
+    
     window.dispatchEvent(new Event('profileUpdated'));
     
     return newProfile;
@@ -554,19 +595,6 @@ export const createProfile = (email: string, password: string, role: 'baby' | 'd
   }
 };
 
-/**
- * Retrieves a single profile by ID.
- * This function is client-side only.
- * @param {number} id - The ID of the profile to retrieve.
- * @returns {Profile | undefined} The profile object or undefined if not found.
- */
-export const getProfile = (id: number): Profile | undefined => {
-  if (typeof window === 'undefined') {
-    return undefined;
-  }
-  const profiles = getProfiles();
-  return profiles.find(p => p.id === id);
-};
 
 /**
  * Updates a profile in localStorage.
@@ -579,21 +607,24 @@ export const updateProfile = (updatedProfile: Profile): boolean => {
     return false;
   }
   try {
-    const profiles = getProfiles();
-    const profileIndex = profiles.findIndex(p => p.id === updatedProfile.id);
-
-    if (profileIndex === -1) {
-      console.error(`Profile with id ${updatedProfile.id} not found.`);
-      return false;
+    // Check if the profile exists before updating
+    const profileExists = getProfile(updatedProfile.id);
+    if (!profileExists) {
+       console.error(`Profile with id ${updatedProfile.id} not found.`);
+       return false;
     }
 
-    profiles[profileIndex] = updatedProfile;
-    window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
-    // Notify components that user data might have changed
+    window.localStorage.setItem(getProfileKey(updatedProfile.id), JSON.stringify(updatedProfile));
+    // Notify components that user data might have changed (e.g., in the header)
     window.dispatchEvent(new Event('authChanged')); 
     return true;
   } catch (error) {
     console.error('Failed to update profile in localStorage:', error);
+    // Check for QuotaExceededError
+    if (error instanceof DOMException && (error.name === 'QuotaExceededError' || error.code === 22)) {
+      // This is where we could show a more specific message to the user, but for now, we just log it.
+      console.error("Storage quota exceeded. Could not save profile.");
+    }
     return false;
   }
 };
@@ -609,16 +640,21 @@ export const deleteProfile = (profileId: number): boolean => {
     return false;
   }
   try {
-    let profiles = getProfiles();
-    const initialLength = profiles.length;
-    profiles = profiles.filter(p => p.id !== profileId);
+    const storedIdsJSON = window.localStorage.getItem(PROFILE_IDS_STORAGE_KEY);
+    if (!storedIdsJSON) return false;
+
+    let ids: number[] = JSON.parse(storedIdsJSON);
+    const initialLength = ids.length;
+    ids = ids.filter(id => id !== profileId);
     
-    if (profiles.length === initialLength) {
+    if (ids.length === initialLength) {
         console.warn(`Profile with id ${profileId} not found for deletion.`);
         return false;
     }
 
-    window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
+    window.localStorage.setItem(PROFILE_IDS_STORAGE_KEY, JSON.stringify(ids));
+    window.localStorage.removeItem(getProfileKey(profileId));
+
     window.dispatchEvent(new Event('profileUpdated'));
     return true;
   } catch (error) {
@@ -690,11 +726,10 @@ export const getConversations = (): Conversation[] => {
     if (typeof window === 'undefined') {
       return [];
     }
-    const profiles = getProfiles();
     const currentConversationsData = getRawConversationsData();
 
     const conversations: Conversation[] = currentConversationsData.map(convo => {
-        const participant = profiles.find(p => p.id === convo.participantId);
+        const participant = getProfile(convo.participantId);
         // If a participant profile is deleted, we'll filter out the conversation.
         // In a real app, you might want to handle this differently.
         if (!participant) {

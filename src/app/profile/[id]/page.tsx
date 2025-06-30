@@ -92,11 +92,12 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
            <div>
             <h1 className="text-3xl font-bold font-headline">{profile.name}</h1>
             <div className="flex items-center gap-4 mt-2">
+                <p className="text-muted-foreground text-lg">{profile.age}</p>
                 <Badge variant={profile.role === 'daddy' ? 'secondary' : 'outline'}>
                     {profile.role === 'daddy' ? 'Sugar Daddy' : 'Sugar Baby'}
                 </Badge>
-                <p className="text-muted-foreground text-lg">{profile.age}, {profile.location}</p>
             </div>
+            <p className="text-muted-foreground text-lg mt-1">{profile.location}</p>
           </div>
           <div className="flex flex-col space-y-2">
             {canMessage && <Button size="lg" onClick={() => onMessage(profile.id)}><Mail className="mr-2" /> Message</Button>}
@@ -394,28 +395,30 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                                 <Label htmlFor="name">Name</Label>
                                 <Input id="name" name="name" value={editedProfile.name} onChange={handleChange} />
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="age">Age</Label>
-                                <Input id="age" name="age" type="number" value={editedProfile.age} onChange={handleChange} />
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="age">Age</Label>
+                                    <Input id="age" name="age" type="number" value={editedProfile.age} onChange={handleChange} />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label>Role</Label>
+                                  <Select 
+                                    onValueChange={(value: 'baby' | 'daddy') => setEditedProfile(prev => ({...prev, role: value}))} 
+                                    defaultValue={editedProfile.role}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select a role" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="baby">Sugar Baby</SelectItem>
+                                      <SelectItem value="daddy">Sugar Daddy</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="location">Location</Label>
                                 <Input id="location" name="location" value={editedProfile.location} onChange={handleChange} />
-                            </div>
-                            <div className="space-y-2">
-                              <Label>Role</Label>
-                              <Select 
-                                onValueChange={(value: 'baby' | 'daddy') => setEditedProfile(prev => ({...prev, role: value}))} 
-                                defaultValue={editedProfile.role}
-                              >
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select a role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="baby">Sugar Baby</SelectItem>
-                                  <SelectItem value="daddy">Sugar Daddy</SelectItem>
-                                </SelectContent>
-                              </Select>
                             </div>
                             <div className="flex space-x-2 pt-4">
                                 <Button size="lg" className="flex-1" onClick={handleSave}>Save Profile</Button>

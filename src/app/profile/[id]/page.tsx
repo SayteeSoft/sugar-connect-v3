@@ -93,7 +93,6 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
            <div>
             <h1 className="text-3xl font-bold font-headline">{profile.name}</h1>
             <div className="flex items-center gap-4 mt-2">
-                <p className="text-muted-foreground text-lg">{profile.age}</p>
                 <Badge variant={profile.role === 'daddy' ? 'secondary' : 'outline'}>
                     {profile.role === 'daddy' ? 'Sugar Daddy' : 'Sugar Baby'}
                 </Badge>
@@ -221,7 +220,13 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
         </CardHeader>
         <CardContent>
           <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-            {attributeKeys.map((key) => (
+            <dt className="font-medium text-foreground">Age</dt>
+            <dd className="text-muted-foreground">{profile.age}</dd>
+            
+            <dt className="font-medium text-foreground">Height</dt>
+            <dd className="text-muted-foreground">{profile.attributes?.['Height'] || 'N/A'}</dd>
+            
+            {attributeKeys.filter(key => key !== 'Height').map((key) => (
               <React.Fragment key={key}>
                 <dt className="font-medium text-foreground">{key}</dt>
                 <dd className="text-muted-foreground">{profile.attributes?.[key] || 'N/A'}</dd>
@@ -400,26 +405,20 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                                 <Label htmlFor="name">Name</Label>
                                 <Input id="name" name="name" value={editedProfile.name} onChange={handleChange} />
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="age">Age</Label>
-                                    <Input id="age" name="age" type="number" value={editedProfile.age} onChange={handleChange} />
-                                </div>
-                                <div className="space-y-2">
-                                  <Label>Role</Label>
-                                  <Select 
-                                    onValueChange={(value: 'baby' | 'daddy') => setEditedProfile(prev => ({...prev, role: value}))} 
-                                    defaultValue={editedProfile.role}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select a role" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="baby">Sugar Baby</SelectItem>
-                                      <SelectItem value="daddy">Sugar Daddy</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
+                            <div className="space-y-2">
+                                <Label>Role</Label>
+                                <Select 
+                                onValueChange={(value: 'baby' | 'daddy') => setEditedProfile(prev => ({...prev, role: value}))} 
+                                defaultValue={editedProfile.role}
+                                >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a role" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="baby">Sugar Baby</SelectItem>
+                                    <SelectItem value="daddy">Sugar Daddy</SelectItem>
+                                </SelectContent>
+                                </Select>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="location">Location</Label>
@@ -516,6 +515,10 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                         </CardHeader>
                         <CardContent>
                             <dl className="grid grid-cols-2 gap-x-4 gap-y-4">
+                                <div className="space-y-1">
+                                    <Label htmlFor="age">Age</Label>
+                                    <Input id="age" name="age" type="number" value={editedProfile.age} onChange={handleChange} />
+                                </div>
                                 <div className="space-y-1">
                                     <Label htmlFor="attr-Height">Height</Label>
                                     <Input id="attr-Height" value={editedProfile.attributes?.['Height'] || ''} onChange={(e) => handleAttributeChange('Height', e.target.value)} />

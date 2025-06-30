@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -57,7 +58,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
       <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
         
-        {/* Mobile Menu & Logo */}
+        {/* Mobile Menu Trigger */}
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
@@ -89,38 +90,41 @@ export function Header() {
           </Sheet>
         </div>
 
+        {/* Mobile Centered Logo */}
         <div className="md:hidden flex-1 flex justify-center">
             <Link href="/" className="flex items-center gap-2">
                 <Heart className="h-6 w-6 text-primary" />
             </Link>
         </div>
 
-        {/* Desktop Logo & Nav */}
+        {/* Desktop Logo */}
         <div className="hidden md:flex items-center">
-            <Link href="/" className="flex items-center gap-2 mr-6">
+            <Link href="/" className="flex items-center gap-2">
                 <Heart className="h-6 w-6 text-primary" />
                 <span className="font-headline text-3xl font-bold text-primary">
                     SD Connect
                 </span>
             </Link>
-            <nav className="items-center justify-center space-x-6 text-lg font-medium flex">
-                {navLinks.map((link) => (
-                    <Link
-                    key={link.href}
-                    href={link.href}
-                    className={cn(
-                        "text-foreground/60 transition-colors hover:text-primary",
-                        pathname.startsWith(link.href) && "text-primary"
-                    )}
-                    >
-                    {link.label}
-                    </Link>
-                ))}
-            </nav>
         </div>
+
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex flex-1 items-center justify-center space-x-6 text-lg font-medium">
+            {navLinks.map((link) => (
+                <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                    "text-foreground/60 transition-colors hover:text-primary",
+                    pathname.startsWith(link.href) && "text-primary"
+                )}
+                >
+                {link.label}
+                </Link>
+            ))}
+        </nav>
         
         {/* Right side controls */}
-        <div className="flex items-center justify-end space-x-2 md:space-x-4 md:ml-auto">
+        <div className="flex items-center justify-end space-x-2 md:space-x-4">
           {isLoading ? (
             <div className="flex items-center space-x-2 md:space-x-4">
               <Skeleton className="h-9 w-24" />

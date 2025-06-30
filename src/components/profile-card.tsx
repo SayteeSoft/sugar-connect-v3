@@ -12,9 +12,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, MessageSquare, Trash2 } from "lucide-react";
+import { MoreHorizontal, MessageSquare, Trash2, Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProfileCardProps {
   profile: Profile;
@@ -25,10 +26,18 @@ interface ProfileCardProps {
 
 export function ProfileCard({ profile, onRemove, loggedInUser, isLoggedIn = true }: ProfileCardProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const canChat = loggedInUser && loggedInUser.role !== profile.role;
 
   const handleChat = () => {
     router.push(`/messages?chatWith=${profile.id}`);
+  };
+
+  const handleFavorite = () => {
+    toast({
+      title: 'Added to Favorites',
+      description: `${profile.name} has been added to your favorites.`,
+    });
   };
 
   const handleRemove = () => {
@@ -74,6 +83,10 @@ export function ProfileCard({ profile, onRemove, loggedInUser, isLoggedIn = true
                       <span>Chat</span>
                     </DropdownMenuItem>
                   )}
+                  <DropdownMenuItem onSelect={handleFavorite}>
+                    <Heart className="mr-2 h-4 w-4" />
+                    <span>Favorite</span>
+                  </DropdownMenuItem>
                   {onRemove && (
                     <DropdownMenuItem onSelect={handleRemove} className="text-destructive focus:text-destructive focus:bg-destructive/10">
                       <Trash2 className="mr-2 h-4 w-4" />

@@ -447,7 +447,7 @@ export const featuredProfiles: Profile[] = [
     id: 13,
     name: 'Larry',
     email: 'larry.saytee@email.com',
-    password: 'password123',
+    password: 'password',
     age: 50,
     location: 'Manchester, UK',
     imageUrl: 'https://placehold.co/600x750.png',

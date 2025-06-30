@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import { getProfile, updateProfile, type Profile, wantsOptions, interestsOptions, attributeKeys, deleteProfile, bodyTypeOptions, ethnicityOptions, hairColorOptions, eyeColorOptions } from '@/lib/data';
+import { getProfile, updateProfile, type Profile, wantsOptions, interestsOptions, attributeKeys, deleteProfile, bodyTypeOptions, ethnicityOptions, hairColorOptions, eyeColorOptions, smokerDrinkerOptions } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -560,6 +560,24 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                                     </Select>
                                 </div>
                                 <div className="space-y-1">
+                                    <Label htmlFor="attr-Smoker">Smoker</Label>
+                                    <Select onValueChange={(value) => handleAttributeChange('Smoker', value)} value={editedProfile.attributes?.['Smoker'] || ''}>
+                                        <SelectTrigger id="attr-Smoker"><SelectValue placeholder="Select..." /></SelectTrigger>
+                                        <SelectContent>
+                                            {smokerDrinkerOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-1">
+                                    <Label htmlFor="attr-Drinker">Drinker</Label>
+                                    <Select onValueChange={(value) => handleAttributeChange('Drinker', value)} value={editedProfile.attributes?.['Drinker'] || ''}>
+                                        <SelectTrigger id="attr-Drinker"><SelectValue placeholder="Select..." /></SelectTrigger>
+                                        <SelectContent>
+                                            {smokerDrinkerOptions.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-1">
                                     <Label htmlFor="attr-Piercings">Piercings</Label>
                                     <Select onValueChange={(value) => handleAttributeChange('Piercings', value)} value={editedProfile.attributes?.['Piercings'] || ''}>
                                         <SelectTrigger id="attr-Piercings"><SelectValue placeholder="Select..." /></SelectTrigger>
@@ -597,7 +615,7 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const router = useRouter();
   const params = useParams<{ id: string }>();
-  const { user: loggedInUser, isLoggedIn, isLoading: isAuthLoading } = useAuth();
+  const { user: loggedInUser, isLoading: isAuthLoading } = useAuth();
   
   const profileId = parseInt(params.id, 10);
   const allImages = [profileData?.imageUrl, ...(profileData?.gallery || [])].filter((url): url is string => !!url);

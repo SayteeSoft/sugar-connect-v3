@@ -98,9 +98,13 @@ const ProfileView = ({ profile, onEdit, isOwnProfile, canEdit, onMessage, onFavo
                 </Badge>
             </div>
             <p className="text-muted-foreground text-lg mt-1">{profile.location}</p>
+            <div className="flex items-center gap-2 text-muted-foreground mt-2">
+              <Mail className="h-4 w-4" />
+              <span className="text-sm">{profile.email}</span>
+            </div>
           </div>
           <div className="flex flex-col space-y-2">
-            {canMessage && <Button size="lg" onClick={() => onMessage(profile.id)}><Mail className="mr-2" /> Message</Button>}
+            {canMessage && <Button size="lg" onClick={() => onMessage(profile.id)}><MessageSquare className="mr-2" /> Message</Button>}
             {canEdit && <Button variant="secondary" onClick={onEdit}><Pencil className="mr-2" /> Edit Profile</Button>}
           </div>
         </CardContent>
@@ -420,6 +424,11 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                                 <Label htmlFor="location">Location</Label>
                                 <Input id="location" name="location" value={editedProfile.location} onChange={handleChange} />
                             </div>
+                             <div className="space-y-2">
+                                <Label htmlFor="email">Email Address</Label>
+                                <Input id="email" name="email" value={editedProfile.email} readOnly disabled />
+                                <p className="text-xs text-muted-foreground">Email cannot be changed here.</p>
+                            </div>
                             <div className="flex space-x-2 pt-4">
                                 <Button size="lg" className="flex-1" onClick={handleSave}>Save Profile</Button>
                                 <Button size="lg" variant="outline" className="flex-1" onClick={onCancel}>Cancel</Button>
@@ -611,7 +620,7 @@ export default function ProfilePage() {
     
     setIsLoadingData(false); // Data loading is complete
       
-  }, [profileId, isAuthLoading, isLoggedIn, loggedInUser?.id, router, searchParams]);
+  }, [profileId, isAuthLoading, isLoggedIn, loggedInUser, router, searchParams]);
 
   const openGallery = (index: number) => {
     // If index is -1, it's the profile pic (index 0 in allImages).

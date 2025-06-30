@@ -11,12 +11,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Header } from "@/components/layout/header";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useAuth } from '@/hooks/use-auth';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 const signupFormSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
@@ -36,22 +36,15 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignupFormValues>({
+  const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupFormSchema),
     defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
       role: 'baby'
     }
   });
-
-  useEffect(() => {
-    if (!isLoading && isLoggedIn) {
-      router.replace('/profile');
-    }
-  }, [isLoggedIn, isLoading, router]);
   
   const onSubmit = async (data: SignupFormValues) => {
     setError('');
@@ -91,50 +84,92 @@ export default function SignupPage() {
             <CardDescription>Join our exclusive community today.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-               {error && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>Signup Failed</AlertTitle>
-                  <AlertDescription>
-                    {error}
-                  </AlertDescription>
-                </Alert>
-              )}
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input id="email" type="email" placeholder="you@example.com" {...register('email')} />
-                {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" {...register('password')} />
-                {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
-              </div>
-               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input id="confirmPassword" type="password" {...register('confirmPassword')} />
-                {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label>I am a:</Label>
-                <RadioGroup defaultValue="baby" className="flex space-x-4 pt-2" {...register('role')}>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="baby" id="r1" />
-                    <Label htmlFor="r1">Sugar Baby</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="daddy" id="r2" />
-                    <Label htmlFor="r2">Sugar Daddy</Label>
-                  </div>
-                </RadioGroup>
-                {errors.role && <p className="text-sm text-destructive">{errors.role.message}</p>}
-              </div>
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Create Account
-              </Button>
-            </form>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                 {error && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Signup Failed</AlertTitle>
+                    <AlertDescription>
+                      {error}
+                    </AlertDescription>
+                  </Alert>
+                )}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email Address</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="you@example.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel>I am a:</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex flex-row space-x-4"
+                        >
+                          <FormItem className="flex items-center space-x-2 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="baby" />
+                            </FormControl>
+                            <FormLabel className="font-normal">Sugar Baby</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-2 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="daddy" />
+                            </FormControl>
+                            <FormLabel className="font-normal">Sugar Daddy</FormLabel>
+                          </FormItem>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Create Account
+                </Button>
+              </form>
+            </Form>
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
               <Link href="/login" className="text-primary underline hover:text-primary/90 transition-colors">

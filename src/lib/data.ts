@@ -470,16 +470,34 @@ export const getProfiles = (): Profile[] => {
     return []; // Return empty array on server to prevent mismatch.
   }
   try {
-    const storedProfiles = window.localStorage.getItem(PROFILES_STORAGE_KEY);
-    if (storedProfiles) {
-      return JSON.parse(storedProfiles);
+    const storedProfilesJSON = window.localStorage.getItem(PROFILES_STORAGE_KEY);
+    
+    if (storedProfilesJSON) {
+      const profiles: Profile[] = JSON.parse(storedProfilesJSON);
+      const adminSourceData = featuredProfiles.find(p => p.id === 1);
+      const adminStorageIndex = profiles.findIndex(p => p.id === 1);
+
+      // If the admin profile exists in storage, ensure it's up-to-date with the source code credentials.
+      if (adminSourceData && adminStorageIndex !== -1) {
+        // Overwrite the stored admin profile with the one from the source code
+        // This ensures credentials are always fresh from the code.
+        profiles[adminStorageIndex] = adminSourceData;
+        window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
+      } else if (adminSourceData && adminStorageIndex === -1) {
+        // If admin profile somehow got deleted from storage, add it back.
+        profiles.push(adminSourceData);
+        window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
+      }
+      
+      return profiles;
     } else {
+      // First time load, seed with the default data.
       window.localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(featuredProfiles));
       return featuredProfiles;
     }
   } catch (error) {
     console.error('Failed to access localStorage:', error);
-    return [];
+    return featuredProfiles; // Fallback to default data on parsing error
   }
 };
 

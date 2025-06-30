@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { getProfile, updateProfile, type Profile, wantsOptions, interestsOptions, attributeKeys, deleteProfile, bodyTypeOptions, ethnicityOptions, hairColorOptions, eyeColorOptions } from '@/lib/data';
 import { Button } from '@/components/ui/button';
@@ -427,7 +428,12 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                              <div className="space-y-2">
                                 <Label htmlFor="email">Email Address</Label>
                                 <Input id="email" name="email" value={editedProfile.email} readOnly disabled />
-                                <p className="text-xs text-muted-foreground">Email cannot be changed here.</p>
+                                <p className="text-xs text-muted-foreground">
+                                  Email cannot be changed here.{" "}
+                                  <Link href="/settings" className="text-primary underline hover:text-primary/90">
+                                    Change here.
+                                  </Link>
+                                </p>
                             </div>
                             <div className="flex space-x-2 pt-4">
                                 <Button size="lg" className="flex-1" onClick={handleSave}>Save Profile</Button>
@@ -693,6 +699,8 @@ export default function ProfilePage() {
     if (searchParams.get('edit')) {
       router.replace(`/profile/${profileId}`, { scroll: false });
     }
+    // Re-fetch the original profile data to discard any local state changes in the edit form
+    setProfileData(getProfile(profileId));
   };
 
   const isLoading = isAuthLoading || isLoadingData;

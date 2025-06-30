@@ -479,7 +479,7 @@ const ProfileEdit = ({ profile, onSave, onCancel }: { profile: Profile; onSave: 
                         <CardContent>
                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                             {(editedProfile.gallery || []).map((img, i) => (
-                                <div key={`${i}-${img.slice(0, 20)}`} className="relative aspect-square group">
+                                <div key={`${img}-${i}`} className="relative aspect-square group">
                                     <img src={img} alt={`Gallery image ${i + 1}`} className="w-full h-full rounded-md object-cover" />
                                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                         <Button size="sm" variant="destructive" onClick={() => handleRemoveGalleryImage(i)}>Remove</Button>
@@ -611,7 +611,7 @@ export default function ProfilePage() {
     
     setIsLoadingData(false); // Data loading is complete
       
-  }, [profileId, isAuthLoading, isLoggedIn, loggedInUser, router, searchParams]);
+  }, [profileId, isAuthLoading, isLoggedIn, loggedInUser?.id, router, searchParams]);
 
   const openGallery = (index: number) => {
     // If index is -1, it's the profile pic (index 0 in allImages).

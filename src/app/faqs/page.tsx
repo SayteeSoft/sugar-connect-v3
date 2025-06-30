@@ -15,11 +15,11 @@ import { useState } from 'react';
 
 const faqItems = [
   {
-    question: "What is SugarConnect?",
-    answer: "SugarConnect is a premier online platform designed to connect successful, established individuals (Sugar Daddies and Mommies) with ambitious, attractive people (Sugar Babies) for transparent and mutually beneficial relationships."
+    question: "What is Sugar Connect?",
+    answer: "Sugar Connect is a premier online platform designed to connect successful, established individuals (Sugar Daddies and Mommies) with ambitious, attractive people (Sugar Babies) for transparent and mutually beneficial relationships."
   },
   {
-    question: "Is my privacy protected on SugarConnect?",
+    question: "Is my privacy protected on Sugar Connect?",
     answer: "Absolutely. We prioritize your privacy and discretion above all else. We use advanced security measures and give you full control over your profile's visibility, including options to hide photos or your profile from public view."
   },
   {
@@ -64,7 +64,7 @@ export default function FaqsPage() {
           <CardHeader className="text-center">
             <CardTitle className="font-headline text-4xl text-primary">Frequently Asked Questions</CardTitle>
             <CardDescription>
-              Find answers to common questions about SugarConnect and sugar dating.
+              Find answers to common questions about Sugar Connect and sugar dating.
             </CardDescription>
           </CardHeader>
           <CardContent className="max-w-3xl mx-auto">

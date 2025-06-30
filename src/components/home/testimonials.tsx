@@ -13,14 +13,14 @@ import {
 
 const testimonials = [
   {
-    quote: "SugarConnect changed my life. I've met incredible people and experienced things I only dreamed of. It's more than just a site; it's a lifestyle.",
+    quote: "Sugar Connect changed my life. I've met incredible people and experienced things I only dreamed of. It's more than just a site; it's a lifestyle.",
     name: "Emily",
     role: "Sugar Baby",
     avatar: "https://placehold.co/100x100.png",
     hint: "woman portrait"
   },
   {
-    quote: "As a busy professional, I value my time. SugarConnect is efficient, discreet, and full of genuine, ambitious individuals. Highly recommended.",
+    quote: "As a busy professional, I value my time. Sugar Connect is efficient, discreet, and full of genuine, ambitious individuals. Highly recommended.",
     name: "David",
     role: "Sugar Daddy",
     avatar: "https://placehold.co/100x100.png",
@@ -41,7 +41,7 @@ const testimonials = [
     hint: "man profile"
   },
   {
-    quote: "Finding someone who understands my ambition and lifestyle was easy with SugarConnect. It's a game-changer for successful dating.",
+    quote: "Finding someone who understands my ambition and lifestyle was easy with Sugar Connect. It's a game-changer for successful dating.",
     name: "Isabella",
     role: "Sugar Baby",
     avatar: "https://placehold.co/100x100.png",

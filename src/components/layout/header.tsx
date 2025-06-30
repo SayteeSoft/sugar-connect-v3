@@ -55,7 +55,7 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2 mr-6">
           <Heart className="h-6 w-6 text-primary" />
           <span className="font-headline text-3xl font-bold text-primary">
-            SugarConnect
+            Sugar Connect
           </span>
         </Link>
         <nav className="hidden items-center justify-center space-x-6 text-lg font-medium md:flex flex-grow">

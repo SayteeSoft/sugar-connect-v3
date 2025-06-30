@@ -8,7 +8,7 @@ import { ArrowRight } from 'lucide-react';
 
 const sitemapLinks = {
   "Main Pages": [
-    { href: "/", title: "Home", description: "The main landing page of SugarConnect." },
+    { href: "/", title: "Home", description: "The main landing page of Sugar Connect." },
     { href: "/search", title: "Search", description: "Find and filter profiles." },
     { href: "/messages", title: "Messages", description: "Your private conversations." },
     { href: "/matches", title: "Matches", description: "View your matches and favorites." },
@@ -65,7 +65,7 @@ export default function SitemapPage() {
         <Card>
           <CardHeader>
             <CardTitle className="font-headline text-4xl text-primary">Sitemap</CardTitle>
-            <p className="text-muted-foreground pt-2">Navigate through all the pages available on SugarConnect.</p>
+            <p className="text-muted-foreground pt-2">Navigate through all the pages available on Sugar Connect.</p>
           </CardHeader>
           <CardContent>
             {Object.entries(sitemapLinks).map(([sectionTitle, links]) => (

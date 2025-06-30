@@ -4,10 +4,13 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useState, useMemo, Suspense } from 'react';
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import type { OnApproveData, CreateOrderData } from "@paypal/paypal-js";
+import { useAuth } from '@/hooks/use-auth';
 
 const creditPackages = [
   { id: 'pkg-1', credits: 100, price: 20 },
@@ -19,25 +22,63 @@ function PayPalPaymentContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const [isProcessing, setIsProcessing] = useState(true);
+  const { user, addCredits } = useAuth();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const packageId = searchParams.get('packageId');
   const selectedPackage = useMemo(() => creditPackages.find(p => p.id === packageId), [packageId]);
 
-  useEffect(() => {
-      if(selectedPackage) {
-        const timer = setTimeout(() => {
-            setIsProcessing(false);
-            toast({
-                title: 'Purchase Successful!',
-                description: `You have successfully purchased ${selectedPackage.credits} credits via PayPal.`,
-            });
-            router.push('/profile');
-        }, 3000); // Simulate redirect and payment confirmation
+  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 
-        return () => clearTimeout(timer);
+  const createOrder = (data: CreateOrderData, actions: any) => {
+    if (!selectedPackage) {
+      setError("No package selected. Please go back.");
+      return Promise.reject(new Error("No package selected"));
+    }
+    return actions.order.create({
+      purchase_units: [
+        {
+          description: `SD Connect - ${selectedPackage.credits} Credits`,
+          amount: {
+            currency_code: 'GBP',
+            value: selectedPackage.price.toFixed(2),
+          },
+        },
+      ],
+      application_context: {
+        brand_name: 'SD Connect',
+        shipping_preference: 'NO_SHIPPING',
       }
-  }, [selectedPackage, router, toast]);
+    });
+  };
+
+  const onApprove = (data: OnApproveData, actions: any) => {
+    setIsProcessing(true);
+    setError(null);
+    return actions.order.capture().then((details: any) => {
+      toast({
+        title: 'Purchase Successful!',
+        description: `You have successfully purchased ${selectedPackage?.credits} credits via PayPal.`,
+      });
+      
+      if (user?.role === 'daddy' && selectedPackage) {
+          addCredits(selectedPackage.credits);
+      }
+      
+      router.push('/profile');
+    }).catch((err: any) => {
+        console.error("PayPal Capture Error:", err);
+        setError("An error occurred while processing your payment. Please try again.");
+        setIsProcessing(false);
+    });
+  };
+
+  const onError = (err: any) => {
+    console.error("PayPal Error:", err);
+    setError("A PayPal error occurred. Please check your details or try another payment method.");
+    setIsProcessing(false);
+  };
 
   if (!selectedPackage) {
       return (
@@ -57,6 +98,25 @@ function PayPalPaymentContent() {
           </>
       )
   }
+  
+  if (!paypalClientId) {
+      return (
+        <>
+            <Header />
+            <main className="flex-grow container mx-auto p-4 md:p-6 flex items-center justify-center">
+                <Card className="w-full max-w-md text-center">
+                    <CardHeader>
+                        <CardTitle>Configuration Error</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-muted-foreground">PayPal integration is not configured correctly. Please contact support.</p>
+                        <Button onClick={() => router.push('/purchase-credits')} className="mt-4">Back to Packages</Button>
+                    </CardContent>
+                </Card>
+            </main>
+        </>
+      )
+  }
 
   return (
     <>
@@ -64,17 +124,30 @@ function PayPalPaymentContent() {
       <main className="flex-grow container mx-auto p-4 md:p-6 flex items-center justify-center">
         <Card className="w-full max-w-md text-center">
           <CardHeader>
-            <p className="font-bold text-5xl text-[#f5a3f5] mx-auto"><i>PayPal</i></p>
-            <CardTitle className="font-headline text-2xl pt-4">Redirecting to PayPal</CardTitle>
+            <p className="font-bold text-5xl text-[#00457C] mx-auto"><i>PayPal</i></p>
+            <CardTitle className="font-headline text-2xl pt-4">Complete Your Purchase</CardTitle>
             <CardDescription>
               You are purchasing {selectedPackage.credits} credits for £{selectedPackage.price}.00
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col items-center justify-center space-y-4">
-                <Loader2 className="h-12 w-12 animate-spin text-primary" />
-                <p className="text-muted-foreground">Please wait while we securely redirect you to PayPal to complete your payment.</p>
-            </div>
+            {isProcessing ? (
+                 <div className="flex flex-col items-center justify-center space-y-4 h-[150px]">
+                    <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                    <p className="text-muted-foreground">Processing your payment...</p>
+                </div>
+            ) : (
+                <PayPalScriptProvider options={{ clientId: paypalClientId, currency: "GBP", intent: "capture" }}>
+                    {error && <p className="text-destructive text-sm mb-4">{error}</p>}
+                    <PayPalButtons
+                        style={{ layout: "vertical", shape: "rect", label: "pay", height: 48 }}
+                        createOrder={createOrder}
+                        onApprove={onApprove}
+                        onError={onError}
+                        disabled={isProcessing}
+                    />
+                </PayPalScriptProvider>
+            )}
           </CardContent>
         </Card>
       </main>

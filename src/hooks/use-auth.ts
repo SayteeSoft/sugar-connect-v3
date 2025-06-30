@@ -108,5 +108,14 @@ export function useAuth() {
       return credits;
   };
 
-  return { isLoggedIn, user, isLoading, credits, login, logout, signup, spendCredits };
+  const addCredits = (amount: number) => {
+    if (user?.role === 'daddy' && user.id !== 1) {
+        const newCredits = credits + amount;
+        localStorage.setItem('user_credits', newCredits.toString());
+        // Dispatch event to ensure all components are aware of the credit change, like the header.
+        window.dispatchEvent(new Event('authChanged'));
+    }
+  };
+
+  return { isLoggedIn, user, isLoading, credits, login, logout, signup, spendCredits, addCredits };
 }

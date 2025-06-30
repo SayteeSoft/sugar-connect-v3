@@ -4,6 +4,7 @@
 import Link from 'next/link';
 import { Heart } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { useAuth } from '@/hooks/use-auth';
 
 const CookiePolicyModal = dynamic(() => import('../cookie-policy-modal').then(mod => mod.CookiePolicyModal), { ssr: false });
 const PrivacyPolicyModal = dynamic(() => import('../privacy-policy-modal').then(mod => mod.PrivacyPolicyModal), { ssr: false });
@@ -11,6 +12,9 @@ const TermsOfUseModal = dynamic(() => import('../terms-of-use-modal').then(mod =
 
 
 export function Footer() {
+  const { user } = useAuth();
+  const isAdmin = user?.id === 1;
+
   return (
     <footer className="w-full border-t bg-card text-card-foreground">
       <div className="container mx-auto px-4 md:px-6 py-8 text-center">
@@ -51,7 +55,9 @@ export function Footer() {
             <ul className="space-y-2">
               <li><Link href="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact Us</Link></li>
               <li><Link href="/sitemap" className="text-sm text-muted-foreground hover:text-primary transition-colors">Sitemap</Link></li>
-              <li><Link href="/admin" className="text-sm text-muted-foreground hover:text-primary transition-colors">Admin</Link></li>
+              {isAdmin && (
+                <li><Link href="/admin" className="text-sm text-muted-foreground hover:text-primary transition-colors">Admin</Link></li>
+              )}
             </ul>
           </div>
         </div>

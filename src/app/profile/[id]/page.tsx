@@ -654,21 +654,27 @@ export default function ProfilePage() {
   
   const handleSaveProfile = (updatedProfile: Profile) => {
     const success = updateProfile(updatedProfile);
+    
+    // Always switch to view mode as requested
+    setIsEditMode(false);
+    if (searchParams.get('edit')) {
+      router.replace(`/profile/${profileId}`, { scroll: false });
+    }
+
     if (success) {
+      // Refetch and display the updated profile data
       setProfileData(getProfile(profileId));
-      setIsEditMode(false);
       toast({
         title: "Profile Saved",
         description: "Your changes have been saved successfully.",
       });
-      if (searchParams.get('edit')) {
-        router.replace(`/profile/${profileId}`, { scroll: false });
-      }
     } else {
+      // The view mode will show the old data, as the save failed.
+      // It's important to notify the user that their changes were not saved.
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to save your profile. This might be due to storage limits if images are too large.",
+        title: "Save Failed",
+        description: "Your changes could not be saved, likely due to storage limits. Please try reducing image sizes.",
       });
     }
   };

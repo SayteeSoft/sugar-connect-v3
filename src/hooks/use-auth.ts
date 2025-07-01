@@ -65,9 +65,14 @@ export function useAuth() {
       
       if (foundUser.role === 'daddy' && foundUser.id !== 1) {
           const currentCredits = localStorage.getItem('user_credits');
-          // Only set initial credits if they don't already exist.
-          // This prevents overwriting purchased credits on subsequent logins.
-          if (!currentCredits) {
+          // For the user larry.saytee@email.com (ID 13), this will reset credits to 10 upon login
+          // ONLY if their current credit balance is 0. This acts as a 'refill' for this test account
+          // without overwriting purchased credits.
+          if (foundUser.id === 13 && (!currentCredits || parseInt(currentCredits, 10) === 0)) {
+            localStorage.setItem('user_credits', '10');
+          } 
+          // For all other daddies, set initial credits only if they don't already have any.
+          else if (!currentCredits) {
              localStorage.setItem('user_credits', '10');
           }
       }

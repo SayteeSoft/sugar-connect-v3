@@ -477,12 +477,9 @@ const rawConversationsData = [
   {
       id: 1,
       participantId: 2,
-      unreadCount: 2,
+      unreadCount: 1,
       messages: [
           { id: 1, senderId: 2, text: 'Hey there! Loved your profile, especially your taste in art.', timestamp: '2024-07-28T10:00:00.000Z' },
-          { id: 2, senderId: 1, text: 'Thank you, Darianna. I appreciate that. You have a wonderful smile.', timestamp: '2024-07-28T10:05:00.000Z' },
-          { id: 3, senderId: 2, text: 'Aww, thanks! You seem like a really interesting person. What are you up to this weekend?', timestamp: '2024-07-28T11:20:00.000Z' },
-          { id: 4, senderId: 2, text: 'Let me know if you might be free for a drink.', timestamp: '2024-07-28T11:21:00.000Z' },
       ]
   },
   {
@@ -499,10 +496,9 @@ const rawConversationsData = [
    {
       id: 3,
       participantId: 5,
-      unreadCount: 0,
+      unreadCount: 1,
       messages: [
           { id: 1, senderId: 5, text: 'Your profile mentioned you enjoy fine dining. Any favorite spots?', timestamp: '2024-07-26T15:00:00.000Z' },
-          { id: 2, senderId: 1, text: 'Absolutely. There\'s a fantastic French place downtown I could recommend. Perhaps I could take you sometime.', timestamp: '2024-07-26T15:10:00.000Z' },
       ]
   },
   {

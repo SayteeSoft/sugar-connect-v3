@@ -27,11 +27,13 @@ export function useAuth() {
             if (loggedInStatus && loggedInUserId) {
                 const loggedInUser = getProfile(parseInt(loggedInUserId, 10));
                 setUser(loggedInUser);
-                if (loggedInUser?.role === 'baby' || loggedInUser?.id === 1) {
-                    setCredits(Infinity);
-                } else {
-                    const storedCredits = localStorage.getItem('user_credits');
-                    setCredits(storedCredits ? parseInt(storedCredits, 10) : 0);
+                if (loggedInUser) {
+                    if (loggedInUser.role === 'baby' || loggedInUser.id === 1) {
+                        setCredits(Infinity);
+                    } else {
+                        const storedCredits = localStorage.getItem('user_credits');
+                        setCredits(storedCredits ? parseInt(storedCredits, 10) : 0);
+                    }
                 }
             } else {
                 setUser(undefined);
@@ -63,18 +65,12 @@ export function useAuth() {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('loggedInUserId', foundUser.id.toString());
       
+      // For daddies (not admin), if it's their first login (no credits stored), give them 10.
       if (foundUser.role === 'daddy' && foundUser.id !== 1) {
           const currentCredits = localStorage.getItem('user_credits');
-          // For the user larry.saytee@email.com (ID 13), this will reset credits to 10 upon login
-          // ONLY if their current credit balance is 0. This acts as a 'refill' for this test account
-          // without overwriting purchased credits.
-          if (foundUser.id === 13 && (!currentCredits || parseInt(currentCredits, 10) === 0)) {
+          if (currentCredits === null) {
             localStorage.setItem('user_credits', '10');
           } 
-          // For all other daddies, set initial credits only if they don't already have any.
-          else if (!currentCredits) {
-             localStorage.setItem('user_credits', '10');
-          }
       }
       window.dispatchEvent(new Event('authChanged'));
       return foundUser;

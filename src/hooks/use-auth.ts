@@ -31,8 +31,19 @@ export function useAuth() {
                         setCredits(Infinity);
                     } else {
                         const creditsKey = `user_credits_${loggedInUser.id}`;
-                        const storedCredits = localStorage.getItem(creditsKey);
-                        setCredits(storedCredits ? parseInt(storedCredits, 10) : 0);
+                        let currentCredits = localStorage.getItem(creditsKey);
+                        
+                        // Give new daddies 10 credits on their first login
+                        if (currentCredits === null) {
+                            currentCredits = '10';
+                            localStorage.setItem(creditsKey, currentCredits);
+                        }
+                        // Special logic for Larry Saytee (ID 13) to "refill" credits if he runs out
+                        else if (loggedInUser.id === 13 && currentCredits === '0') {
+                            currentCredits = '10';
+                            localStorage.setItem(creditsKey, currentCredits);
+                        }
+                        setCredits(currentCredits ? parseInt(currentCredits, 10) : 0);
                     }
                 }
             } else {
@@ -65,19 +76,8 @@ export function useAuth() {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('loggedInUserId', foundUser.id.toString());
       
-      if (foundUser.role === 'daddy' && foundUser.id !== 1) {
-          const creditsKey = `user_credits_${foundUser.id}`;
-          const currentCredits = localStorage.getItem(creditsKey);
-          
-          // Give new daddies 10 credits on their first login
-          if (currentCredits === null) {
-            localStorage.setItem(creditsKey, '10');
-          }
-          // Special logic for Larry Saytee (ID 13) to "refill" credits if he runs out
-          else if (foundUser.id === 13 && currentCredits === '0') {
-            localStorage.setItem(creditsKey, '10');
-          }
-      }
+      // The logic for setting initial/refill credits is now in `checkAuth`
+      // which will be triggered by this event.
       window.dispatchEvent(new Event('authChanged'));
       return foundUser;
     }

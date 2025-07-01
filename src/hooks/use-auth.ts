@@ -64,9 +64,13 @@ export function useAuth() {
       localStorage.setItem('loggedInUserId', foundUser.id.toString());
       
       if (foundUser.role === 'daddy' && foundUser.id !== 1) {
-          const currentCredits = localStorage.getItem('user_credits');
-          if (!currentCredits) {
-             localStorage.setItem('user_credits', '10');
+          if (foundUser.email === 'larry.saytee@email.com') {
+              localStorage.setItem('user_credits', '10');
+          } else {
+            const currentCredits = localStorage.getItem('user_credits');
+            if (!currentCredits) {
+               localStorage.setItem('user_credits', '10');
+            }
           }
       }
       window.dispatchEvent(new Event('authChanged'));

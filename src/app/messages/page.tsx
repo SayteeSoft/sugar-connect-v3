@@ -100,7 +100,7 @@ export default function MessagesPage() {
     return (
         <>
             <Header />
-            <main className="flex-grow container mx-auto px-4 md:px-6 py-6 flex flex-col">
+            <main className="flex-grow container mx-auto px-4 md:px-6 py-6 flex flex-col overflow-hidden">
                 <div className="bg-background border rounded-lg overflow-hidden flex-grow flex">
                     <Suspense fallback={<ChatSkeleton />}>
                         <MessagesContent />

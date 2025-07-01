@@ -260,7 +260,7 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
             <Input placeholder="Search messages" className="pl-9" />
           </div>
         </div>
-        <div className="flex-grow overflow-y-auto">
+        <ScrollArea className="flex-grow">
           {conversations.map((convo) => (
             <div
               key={convo.id}
@@ -297,7 +297,7 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
               </div>
             </div>
           ))}
-        </div>
+        </ScrollArea>
       </aside>
 
       {/* Right Pane: Chat Window */}

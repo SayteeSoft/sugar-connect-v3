@@ -34,16 +34,12 @@ export function useAuth() {
                         const creditsKey = `user_credits_${loggedInUser.id}`;
                         let currentCredits = localStorage.getItem(creditsKey);
                         
-                        // Give new daddies 10 credits on their first login
+                        // Give new daddies 10 credits on their first login only
                         if (currentCredits === null) {
                             currentCredits = '10';
                             localStorage.setItem(creditsKey, currentCredits);
                         }
-                        // Special logic for Larry Saytee (ID 13) to "refill" credits if he runs out
-                        else if (loggedInUser.id === 13 && parseInt(currentCredits, 10) === 0) {
-                            currentCredits = '10';
-                            localStorage.setItem(creditsKey, currentCredits);
-                        }
+                        
                         setCredits(currentCredits ? parseInt(currentCredits, 10) : 0);
                     }
                 }

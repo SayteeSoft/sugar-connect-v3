@@ -18,6 +18,7 @@ import {
   Heart,
   Ban,
   Trash2,
+  Coins,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -90,7 +91,9 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
   };
 
   useEffect(() => {
-    scrollToBottom();
+    if (selectedConversation?.messages) {
+      scrollToBottom();
+    }
   }, [selectedConversation?.messages]);
   
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -355,36 +358,70 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
               </div>
             </header>
             
-            <div className="flex-grow p-4 overflow-y-auto bg-secondary/40">
-                <div className="space-y-4">
-                    {selectedConversation.messages.map((message) => (
-                        <div
-                            key={message.id}
-                            className={cn(
-                                'flex items-end gap-2',
-                                message.senderId === currentUser.id ? 'justify-end' : 'justify-start'
-                            )}
-                        >
-                            {message.senderId !== currentUser.id && (
-                                <Avatar className="h-8 w-8">
-                                    <AvatarImage src={selectedConversation.participant.imageUrl ?? 'https://placehold.co/100x100.png'} alt={selectedConversation.participant.name} data-ai-hint={selectedConversation.participant.hint}/>
-                                    <AvatarFallback>{selectedConversation.participant.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                            )}
+            <div className="relative flex-grow overflow-hidden">
+                <div
+                    className={cn(
+                        'h-full overflow-y-auto bg-secondary/40 p-4',
+                        loggedInUser?.role === 'daddy' &&
+                        loggedInUser.id !== 1 &&
+                        credits <= 0 &&
+                        'blur-sm'
+                    )}
+                >
+                    <div className="space-y-4">
+                        {selectedConversation.messages.map((message) => (
                             <div
+                                key={message.id}
                                 className={cn(
-                                'max-w-md rounded-xl px-4 py-2',
-                                message.senderId === currentUser.id
-                                    ? 'bg-primary text-primary-foreground rounded-br-none'
-                                    : 'bg-card text-card-foreground rounded-bl-none border'
+                                    'flex items-end gap-2',
+                                    message.senderId === currentUser.id
+                                        ? 'justify-end'
+                                        : 'justify-start'
                                 )}
                             >
-                                <p>{message.text}</p>
+                                {message.senderId !== currentUser.id && (
+                                    <Avatar className="h-8 w-8">
+                                        <AvatarImage src={selectedConversation.participant.imageUrl ?? 'https://placehold.co/100x100.png'} alt={selectedConversation.participant.name} data-ai-hint={selectedConversation.participant.hint}/>
+                                        <AvatarFallback>{selectedConversation.participant.name.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                )}
+                                <div
+                                    className={cn(
+                                        'max-w-md rounded-xl px-4 py-2',
+                                        message.senderId === currentUser.id
+                                            ? 'bg-primary text-primary-foreground rounded-br-none'
+                                            : 'bg-card text-card-foreground rounded-bl-none border'
+                                    )}
+                                >
+                                    <p>{message.text}</p>
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                    <div ref={messagesEndRef} />
+                        ))}
+                        <div ref={messagesEndRef} />
+                    </div>
                 </div>
+                {loggedInUser?.role === 'daddy' &&
+                    loggedInUser.id !== 1 &&
+                    credits <= 0 && (
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/80 p-4 text-center">
+                        <Ban className="mb-4 h-12 w-12 text-destructive" />
+                        <h3 className="text-xl font-bold">You're out of credits!</h3>
+                        <p className="mt-2 mb-6 text-muted-foreground">
+                            Purchase more to continue your conversations and unlock
+                            your messages.
+                        </p>
+                        <Button
+                            onClick={() =>
+                                router.push(
+                                    `/purchase-credits?redirect=/messages&chatWith=${selectedConversation?.participant.id}`
+                                )
+                            }
+                        >
+                            <Coins className="mr-2 h-4 w-4" />
+                            Buy Credits
+                        </Button>
+                    </div>
+                )}
             </div>
 
             <footer className="p-3 border-t bg-background">
@@ -402,11 +439,16 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
                     <Input
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type your message..."
+                        placeholder={
+                            loggedInUser?.role === 'daddy' && loggedInUser.id !== 1 && credits <= 0
+                                ? "You're out of credits"
+                                : 'Type your message...'
+                        }
                         autoComplete="off"
                         className="flex-grow"
+                        disabled={loggedInUser?.role === 'daddy' && loggedInUser.id !== 1 && credits <= 0}
                     />
-                    <Button type="submit" size="icon" disabled={!newMessage.trim()}>
+                    <Button type="submit" size="icon" disabled={!newMessage.trim() || (loggedInUser?.role === 'daddy' && loggedInUser.id !== 1 && credits <= 0)}>
                         <SendHorizonal />
                         <span className="sr-only">Send</span>
                     </Button>

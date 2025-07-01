@@ -107,7 +107,7 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
             variant: 'destructive',
             title: 'Out of Credits',
             description: 'Purchase more credits to continue chatting.',
-            action: <Button variant="secondary" onClick={() => router.push('/purchase-credits')}>Buy Credits</Button>
+            action: <Button variant="secondary" onClick={() => router.push(`/purchase-credits?redirect=/messages&chatWith=${selectedConvo.participant.id}`)}>Buy Credits</Button>
         });
 
         // Trigger AI message from the sugar baby in the background

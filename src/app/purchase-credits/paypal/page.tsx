@@ -66,7 +66,14 @@ function PayPalPaymentContent() {
           addCredits(selectedPackage.credits);
       }
       
-      router.push('/profile');
+      const redirectUrl = searchParams.get('redirect');
+      const chatWith = searchParams.get('chatWith');
+
+      if (redirectUrl === '/messages' && chatWith) {
+          router.push(`/messages?chatWith=${chatWith}`);
+      } else {
+          router.push('/matches');
+      }
     }).catch((err: any) => {
         console.error("PayPal Capture Error:", err);
         setError("An error occurred while processing your payment. Please try again.");

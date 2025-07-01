@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -29,6 +29,7 @@ export default function PurchaseCreditsPage() {
   const [selectedPackage, setSelectedPackage] = useState(creditPackages[1].id);
   const [selectedPayment, setSelectedPayment] = useState(paymentMethods[0].id);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
 
   const handlePurchase = () => {
@@ -41,18 +42,29 @@ export default function PurchaseCreditsPage() {
           return;
       }
       
-      const packageParam = `?packageId=${selectedPackage}`;
+      const params = new URLSearchParams();
+      params.set('packageId', selectedPackage);
+
+      const redirectUrl = searchParams.get('redirect');
+      const chatWith = searchParams.get('chatWith');
+
+      if (redirectUrl) {
+        params.set('redirect', redirectUrl);
+      }
+      if (chatWith) {
+        params.set('chatWith', chatWith);
+      }
+      
+      const queryString = `?${params.toString()}`;
 
       switch (selectedPayment) {
           case 'credit-card':
           case 'debit-card':
-              router.push(`/purchase-credits/credit-card${packageParam}`);
-              break;
           case 'paypal':
-              router.push(`/purchase-credits/paypal${packageParam}`);
+              router.push(`/purchase-credits/paypal${queryString}`);
               break;
           case 'stripe':
-              router.push(`/purchase-credits/stripe${packageParam}`);
+              router.push(`/purchase-credits/stripe${queryString}`);
               break;
           default:
                toast({

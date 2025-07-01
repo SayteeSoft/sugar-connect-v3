@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useAuth } from '@/hooks/use-auth';
 
 const creditPackages = [
   { id: 'pkg-1', credits: 100, price: 20 },
@@ -20,6 +21,7 @@ function StripePaymentContent() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(true);
+  const { user, addCredits } = useAuth();
 
   const packageId = searchParams.get('packageId');
   const selectedPackage = useMemo(() => creditPackages.find(p => p.id === packageId), [packageId]);
@@ -27,17 +29,28 @@ function StripePaymentContent() {
   useEffect(() => {
       if(selectedPackage) {
         const timer = setTimeout(() => {
+            if (user?.role === 'daddy' && selectedPackage) {
+                addCredits(selectedPackage.credits);
+            }
             setIsProcessing(false);
             toast({
                 title: 'Purchase Successful!',
                 description: `You have successfully purchased ${selectedPackage.credits} credits via Stripe.`,
             });
-            router.push('/profile');
-        }, 3000); // Simulate redirect and payment confirmation
+            
+            const redirectUrl = searchParams.get('redirect');
+            const chatWith = searchParams.get('chatWith');
+
+            if (redirectUrl === '/messages' && chatWith) {
+                router.push(`/messages?chatWith=${chatWith}`);
+            } else {
+                router.push('/matches');
+            }
+        }, 3000);
 
         return () => clearTimeout(timer);
       }
-  }, [selectedPackage, router, toast]);
+  }, [selectedPackage, router, toast, addCredits, searchParams, user]);
 
   if (!selectedPackage) {
       return (

@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -39,6 +40,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import { triggerCreditMessage } from './actions';
 import type { CreditMessageOutput } from '@/ai/flows/credit-message-flow';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const formatTimestamp = (timestamp: string) => {
   const date = new Date(timestamp);
@@ -359,16 +361,16 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
             </header>
             
             <div className="relative flex-grow overflow-hidden">
-                <div
+                <ScrollArea
                     className={cn(
-                        'h-full overflow-y-auto bg-secondary/40 p-4',
+                        'h-full bg-secondary/40',
                         loggedInUser?.role === 'daddy' &&
                         loggedInUser.id !== 1 &&
                         credits <= 0 &&
                         'blur-sm'
                     )}
                 >
-                    <div className="space-y-4">
+                    <div className="space-y-4 p-4">
                         {selectedConversation.messages.map((message) => (
                             <div
                                 key={message.id}
@@ -399,7 +401,7 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
                         ))}
                         <div ref={messagesEndRef} />
                     </div>
-                </div>
+                </ScrollArea>
                 {loggedInUser?.role === 'daddy' &&
                     loggedInUser.id !== 1 &&
                     credits <= 0 && (

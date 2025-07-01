@@ -22,7 +22,6 @@ const paymentMethods = [
   { id: 'credit-card', name: 'Credit Card', icon: <CreditCard className="w-6 h-6 text-muted-foreground" /> },
   { id: 'debit-card', name: 'Debit Card', icon: <CreditCard className="w-6 h-6 text-muted-foreground" /> },
   { id: 'paypal', name: 'PayPal', icon: <p className="font-bold w-6 text-center text-foreground">P</p> },
-  { id: 'stripe', name: 'Stripe', icon: <p className="font-bold w-6 text-center text-foreground">S</p> },
 ];
 
 export default function PurchaseCreditsPage() {
@@ -62,9 +61,6 @@ export default function PurchaseCreditsPage() {
           case 'debit-card':
           case 'paypal':
               router.push(`/purchase-credits/paypal${queryString}`);
-              break;
-          case 'stripe':
-              router.push(`/purchase-credits/stripe${queryString}`);
               break;
           default:
                toast({

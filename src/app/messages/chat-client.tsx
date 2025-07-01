@@ -360,10 +360,10 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
               </div>
             </header>
             
-            <div className="relative flex-grow overflow-hidden">
+            <div className="relative flex-grow overflow-auto">
                 <ScrollArea
                     className={cn(
-                        'h-full bg-secondary/40',
+                        'h-[600px] bg-secondary/40',
                         loggedInUser?.role === 'daddy' &&
                         loggedInUser.id !== 1 &&
                         credits <= 0 &&

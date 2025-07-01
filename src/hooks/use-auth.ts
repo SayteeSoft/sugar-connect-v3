@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -39,7 +40,7 @@ export function useAuth() {
                             localStorage.setItem(creditsKey, currentCredits);
                         }
                         // Special logic for Larry Saytee (ID 13) to "refill" credits if he runs out
-                        else if (loggedInUser.id === 13 && currentCredits === '0') {
+                        else if (loggedInUser.id === 13 && parseInt(currentCredits, 10) === 0) {
                             currentCredits = '10';
                             localStorage.setItem(creditsKey, currentCredits);
                         }
@@ -112,7 +113,7 @@ export function useAuth() {
           const newCredits = Math.max(0, credits - amount);
           const creditsKey = `user_credits_${user.id}`;
           localStorage.setItem(creditsKey, newCredits.toString());
-          setCredits(newCredits);
+          window.dispatchEvent(new Event('authChanged'));
           return newCredits;
       }
       return credits;

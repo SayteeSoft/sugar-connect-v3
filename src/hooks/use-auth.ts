@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -31,7 +30,8 @@ export function useAuth() {
                     if (loggedInUser.role === 'baby' || loggedInUser.id === 1) {
                         setCredits(Infinity);
                     } else {
-                        const storedCredits = localStorage.getItem('user_credits');
+                        const creditsKey = `user_credits_${loggedInUser.id}`;
+                        const storedCredits = localStorage.getItem(creditsKey);
                         setCredits(storedCredits ? parseInt(storedCredits, 10) : 0);
                     }
                 }
@@ -65,12 +65,18 @@ export function useAuth() {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('loggedInUserId', foundUser.id.toString());
       
-      // For daddies (not admin), if it's their first login (no credits stored), give them 10.
       if (foundUser.role === 'daddy' && foundUser.id !== 1) {
-          const currentCredits = localStorage.getItem('user_credits');
+          const creditsKey = `user_credits_${foundUser.id}`;
+          const currentCredits = localStorage.getItem(creditsKey);
+          
+          // Give new daddies 10 credits on their first login
           if (currentCredits === null) {
-            localStorage.setItem('user_credits', '10');
-          } 
+            localStorage.setItem(creditsKey, '10');
+          }
+          // Special logic for Larry Saytee (ID 13) to "refill" credits if he runs out
+          else if (foundUser.id === 13 && currentCredits === '0') {
+            localStorage.setItem(creditsKey, '10');
+          }
       }
       window.dispatchEvent(new Event('authChanged'));
       return foundUser;
@@ -81,7 +87,7 @@ export function useAuth() {
   const logout = () => {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('loggedInUserId');
-    localStorage.removeItem('user_credits');
+    // Don't remove credits on logout so they persist
     window.dispatchEvent(new Event('authChanged')); // Notify all components
   };
 
@@ -104,8 +110,9 @@ export function useAuth() {
   const spendCredits = (amount: number) => {
       if (user?.role === 'daddy' && user.id !== 1) {
           const newCredits = Math.max(0, credits - amount);
+          const creditsKey = `user_credits_${user.id}`;
+          localStorage.setItem(creditsKey, newCredits.toString());
           setCredits(newCredits);
-          localStorage.setItem('user_credits', newCredits.toString());
           return newCredits;
       }
       return credits;
@@ -113,8 +120,10 @@ export function useAuth() {
 
   const addCredits = (amount: number) => {
     if (user?.role === 'daddy' && user.id !== 1) {
-        const newCredits = credits + amount;
-        localStorage.setItem('user_credits', newCredits.toString());
+        const creditsKey = `user_credits_${user.id}`;
+        const currentCredits = parseInt(localStorage.getItem(creditsKey) || '0', 10);
+        const newCredits = currentCredits + amount;
+        localStorage.setItem(creditsKey, newCredits.toString());
         // Dispatch event to ensure all components are aware of the credit change, like the header.
         window.dispatchEvent(new Event('authChanged'));
     }

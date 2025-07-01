@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -103,12 +102,8 @@ export function ChatClient({ initialConversations, currentUser, initialSelectedP
 
     // Check for credits if the user is a daddy (and not the admin)
     if (loggedInUser.role === 'daddy' && loggedInUser.id !== 1 && credits <= 0) {
-        toast({
-            variant: 'destructive',
-            title: 'Out of Credits',
-            description: 'Purchase more credits to continue chatting.',
-            action: <Button variant="secondary" onClick={() => router.push(`/purchase-credits?redirect=/messages&chatWith=${selectedConvo.participant.id}`)}>Buy Credits</Button>
-        });
+        // Redirect to purchase credits page instead of showing a toast
+        router.push(`/purchase-credits?redirect=/messages&chatWith=${selectedConvo.participant.id}`);
 
         // Trigger AI message from the sugar baby in the background
         triggerCreditMessage({

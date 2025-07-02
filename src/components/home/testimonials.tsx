@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from "react";
@@ -14,6 +15,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
+import siteContent from '@/lib/site-content.json';
 
 
 const formatRole = (role: 'baby' | 'daddy') => {
@@ -54,7 +56,7 @@ export function Testimonials() {
       <section className="bg-secondary py-12 md:pt-12 md:pb-20">
         <div className="container mx-auto px-4 md:px-6">
           <h2 className="mb-12 text-center font-headline text-3xl font-bold text-primary md:text-4xl">
-            What Our Members Say
+            {siteContent.testimonials.title}
           </h2>
           <div className="w-full max-w-sm sm:max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto">
              <div className="flex gap-4">
@@ -72,7 +74,7 @@ export function Testimonials() {
     <section className="bg-secondary py-12 md:pt-12 md:pb-20">
       <div className="container mx-auto px-4 md:px-6">
         <h2 className="mb-12 text-center font-headline text-3xl font-bold text-primary md:text-4xl">
-          What Our Members Say
+          {siteContent.testimonials.title}
         </h2>
         <Carousel
           opts={{
